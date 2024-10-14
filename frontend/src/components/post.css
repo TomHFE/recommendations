@@ -1,0 +1,51 @@
+.post-box {
+    background-color: white;
+    display: flex; 
+    justify-content: space-between;
+    align-items: flex-start; 
+    padding: 15px; 
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    margin: 10px 0; 
+    width: 95%; 
+  }
+  .post-image {
+    width: 100%; 
+    height: auto; 
+    border-radius: 5px; 
+    margin-top: 10px; 
+}
+
+  article {
+    flex-grow: 1; 
+    margin-right: 10px; 
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    max-width: calc(100% - 50px); 
+  }
+  
+  .circle-pic {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    cursor: pointer; 
+  }
+  
+  .like-button-container {
+    position:relative;
+    bottom: 80px;  
+    left: -50px; 
+    width: 30px; 
+    height: 10px; 
+    border-radius: 50%; 
+    cursor: pointer;    
+}
+.comments-button-container {
+  position:relative;
+  bottom: 80px;  
+  left: -480px; 
+  width: 30px; 
+  height: 10px; 
+  border-radius: 50%; 
+  cursor: pointer;    
+}

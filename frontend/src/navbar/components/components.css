@@ -1,0 +1,67 @@
+.incoming-requests-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Align boxes vertically */
+}
+
+.request-list {
+    background-color: #3498db;
+    position: relative;
+    max-height: 200px;
+    overflow-y: scroll;
+    width: 100%; /* Ensure the list takes full width */
+    padding: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Slightly reduce shadow */
+    border-radius: 6px;
+    font-size: 12px; /* Smaller font for request list */
+}
+
+.friend-request {
+    background-color: #3498db;
+    border-radius: 6px;
+    padding: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* Smaller shadow */
+    transition: box-shadow 0.3s ease;
+    font-size: 12px; /* Reduce font size for each request */
+}
+
+.friend-request:hover {
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15); /* Lighter hover effect */
+}
+
+.request-number {
+    color: white;
+    font-size: 5px; /* Smaller font size for the number */
+    border-radius: 100%;
+    background-color: red;
+    padding: 2px;
+    margin-left: -6px;
+    margin-top: 6px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.action-buttons button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 4px 8px; /* Smaller buttons */
+    border-radius: 4px;
+    font-size: 10px; /* Smaller text */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons button:hover {
+    background-color: #2980b9;
+}
