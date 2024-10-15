@@ -21,10 +21,12 @@ const CommentSchema = new mongoose.Schema({
     required: true,
   },
   rating: {
-    type: mongoose.SchemaTypes.ObjectId,
+    type: Number,
+    min: 0,
+    max: 5,
     required: false,
   },
-  image: String,
+  image: String, default: '',
 });
 
 const Comment = mongoose.model("Comment", CommentSchema);
