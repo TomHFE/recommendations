@@ -11,31 +11,74 @@ const RecipeSchema = new mongoose.Schema({
   },
   comments: [
     {
+      comment: String,
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Comment",
     },
   ],
   favourites: [
     {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "User",
-      required: false,
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "User",
+        required: true,
     },
   ],
-  instructions: [
+//   user_id: {
+//     type: mongoose.SchemaTypes.ObjectId,
+//     ref: "User",
+//     required: true,
+//   },
+  title: String,
+  image: String,
+  summary: String,
+  instructions: String,
+  SearchingParameters: [
     {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "Instructions",
-      required: true,
+      nationalities: [{
+        type: String,
+        required: false,
+      }],
+      dishType: [
+        {
+          type: String,
+          required: false,
+        },
+      ],
+      preparationMinutes: Number,
+      cookingMinutes: Number,
+      servings: Number,
+      Requirements: [
+        {
+          allergies: [
+            {
+              nuts: Boolean,
+              shellfish: Boolean,
+              dairy: Boolean,
+              soy: Boolean,
+              eggs: Boolean,
+              required: false,
+            },
+          ],
+          vegeterian: Boolean,
+          vegan: Boolean,
+          pescatarian: Boolean,
+          glutenFree: Boolean,
+          dairyFree: Boolean,
+          healthy: Boolean,
+          costFriendly: Number,
+          readyInMinutes: Number,
+          required: false,
+        },
+      ],
     },
   ],
   ingredients: [
-    {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "Ingredients",
-      required: true,
-    },
-  ],
+  {
+    name: String,
+    quantity: Number,
+    unit: String,
+}]
+
 });
 
 // We use the Schema to create the Post model. Models are classes which we can
