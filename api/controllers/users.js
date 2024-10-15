@@ -52,6 +52,7 @@ async function getAllUsers(req, res) {
 }
 
 
+
 async function getUserById(req, res) {
   console.log("this is req.body: ", req.body)
   // const userIds = req.body.friendsIds.friendsData.friendsList

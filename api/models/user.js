@@ -7,8 +7,8 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   username: { type: String, required: true },
   profilePictureURL : {type: String, required: false, },
-  friendsData: {
-    friendsList: [
+  followingData: {
+    followers: [
        {
           type:  mongoose.Schema.Types.ObjectId,
           ref: 'User',
@@ -16,13 +16,21 @@ const UserSchema = new mongoose.Schema({
         }
         
     ],
-    incomingRequests: [ {
+    following: [ {
         type:  mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: false
       }
     ]
-  }
+  },
+  favourites: 
+    [ {
+    type:  mongoose.Schema.Types.ObjectId,
+    ref: 'Recipe',
+    required: false
+    }
+   ]
+
 
 });
 
