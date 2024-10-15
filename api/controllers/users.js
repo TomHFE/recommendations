@@ -111,11 +111,9 @@ async function createFollowerRequest(req, res) {
   console.log("line108", recipientId);
   console.log(senderId);
   const recipient = await userExists(recipientId);
-  const requestExists = await requestNotYetExists(req, res);
-  console.log(requestExists);
 
   if (recipient !== null) {
-    if (requestExists == null) {
+
       try {
         const updatedRecipient = await User.findOneAndUpdate(
           { _id: recipientId },
@@ -140,10 +138,7 @@ async function createFollowerRequest(req, res) {
         .status(402)
         .json({ message: "request already sent by either sender or reciever" });
     }
-  } else {
-    res.status(404).json({ message: "User no longer exists" });
-  }
-}
+};
 
 async function getFollowerList(req, res) {
   const userId = req.user_id;
@@ -165,14 +160,14 @@ async function getFollowerList(req, res) {
   }
 }
 
-async function getFriendsList(req, res) {
+async function getFollowingList(req, res) {
   const userId = req.user_id;
   const doesUserExists = await userExists(userId);
 
   if (doesUserExists !== null) {
     try {
-      const user = await User.findById(userId, "friendsData.friendsList");
-      res.status(201).json({ message: "OK", incomingRequestList: user });
+      const user = await User.findById(userId, "followingData.followingList");
+      res.status(201).json({ message: "OK" });
     } catch (error) {
       res.status(401).json({ message: "error message: " + error.message });
     }
@@ -180,86 +175,60 @@ async function getFriendsList(req, res) {
     res.status(404).json({ message: "user does not exist" });
   }
 }
-async function getAllFriendsData(req, res) {
+async function getAllFollowingData(req, res) {
   const userId = req.user_id;
   const doesUserExists = await userExists(userId);
 
   if (doesUserExists !== null) {
     try {
-      const user = await User.findById(userId, "friendsData");
-      res.status(201).json({ message: "OK", incomingRequestList: user });
+      const user = await User.findById(userId, "followingData");
+      res.status(201).json({ message: "OK" });
     } catch (error) {
       res.status(401).json({ message: "error message: " + error.message });
     }
   } else {
     res.status(404).json({ message: "user does not exist" });
-  }
-}
+  } 
+};
 
-async function requestNotYetExists(req, res) {
-  const sender = req.body.senderId;
-  const recipient = req.body.recipientId;
 
-  const senderNotInRecipientFriendsList = await User.exists({
-    _id: recipient,
-    "friendsData.friendsList": sender,
-  });
-  const recipientNotInSenderFriendsList = await User.exists({
-    _id: sender,
-    "friendsData.friendsList": recipient,
-  });
-  const senderNotInRecipientIncomingRequestsList = await User.exists({
-    _id: recipient,
-    "friendsData.incomingRequests": sender,
-  });
-  const recipientNotInSenderIncomingRequestsList = await User.exists({
-    _id: sender,
-    "friendsData.incomingRequests": recipient,
-  });
-  return (
-    senderNotInRecipientFriendsList ||
-    recipientNotInSenderFriendsList ||
-    senderNotInRecipientIncomingRequestsList ||
-    recipientNotInSenderIncomingRequestsList
-  );
-}
 
 function verifyEmail(email) {
   const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
   return emailPattern.test(email);
 }
 
-async function deleteFriend(req, res) {
+async function deleteFollowing(req, res) {
   const userId = req.user_id;
-  const friendId = req.body.friendId;
+  const followingId = req.body.followingId;
   const userReal = await userExists(userId);
-  const friendNotInUserFriendList = await User.exists({
+  const subjectNotInUserFollowingList = await User.exists({
     _id: userId,
-    "friendsData.friendsList": friendId,
+    "followingData.followingList": followingId,
   });
-  console.log(friendNotInUserFriendList);
+  console.log(subjectNotInUserFollowingList);
 
   if (userReal !== null) {
-    if (friendNotInUserFriendList !== null) {
+    if (subjectNotInUserFollowingList !== null) {
       try {
-        const userFriendList = await User.findByIdAndUpdate(
+        const userFollowingList = await User.findByIdAndUpdate(
           userId,
-          { $pull: { "friendsData.friendsList": friendId } },
+          { $pull: { "followingData.followingList": followingId } },
           { new: true }
         );
         await User.findByIdAndUpdate(
-          friendId,
-          { $pull: { "friendsData.friendsList": userId } },
+          followingId,
+          { $pull: { "followingData.followerList": userId } },
           { new: true }
         );
-        res.status(201).json({ message: "OK", deletedfriend: userFriendList });
+        res.status(201).json({ message: "OK" });
       } catch (error) {
         res
           .status(401)
           .json({ message: "this is the error message: " + error.message });
       }
     } else {
-      res.status(402).json({ message: "friend not in friendList" });
+      res.status(402).json({ message: "user is not being followed" });
     }
   } else {
     res.status(404).json({ message: "user doesnt exist" });
@@ -319,11 +288,11 @@ const UsersController = {
   getUserById: getUserById,
   verifyEmail: verifyEmail,
   createFollowerRequest: createFollowerRequest,
-
-  deleteFriend: deleteFriend,
+  deleteFollowing: deleteFollowing,
+  getAllFollowingData: getAllFollowingData,
+  getFollowingList: getFollowingList,
   getFollowerList: getFollowerList,
-  getFriendsList: getFriendsList,
-  getAllFriendsData: getAllFriendsData,
+
 };
 
 module.exports = UsersController;
