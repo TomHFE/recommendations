@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt")
 
+// encrypts password
+
 const hashpass = async (password) => {
     try {
+        
         const hashpassword = await bcrypt.hash(password, 10)
         return (hashpassword)
     } catch (error) {

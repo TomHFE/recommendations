@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const CommentSchema = new mongoose.Schema({
   user: {
     type: mongoose.SchemaTypes.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   message: {
@@ -16,11 +16,16 @@ const CommentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  post_id: {
+  recipe_id: {
     type: mongoose.SchemaTypes.ObjectId,
-    required: true
-  }
-})
+    required: true,
+  },
+  rating: {
+    type: mongoose.SchemaTypes.ObjectId,
+    required: false,
+  },
+  image: String,
+});
 
 const Comment = mongoose.model("Comment", CommentSchema);
 
