@@ -1,22 +1,25 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-export async function createLike(token, post_id) {
+export async function toggleFollowingServ(token, target_id) {
   const requestOptions = {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ post_id: post_id }),
+    body: JSON.stringify({ target_id: target_id }),
   };
 
-  const response = await fetch(`${BACKEND_URL}/posts/likes`, requestOptions);
+  //Might need to adjust below route
+  const response = await fetch(
+    `${BACKEND_URL}/users/toggle_following`,
+    requestOptions
+  );
 
   if (response.status !== 201) {
-    throw new Error("Unable to fetch posts");
+    throw new Error("Unable to toggle");
   }
 
   const data = await response.json();
   return data;
-
 }
