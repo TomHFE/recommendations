@@ -7,6 +7,7 @@ const { ObjectId } = require("mongodb")
 //   const token = generateToken(req.user_id);
 //   res.status(200).json({ posts: posts, token: token})
 // }
+
 // feed
 async function getRecipesWithUserDetails(req, res) {
   const recipesWithDetails = await Recipe.find().populate({
@@ -19,6 +20,7 @@ async function getRecipesWithUserDetails(req, res) {
   const token = generateToken(req.user_id);
   res.status(200).json({ recipes: recipesWithDetails, token: token })
 }
+
 // profile
 async function getUserRecipes(req, res){
   const recipes = await Recipe.find({user: req.user_id}).populate({
@@ -31,6 +33,7 @@ async function getUserRecipes(req, res){
   const token = generateToken(req.user_id);
   res.status(200).json({ recipes: recipes, token: token})
 }
+
 // show somebody else's profile
 async function getUserRecipesById(req, res) {
   const recipes = await Recipe.find({user: req.body.user_id}).populate({
@@ -43,6 +46,7 @@ async function getUserRecipesById(req, res) {
   const token = generateToken(req.user_id);
   res.status(200).json({ recipes: recipes, token: token})
 }
+
 // fill it in with tonnnnns of stuff
 async function createRecipe(req, res) {
   // await web scrape find
@@ -84,6 +88,7 @@ async function createRecipe(req, res) {
   const newToken = generateToken(req.user_id);
   res.status(201).json({ recipe: recipe, token: newToken });
 }
+
 async function addCommentToRecipe(comment, recipe_id) {
   const recipe = await Recipe.findOneAndUpdate(
     { _id: recipe_id },
@@ -91,6 +96,7 @@ async function addCommentToRecipe(comment, recipe_id) {
     { new: true }
   )
 }
+
 async function toggleFavourites(req, res) {
   const user_id = req.user_id
   const recipe_id = req.body.recipe_id
@@ -100,6 +106,7 @@ async function toggleFavourites(req, res) {
   const newToken = generateToken(req.user_id);
   res.status(201).json({ resMessage, token: newToken });
 }
+
 async function addFavouriteToRecipe(user_id, recipe_id) {
   const recipe = await Recipe.findById(recipe_id);
   if (!recipe) return { error: "Recipe does not exist" };
@@ -116,6 +123,7 @@ async function addFavouriteToRecipe(user_id, recipe_id) {
     return `${recipe_id} favourited`;
   }
 }
+
 const RecipesController = {
   // getAllPosts: getAllPosts,
   getRecipesWithUserDetails: getRecipesWithUserDetails,

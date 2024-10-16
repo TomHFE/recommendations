@@ -36,12 +36,12 @@ const RecipeSchema = new mongoose.Schema({
     {
       nationalities: [{
         type: String,
-        required: false,
+        
       }],
       dishType: [
         {
           type: String,
-          required: false,
+          
         },
       ],
       preparationMinutes: Number,
@@ -56,7 +56,7 @@ const RecipeSchema = new mongoose.Schema({
               dairy: Boolean,
               soy: Boolean,
               eggs: Boolean,
-              required: false,
+              
             },
           ],
           vegeterian: Boolean,
@@ -67,7 +67,6 @@ const RecipeSchema = new mongoose.Schema({
           healthy: Boolean,
           costFriendly: Number,
           readyInMinutes: Number,
-          required: false,
         },
       ],
     },

@@ -1,10 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const userpostsRouter =require("./routes/userposts")
 const usersRouter = require("./routes/users");
-const postsRouter = require("./routes/posts");
-const friendRouter = require("./routes/friends")
+const recipeRouter = require("./routes/recipe");
+const followerRouter = require("./routes/followers")
 const authenticationRouter = require("./routes/authentication");
 const signUp = require('./routes/signup')
 const tokenChecker = require("./middleware/tokenChecker");
@@ -20,11 +19,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // API Routes
-app.use("/friends", tokenChecker ,friendRouter);
+app.use("/followers", tokenChecker, followerRouter);
 app.use('/signup', signUp)
-app.use("/users", tokenChecker ,usersRouter);
-app.use("/posts", tokenChecker, postsRouter);
-app.use("/userposts", tokenChecker, userpostsRouter);
+app.use("/users", tokenChecker, usersRouter);
+app.use("/recipes", tokenChecker, recipeRouter);
 app.use("/tokens", authenticationRouter);
 
 // 404 Handler
