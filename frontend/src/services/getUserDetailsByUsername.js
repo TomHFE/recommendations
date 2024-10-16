@@ -8,12 +8,14 @@ export const getUserDetailsByUsername = async (token, username) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ username: username }),
-  }
-  const response = await fetch(`${BACKEND_URL}/users/public_details_username`, requestOptions);
+  };
+  const response = await fetch(
+    `${BACKEND_URL}/users/public_details_username`,
+    requestOptions
+  );
   if (response.status !== 200) {
     throw new Error("Unable to fetch posts");
   }
 
   return response.json();
-
-}
+};
