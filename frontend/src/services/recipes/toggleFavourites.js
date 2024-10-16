@@ -12,7 +12,6 @@ export async function createComment(token, message, recipe_id, rating) {
     }),
   };
 
-  // below might need to change based on routes
   const response = await fetch(
     `${BACKEND_URL}/recipes/toggle_favourites`,
     requestOptions

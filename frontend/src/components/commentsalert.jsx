@@ -1,5 +1,5 @@
 import "./Commentsalert.css";
-import { createComment } from "../services/createComment";
+import { createComment } from "../services/recipes/createComment";
 import { useEffect, useState } from "react";
 
 function Commentsalert({ comments, onClose, post_id }) {
