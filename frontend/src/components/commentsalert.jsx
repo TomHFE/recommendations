@@ -2,7 +2,7 @@ import "./Commentsalert.css";
 import { createComment } from "../services/recipes/createComment";
 import { useEffect, useState } from "react";
 
-function Commentsalert({ comments, onClose, post_id }) {
+function Commentsalert({ comments, onClose, recipe_id }) {
   const [commentState, setCommentState] = useState([]);
   const [comment, setComment] = useState("");
 
@@ -12,13 +12,16 @@ function Commentsalert({ comments, onClose, post_id }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const token = localStorage.getItem("token");
-    const thisComment = await createComment(token, comment, post_id);
-    setCommentState((prev) => [...prev, thisComment.comment]); // Append the new comment to the current state
-    setComment("");
-    window.location.reload(); //temporary solution
+    try {
+      const thisComment = await createComment(token, comment, recipe_id);
+      setCommentState((prev) => [...prev, thisComment.comment]); //avoid page reload
+      setComment(""); // Clear input
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
 
   return (
     <div className="modal">

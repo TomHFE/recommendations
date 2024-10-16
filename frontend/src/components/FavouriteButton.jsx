@@ -1,13 +1,12 @@
-import { useState } from "react";
 import iconlike from "../pictures/iconlikebutton.png";
-import { createLike } from "../services/createFavourite";
+import { createFavourite } from "../services/recipes/toggleFavourites";
 
-export const LikeButton = (props) => {
-  const handleLike = async () => {
+export const FavouriteButton = (props) => {
+  const handleFavourite = async () => {
     const token = localStorage.getItem("token");
-    console.log("LikeButtonProps", props);
-    const liked = await createLike(token, props.postId);
-    console.log(liked);
+    //console.log("LikeButtonProps", props);
+    const favourited = await createFavourite(token, props.recipeId);
+    //console.log(liked);
     window.location.reload();
   };
   return (
@@ -24,8 +23,9 @@ export const LikeButton = (props) => {
       <p style={{ marginRight: "0.2rem" }}>{props.number}</p>
       <img
         src={iconlike}
+        alt="Comments icon"
         style={{ maxWidth: "1.5rem", maxHeight: "1.5rem", cursor: "pointer" }}
-        onClick={handleLike}
+        onClick={handleFavourite}
       />
     </div>
   );

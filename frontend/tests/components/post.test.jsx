@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import Post from "../../src/components/Post";
+import Post from "../../src/components/Recipe";
 
 describe("Post", () => {
   test("displays the message as an article", () => {
