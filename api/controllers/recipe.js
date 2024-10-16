@@ -50,43 +50,53 @@ async function getUserRecipesById(req, res) {
 // fill it in with tonnnnns of stuff
 async function createRecipe(req, res) {
   // await web scrape find
-  const recipe = new Recipe({
-    user: req.user_id,
-    title: req.body.title,
-    image: req.body.image,
-    summary: req.body.summary,
-    instructions: req.body.instructions,
-    SearchingParameters: [{
-      nationalities: req.body.nationalities,
-      dishType: req.body.dishType,
-      preparationMinutes: req.body.preparationMinutes,
-      cookingMinutes: req.body.cookingMinutes,
-      servings: req.body.servings,
-      Requirements: [{
-        allergies: [{
-          nuts: req.body.nuts,
-          shellfish: req.body.shellfish,
-          dairy: req.body.dairy,
-          soy: req.body.soy,
-          eggs: req.body.eggs
+  const recipeList = req.body.recipeList;
+  const SearchingParameters = req.body.recipeList.SearchingParameters;
+  const Requirements = req.body.recipeList.SearchingParameters.Requirements;
+  try {
+    const recipe = new Recipe({
+      user: req.user_id,
+      title: recipeList.title,
+      image: recipeList.image,
+      summary: recipeList.summary,
+      instructions: recipeList.instructions,
+      SearchingParameters: [{
+        nationalities: SearchingParameters.nationalities,
+        dishType: SearchingParameters.dishType,
+        preparationMinutes: SearchingParameters.preparationMinutes,
+        cookingMinutes: SearchingParameters.cookingMinutes,
+        servings: SearchingParameters.servings,
+        Requirements: {
+          // allergies: {
+            nuts: SearchingParameters.Requirements.nuts,
+            shellfish: Requirements.shellfish,
+            dairy: Requirements.dairy,
+            soy: Requirements.soy,
+            eggs: Requirements.eggs,
+          // },
+        
+        vegeterian: Requirements.vegeterian,
+        vegan: Requirements.vegan,
+        pescatarian: Requirements.pescatarian,
+        glutenFree: Requirements.glutenFree,
+        dairyFree: Requirements.dairyFree,
+        healthy: Requirements.healthy,
+        costFriendly: Requirements.costFriendly,
+        readyInMinutes: Requirements.readyInMinutes
         },
-      ],
-      vegeterian: req.body.vegeterian,
-      vegan: req.body.vegan,
-      pescatarian: req.body.pescatarian,
-      glutenFree: req.body.glutenFree,
-      dairyFree: req.body.dairyFree,
-      healthy: req.body.healthy,
-      costFriendly: req.body.costFriendly,
-      readyInMinutes: req.body.readyInMinutes
-      },
-    ],
-    ingredients: req.body.ingredients,
-    }],
-  });
-  recipe.save();
-  const newToken = generateToken(req.user_id);
-  res.status(201).json({ recipe: recipe, token: newToken });
+      
+      ingredients: recipeList.ingredients,
+      }],
+    });
+    recipe.save();
+    const newToken = generateToken(req.user_id);
+    res.status(201).json({ recipe: recipe, token: newToken });
+
+  }
+  catch (error) {
+    res.status(404).json({ message: error.message});
+
+  }
 }
 
 async function addCommentToRecipe(comment, recipe_id) {
