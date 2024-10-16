@@ -250,6 +250,31 @@ async function findByUsername(req, res) {
   }
 }
 
+async function toggleFollowing(req, res) {
+  const user_id = req.user_id
+  const target_id = req.body.target_id
+  console.log("toggle_likes_user_id: ", user_id)
+  console.log("toggle_likes_target_id: ", target_id)
+  const hasFollowed = await target_id.followingData.followerList.includes(user_id.toString())
+
+  if (hasFollowed) {
+    target_id.followingData.followerList = target_id.followingData.followerList.filter(followerList => followerList.toString() !== user_id.toString());
+    await target_id.save();
+    user_id.followingData.followingList = user_id.followingData.followingList.filter(followingList => followingList.toString() !== target_id.toString());
+    await user_id.save();
+    const newToken = generateToken(req.user_id);
+    res.status(201).json({ message: `${target_id} followed`, token: newToken });
+  } else {
+    target_id.followingData.followerList.push(user_id);
+    await target_id.save();
+    user_id.followingData.followingList.push(target_id)
+    await user_id.save();
+    const newToken = generateToken(req.user_id);
+    res.status(201).json({ message: `${target_id} followed`, token: newToken });
+  }
+}
+
+
 async function getPublicDetailsById(req, res) {
   const user_id = req.body.user_id;
 
@@ -292,7 +317,7 @@ const UsersController = {
   getAllFollowingData: getAllFollowingData,
   getFollowingList: getFollowingList,
   getFollowerList: getFollowerList,
-
+  toggleFollowing: toggleFollowing
 };
 
 module.exports = UsersController;
