@@ -1,22 +1,21 @@
+// docs: https://vitejs.dev/guide/env-and-mode.html
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-export async function FindByUsername(token, name) {
+export async function getUserFollowingList(token) {
   const requestOptions = {
-    method: "POST",
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userSearchName: name }),
   };
 
   const response = await fetch(
-    `${BACKEND_URL}/users/find_by_username`,
+    `${BACKEND_URL}/users/get_following_list`,
     requestOptions
   );
 
   if (response.status !== 201) {
-    throw new Error("Unable to fetch posts");
+    throw new Error("Unable to fetch following");
   }
 
   const data = await response.json();

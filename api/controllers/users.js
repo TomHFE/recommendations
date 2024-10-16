@@ -54,10 +54,11 @@ async function getAllUsers(req, res) {
   res.status(200).json({ message: Users });
 }
 
+//This gets a following
 async function getUserById(req, res) {
   console.log("this is req.body: ", req.body);
   // const userIds = req.body.friendsIds.friendsData.friendsList
-  const userIds = req.body.friendsIds;
+  const userIds = req.body.friendsId;
 
   console.log("line53", userIds);
   if (typeof userIds !== "string") {
@@ -286,7 +287,7 @@ async function getPublicDetailsById(req, res) {
 
   try {
     const publicUserDetails = await User.find({ _id: user_id }).select(
-      "username profilePictureURL friendsData.friendsList"
+      "username profilePictureURL followingData.followingList"
     );
     const token = generateToken(req.user_id);
     res.status(200).json({ user_details: publicUserDetails, token: token });
@@ -300,7 +301,7 @@ async function getPublicDetailsByUsername(req, res) {
 
   try {
     const publicUserDetails = await User.find({ username: username }).select(
-      "username profilePictureURL friendsData.friendsList"
+      "username profilePictureURL followingData.followingList"
     );
     const token = generateToken(req.user_id);
     res.status(200).json({ user_details: publicUserDetails, token: token });
@@ -318,9 +319,11 @@ const UsersController = {
   getPublicDetailsByUsername: getPublicDetailsByUsername,
   getUserById: getUserById,
   verifyEmail: verifyEmail,
+
   createFollowerRequest: createFollowerRequest,
   deleteFollowing: deleteFollowing,
   getAllFollowingData: getAllFollowingData,
+
   getFollowingList: getFollowingList,
   getFollowerList: getFollowerList,
   toggleFollowing: toggleFollowing,

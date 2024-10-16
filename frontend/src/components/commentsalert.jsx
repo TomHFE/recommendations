@@ -3,12 +3,12 @@ import { createComment } from "../services/createComment";
 import { useEffect, useState } from "react";
 
 function Commentsalert({ comments, onClose, post_id }) {
-  const [ commentState, setCommentState ] = useState([])
+  const [commentState, setCommentState] = useState([]);
   const [comment, setComment] = useState("");
 
   useEffect(() => {
-    setCommentState(comments)
-  }, [comments])
+    setCommentState(comments);
+  }, [comments]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -17,7 +17,7 @@ function Commentsalert({ comments, onClose, post_id }) {
     const thisComment = await createComment(token, comment, post_id);
     setCommentState((prev) => [...prev, thisComment.comment]); // Append the new comment to the current state
     setComment("");
-    window.location.reload() //temporary solution
+    window.location.reload(); //temporary solution
   };
 
   return (
