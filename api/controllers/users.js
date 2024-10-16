@@ -113,32 +113,31 @@ async function createFollowerRequest(req, res) {
   const recipient = await userExists(recipientId);
 
   if (recipient !== null) {
+    try {
+      const updatedRecipient = await User.findOneAndUpdate(
+        { _id: recipientId },
+        { $addToSet: { "followingData.followers": senderId } },
+        { new: true }
+      );
+      res.status(201).json({ message: "OK", user_added: updatedRecipient });
 
-      try {
-        const updatedRecipient = await User.findOneAndUpdate(
-          { _id: recipientId },
-          { $addToSet: { "followingData.followers": senderId } },
-          { new: true }
-        );
-        res.status(201).json({ message: "OK", user_added: updatedRecipient });
-
-        const updatedSender = await User.findOneAndUpdate(
-          { _id: senderId },
-          { $addToSet: { "followingData.following": recipientId } },
-          { new: true }
-        );
-        res.status(201).json({ message: "OK", user_added: updatedSender });
-      } catch (error) {
-        res
-          .status(401)
-          .json({ message: "this is the error message: " + error.message });
-      }
-    } else {
+      const updatedSender = await User.findOneAndUpdate(
+        { _id: senderId },
+        { $addToSet: { "followingData.following": recipientId } },
+        { new: true }
+      );
+      res.status(201).json({ message: "OK", user_added: updatedSender });
+    } catch (error) {
       res
-        .status(402)
-        .json({ message: "request already sent by either sender or reciever" });
+        .status(401)
+        .json({ message: "this is the error message: " + error.message });
     }
-};
+  } else {
+    res
+      .status(402)
+      .json({ message: "request already sent by either sender or reciever" });
+  }
+}
 
 async function getFollowerList(req, res) {
   const userId = req.user_id;
@@ -188,10 +187,8 @@ async function getAllFollowingData(req, res) {
     }
   } else {
     res.status(404).json({ message: "user does not exist" });
-  } 
-};
-
-
+  }
+}
 
 function verifyEmail(email) {
   const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -250,6 +247,40 @@ async function findByUsername(req, res) {
   }
 }
 
+async function toggleFollowing(req, res) {
+  const user_id = req.user_id;
+  const target_id = req.body.target_id;
+  console.log("toggle_likes_user_id: ", user_id);
+  console.log("toggle_likes_target_id: ", target_id);
+  const hasFollowed = await target_id.followingData.followerList.includes(
+    user_id.toString()
+  );
+
+  if (hasFollowed) {
+    target_id.followingData.followerList =
+      target_id.followingData.followerList.filter(
+        (followerList) => followerList.toString() !== user_id.toString()
+      );
+    await target_id.save();
+    user_id.followingData.followingList =
+      user_id.followingData.followingList.filter(
+        (followingList) => followingList.toString() !== target_id.toString()
+      );
+    await user_id.save();
+    const newToken = generateToken(req.user_id);
+    res
+      .status(201)
+      .json({ message: `${target_id} unfollowed`, token: newToken });
+  } else {
+    target_id.followingData.followerList.push(user_id);
+    await target_id.save();
+    user_id.followingData.followingList.push(target_id);
+    await user_id.save();
+    const newToken = generateToken(req.user_id);
+    res.status(201).json({ message: `${target_id} followed`, token: newToken });
+  }
+}
+
 async function getPublicDetailsById(req, res) {
   const user_id = req.body.user_id;
 
@@ -292,7 +323,7 @@ const UsersController = {
   getAllFollowingData: getAllFollowingData,
   getFollowingList: getFollowingList,
   getFollowerList: getFollowerList,
-
+  toggleFollowing: toggleFollowing,
 };
 
 module.exports = UsersController;
