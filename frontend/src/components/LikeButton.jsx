@@ -1,6 +1,6 @@
 import { useState } from "react";
-import iconlike from "../pictures/iconlikebutton.png";
-import { createLike } from "../services/createFavourite";
+// import iconlike from "../pictures/iconlikebutton.png";
+// import { createLike } from "../services/createFavourite";
 
 export const LikeButton = (props) => {
   const handleLike = async () => {

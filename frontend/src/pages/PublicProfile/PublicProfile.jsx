@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUserDetailsByUsername } from "../../services/getUserDetailsByUsername";
 import { useParams } from "react-router-dom";
-import { getUserPostsById } from "../../services/getUserPostsById";
+// import { getUserPostsById } from "../../services/getUserPostsById";
 import Post from "../../components/Post";
 import { CreateRequest } from "../../services/friendrequest/createfriendrequest";
 
