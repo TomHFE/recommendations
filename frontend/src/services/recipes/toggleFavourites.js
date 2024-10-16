@@ -2,21 +2,19 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export async function createComment(token, message, recipe_id, rating) {
   const requestOptions = {
-    method: "POST",
+    method: "PATCH",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      message: message,
       recipe_id: recipe_id,
-      rating: rating,
     }),
   };
 
   // below might need to change based on routes
   const response = await fetch(
-    `${BACKEND_URL}/recipe/comments`,
+    `${BACKEND_URL}/recipes/toggle_favourites`,
     requestOptions
   );
 

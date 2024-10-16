@@ -110,7 +110,7 @@ async function toggleFavourites(req, res) {
   //console.log("togg_like_post_id: ", post_id)
   const resMessage = await addFavouriteToRecipe(user_id, recipe_id)
   const newToken = generateToken(req.user_id);
-  res.status(201).json({ resMessage, token: newToken });
+  res.status(201).json({ resMessage: resMessage, token: newToken });
 }
 
 async function addFavouriteToRecipe(user_id, recipe_id) {
