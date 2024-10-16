@@ -40,7 +40,7 @@ async function create(req, res) {
       .save()
       .then((user) => {
         console.log("User created, id:", user._id.toString());
-        res.status(201).json({ message: "OK" });
+        res.status(201).json({ message: "OK"});
       })
       .catch((err) => {
         console.error("after", err);

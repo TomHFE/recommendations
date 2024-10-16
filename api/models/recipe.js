@@ -47,18 +47,13 @@ const RecipeSchema = new mongoose.Schema({
       preparationMinutes: Number,
       cookingMinutes: Number,
       servings: Number,
-      Requirements: [
-        {
-          allergies: [
-            {
-              nuts: Boolean,
-              shellfish: Boolean,
-              dairy: Boolean,
-              soy: Boolean,
-              eggs: Boolean,
-              
-            },
-          ],
+   
+      nuts: { type: Boolean, default: false },
+      shellfish: { type: Boolean, default: false },
+      dairy: { type: Boolean, default: false },
+      soy: { type: Boolean, default: false },
+      eggs: { type: Boolean, default: false },
+    
           vegeterian: Boolean,
           vegan: Boolean,
           pescatarian: Boolean,
@@ -67,8 +62,7 @@ const RecipeSchema = new mongoose.Schema({
           healthy: Boolean,
           costFriendly: Number,
           readyInMinutes: Number,
-        },
-      ],
+      
     },
   ],
   ingredients: [
