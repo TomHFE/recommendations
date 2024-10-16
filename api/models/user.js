@@ -6,20 +6,18 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
   username: { type: String, required: true },
-  profilePictureURL : {type: String, required: false, },
+  profilePictureURL : {type: String },
   followingData: {
     followers: [
        {
           type:  mongoose.Schema.Types.ObjectId,
           ref: 'User',
-          required: false
         }
         
     ],
     following: [ {
         type:  mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: false
       }
     ]
   },
@@ -27,7 +25,6 @@ const UserSchema = new mongoose.Schema({
     [ {
     type:  mongoose.Schema.Types.ObjectId,
     ref: 'Recipe',
-    required: false
     }
    ]
 

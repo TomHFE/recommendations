@@ -24,9 +24,8 @@ const CommentSchema = new mongoose.Schema({
     type: Number,
     min: 0,
     max: 5,
-    required: false,
   },
-  image: String, default: '',
+  image: String, 
 });
 
 const Comment = mongoose.model("Comment", CommentSchema);

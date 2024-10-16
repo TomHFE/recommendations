@@ -15,12 +15,12 @@ const InstructionsSchema = new mongoose.Schema({
     {
       nationalities: {
         type: String,
-        required: false,
+        
       },
       dishType: [
         {
           type: String,
-          required: false,
+          
         },
       ],
       preparationMinutes: Number,
@@ -31,7 +31,7 @@ const InstructionsSchema = new mongoose.Schema({
           allergies: [
             {
               type: String,
-              required: false,
+              
             },
           ],
           vegeterian: Boolean,
@@ -41,7 +41,7 @@ const InstructionsSchema = new mongoose.Schema({
           healthy: Boolean,
           costFriendly: Number,
           readyInMinutes: Number,
-          required: false,
+          
         },
       ],
     },
