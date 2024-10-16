@@ -52,7 +52,7 @@ async function createRecipe(req, res) {
   // await web scrape find
   const recipeList = req.body.recipeList;
   const SearchingParameters = req.body.recipeList.SearchingParameters;
-  const Requirements = req.body.recipeList.SearchingParameters.Requirements;
+  // const Requirements = req.body.recipeList.SearchingParameters.Requirements;
   try {
     const recipe = new Recipe({
       user: req.user_id,
@@ -66,27 +66,23 @@ async function createRecipe(req, res) {
         preparationMinutes: SearchingParameters.preparationMinutes,
         cookingMinutes: SearchingParameters.cookingMinutes,
         servings: SearchingParameters.servings,
-        Requirements: {
-          // allergies: {
-            nuts: SearchingParameters.Requirements.nuts,
-            shellfish: Requirements.shellfish,
-            dairy: Requirements.dairy,
-            soy: Requirements.soy,
-            eggs: Requirements.eggs,
-          // },
+            nuts: SearchingParameters.nuts,
+            shellfish: SearchingParameters.shellfish,
+            dairy: SearchingParameters.dairy,
+            soy: SearchingParameters.soy,
+            eggs: SearchingParameters.eggs,
         
-        vegeterian: Requirements.vegeterian,
-        vegan: Requirements.vegan,
-        pescatarian: Requirements.pescatarian,
-        glutenFree: Requirements.glutenFree,
-        dairyFree: Requirements.dairyFree,
-        healthy: Requirements.healthy,
-        costFriendly: Requirements.costFriendly,
-        readyInMinutes: Requirements.readyInMinutes
-        },
+        vegeterian: SearchingParameters.vegeterian,
+        vegan: SearchingParameters.vegan,
+        pescatarian: SearchingParameters.pescatarian,
+        glutenFree: SearchingParameters.glutenFree,
+        dairyFree: SearchingParameters.dairyFree,
+        healthy: SearchingParameters.healthy,
+        costFriendly: SearchingParameters.costFriendly,
+        readyInMinutes: SearchingParameters.readyInMinutes
       
-      ingredients: recipeList.ingredients,
       }],
+      ingredients: recipeList.ingredients,
     });
     recipe.save();
     const newToken = generateToken(req.user_id);
