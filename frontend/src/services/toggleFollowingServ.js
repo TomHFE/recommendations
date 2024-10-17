@@ -2,7 +2,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export async function toggleFollowingServ(token, target_id) {
   const requestOptions = {
-    method: "POST",
+    method: "PATCH",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
