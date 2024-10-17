@@ -15,7 +15,7 @@ import followList  from "./followingList";
 export function Profile(){
     const [recipes, setRecipes] = useState([]);
     const navigate = useNavigate();
-    const [newRecipe,setNewRecipe]=useState({message:'',pictureURL:''})
+    // const [newRecipe,setNewRecipe]=useState({message:'',pictureURL:''})
     useEffect(() => {
         const token = localStorage.getItem("token");
         const loggedIn = token !== null;
@@ -38,6 +38,13 @@ export function Profile(){
         return;
       }
 
+      const handleFollowers = () => {
+        navigate('./user_followers')
+      }
+      const handleFollowing = () => {
+        navigate('./user_following')
+      }
+
      
   // const handleSubmit= async (event)=>{
   //   event.preventDefault();
@@ -56,31 +63,42 @@ export function Profile(){
     
 return (
     <>
-      <div className="container"><Spacescene/></div>
-      <div className="newRecipe">
-      <h1>Favourites</h1>
-      {/* <form onSubmit={handleSubmit}>
-        <input 
-        //value = {newRecipe}
-        value={newRecipe.message}
-       onChange={(e) => setNewRecipe({...newRecipe, message:e.target.value})}
-       //onChange={(e) => setNewRecipe( e.target.value)}
-        placeholder="Type a new post ..."></input>
-         <input 
-            value={newRecipe.pictureURL} onChange={(e) => setNewRecipe({...newRecipe, pictureURL:e.target.value})} 
-            placeholder="Paste Url picture here...">
-            </input>
-        <button type='submit'>Post</button>
-      </form> */}
-      </div>
-            <h2>My recipes</h2>
-      <div className="feed" role="feed">
-        {recipes.map((recipe) => (
-          <Recipe recipe={recipe} key={recipe._id} />
-        ))}
-      </div>
-      <div className="friendlist"><FriendList/></div>
+      <div className="">
+      {recipes.length > 0 && (
+        <div>
+          <h1>{recipes[0].username}</h1>
+          <img src={recipes[0].profilePictureURL} alt="Profile Picture" />
+            <h3 onClick={handleFollowers}>followers</h3>
+            <h3 onClick={handleFollowing}>following</h3>
+          <h1>Favourites</h1>
+          <div className="feed" role="feed">
+          {recipes[0].map((recipe) => (
+            <Recipe props={recipe} key={recipe._id} />
+          ))}
+        </div>
+        </div>
+        )}
+
+        {/* <div className="goback"><GoBack/></div>
+        <div className="logout"> <LogoutButton /></div> */}
+        {/* <form onSubmit={handleSubmit}>
+          <input 
+          //value = {newRecipe}
+          value={newRecipe.message}
+         onChange={(e) => setNewRecipe({...newRecipe, message:e.target.value})}
+         //onChange={(e) => setNewRecipe( e.target.value)}
+          placeholder="Type a new post ..."></input>
+           <input 
+              value={newRecipe.pictureURL} onChange={(e) => setNewRecipe({...newRecipe, pictureURL:e.target.value})} 
+              placeholder="Paste Url picture here...">
+              </input>
+          <button type='submit'>Post</button>
+          </form> */}
+ 
+        
+
+        </div>
+      </>
       
-      <div className="goback"><GoBack/></div>
-      <div className="logout"> <LogoutButton /></div>
-      </>)}
+      )
+      }
