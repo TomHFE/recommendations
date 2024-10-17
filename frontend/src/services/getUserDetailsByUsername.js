@@ -13,7 +13,7 @@ export const getUserDetailsByUsername = async (token, username) => {
     `${BACKEND_URL}/users/public_details_username`,
     requestOptions
   );
-  if (response.status !== 200) {
+  if (response.status !== 201) {
     throw new Error("Unable to fetch posts");
   }
 

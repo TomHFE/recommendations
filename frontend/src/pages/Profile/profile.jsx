@@ -1,108 +1,65 @@
-// import Spacescene from "./spacescene3";
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import LogoutButton from "../../components/LogoutButton";
-// import GoBack from "../../components/gobackbutton";
 import { getRecipesWithUserDetails } from "../../services/recipes/getRecipesWithUserDetails";
-// import {createrecipes} from "../../services/createrecipes";
-import Recipe from "./recipe";
+import Recipe from "./recipe"; 
 import "./profile.css";
-// import followList  from "./followingList";
 import { getUserDetails } from "../../services/getUserDetails";
 
-// build out recipe card and finish off profile page
-
 export function Profile() {
-  const [recipes, setRecipes] = useState([]);
-  const [profile, setProfile] = useState([]);
+  const [recipes, setRecipes] = useState([]); 
+  const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
-  // const [newRecipe,setNewRecipe]=useState({message:'',pictureURL:''})
+
   useEffect(() => {
     let token = localStorage.getItem("token");
-    const loggedIn = token !== null;
-    if (loggedIn) {
+    if (token) {
       getRecipesWithUserDetails(token)
         .then((data) => {
-          setRecipes(data.recipes);
+          setRecipes(data.recipes); 
           localStorage.setItem("token", data.token);
-        })
-        .then(() => {
-          token = localStorage.getItem("token");
-          return getUserDetails(token);
+          return getUserDetails(data.token);
         })
         .then((user) => {
-          setProfile(user.message);
           localStorage.setItem("token", user.token);
+          console.log(user)
+          setProfile(user.message); 
         })
         .catch((err) => {
           console.error(err);
           navigate("/login");
         });
+    } else {
+      navigate("/login");
     }
   }, [navigate]);
 
-  let token = localStorage.getItem("token");
-  if (!token) {
-    navigate("/login");
-    return;
-  }
-
   const handleFollowers = () => {
-    navigate("./user_followers");
+    navigate("/user_followers");
   };
   const handleFollowing = () => {
-    navigate("./user_following");
+    navigate("/user_following");
   };
 
-  // const handleSubmit= async (event)=>{
-  //   event.preventDefault();
-  //   try {
-  //   const data = await createrecipes(token, newRecipe);
-  //   setRecipes((prevrecipes) => [data.post, ...prevrecipes]);
-  //   //setNewRecipe('')
-  //   setNewRecipe({message:'',pictureURL:''});
-
-  //   localStorage.setItem('token', data.token)
-  //   window.location.reload()
-  // } catch(err){
-  //   console.error('Error creating post:', err)
-  // }
-  // }
+  if (!profile || recipes.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <>
-      <div className="">
-        {recipes.length > 0 && profile.length && (
-          <div>
-            <h1>{profile[0].username}</h1>
-            <img src={profile[0].profilePictureURL} alt="Profile Picture" />
-            <h3 onClick={handleFollowers}>followers</h3>
-            <h3 onClick={handleFollowing}>following</h3>
-            <h1>Favourites</h1>
-            <div className="feed" role="feed">
-              {recipes[0].map((recipe) => (
-                <Recipe props={recipe} key={recipe._id} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* <div className="goback"><GoBack/></div>
-        <div className="logout"> <LogoutButton /></div> */}
-        {/* <form onSubmit={handleSubmit}>
-          <input 
-          //value = {newRecipe}
-          value={newRecipe.message}
-         onChange={(e) => setNewRecipe({...newRecipe, message:e.target.value})}
-         //onChange={(e) => setNewRecipe( e.target.value)}
-          placeholder="Type a new post ..."></input>
-           <input 
-              value={newRecipe.pictureURL} onChange={(e) => setNewRecipe({...newRecipe, pictureURL:e.target.value})} 
-              placeholder="Paste Url picture here...">
-              </input>
-          <button type='submit'>Post</button>
-          </form> */}
+    <div className="profile-page">
+      <div>
+        <h1>{profile[0].username}</h1>
+        <img src={profile[0].profilePictureURL} alt="Profile" />
+        <h3 onClick={handleFollowers}>Followers</h3>
+        <h3 onClick={handleFollowing}>Following</h3>
       </div>
-    </>
+
+      <h1>Favourites</h1>
+      <div className="feed" role="feed">
+        {recipes.map((recipe) => (
+          <Recipe key={recipe._id} {...recipe} /> 
+        ))}
+      </div>
+    </div>
   );
 }
