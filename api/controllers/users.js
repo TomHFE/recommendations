@@ -54,6 +54,24 @@ async function getAllUsers(req, res) {
   res.status(200).json({ message: Users });
 }
 
+async function getUserDetails(req,res) {
+  const userId = req.user_id
+
+  try {
+    const userDetails = await User.find({_id: userId})
+    const token = generateToken(userId)
+    res.status(201).json({
+      message: userDetails,
+      token: token,
+    });
+  }
+  catch (error) {
+    res.status(404).json({
+      message: error.message,
+    });
+  }
+}
+
 //This gets a following
 async function getUserById(req, res) {
   console.log("this is req.body: ", req.body);
@@ -319,6 +337,7 @@ const UsersController = {
   getPublicDetailsByUsername: getPublicDetailsByUsername,
   getUserById: getUserById,
   verifyEmail: verifyEmail,
+  getUserDetails: getUserDetails,
 
   createFollowerRequest: createFollowerRequest,
   deleteFollowing: deleteFollowing,

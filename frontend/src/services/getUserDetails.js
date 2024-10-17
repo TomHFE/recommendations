@@ -12,7 +12,7 @@ export async function getUserDetails(token) {
 
   const response = await fetch(`${BACKEND_URL}/users/get_user_details`, requestOptions);
 
-  if (response.status !== 200) {
+  if (response.status !== 201) {
     throw new Error("Unable to fetch posts");
   }
 

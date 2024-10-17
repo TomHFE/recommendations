@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/", UsersController.create);
 router.get("/", UsersController.getAllUsers);
 router.post("/get_user_by_id", UsersController.getUserById);
+router.get("/get_user_details", UsersController.getUserDetails)
 router.post("/find_by_username", UsersController.findByUsername);
 router.post("/public_details_id", UsersController.getPublicDetailsById);
 router.post(

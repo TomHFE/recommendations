@@ -1,24 +1,30 @@
 const Recipe = require("../models/recipe");
 const { generateToken } = require("../lib/token");
-const Comment = require("../models/comment");
-const { ObjectId } = require("mongodb");
+const Comment = require("../models/comment")
+const { ObjectId } = require("mongodb")
+// async function getAllPosts(req, res) {
+//   const posts = await Post.find().sort({ "created_at" : 1 })
+//   const token = generateToken(req.user_id);
+//   res.status(200).json({ posts: posts, token: token})
+// }
 
 // feed
 async function getRecipesWithUserDetails(req, res) {
-  const recipesWithDetails = await Recipe.find()
-    .populate({
+  try {
+    const recipesWithDetails = await Recipe.find().populate({
       path: "user",
-      select: "username profilePictureURL",
-    })
-    .populate({
-      path: "comments",
-      populate: { path: "user", select: "username profilePictureURL" },
-    })
-    .sort({ created_at: -1 });
-  const token = generateToken(req.user_id);
-  res.status(200).json({ recipes: recipesWithDetails, token: token });
+      select: "username profilePictureURL"
+    }).populate({
+      path: 'comments',
+      populate: { path: 'user', select: "username profilePictureURL" },
+    }).sort({ "created_at": -1 })
+    const token = generateToken(req.user_id);
+    res.status(200).json({ recipes: recipesWithDetails, token: token })
+  }
+  catch (error) {
+    res.status(401).json({ message: "error message: " + error.message });
+  }
 }
-
 // show filtered recipes
 async function getFilteredRecipes(req, res) {
   const filters = req.body;
@@ -132,8 +138,11 @@ async function createRecipe(req, res) {
     recipe.save();
     const newToken = generateToken(req.user_id);
     res.status(201).json({ recipe: recipe, token: newToken });
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+
+  }
+  catch (error) {
+    res.status(404).json({ message: error.message});
+
   }
 }
 
@@ -175,6 +184,7 @@ async function addFavouriteToRecipe(user_id, recipe_id) {
 }
 
 const RecipesController = {
+  // getAllPosts: getAllPosts,
   getRecipesWithUserDetails: getRecipesWithUserDetails,
   createRecipe: createRecipe,
   addCommentToRecipe: addCommentToRecipe,
@@ -183,4 +193,6 @@ const RecipesController = {
   getUserRecipesById: getUserRecipesById,
   getFilteredRecipes: getFilteredRecipes,
 };
-module.exports = RecipesController;
+
+module.exports = RecipesController
+
