@@ -27,6 +27,10 @@ const router = createBrowserRouter([
     element: <FeedPage />,
   },
   {
+    path: "/recipes/filtered",
+    element: <FeedPage />,
+  },
+  {
     path: "/profile",
     element: <Profile />,
   },
