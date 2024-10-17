@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { getRecipesWithUserDetails } from "../services/recipes/getRecipesWithUserDetails";
+import { getFilteredRecipes } from "../services/recipes/getFilteredRecipes";
 
 export function SearchFilter () {
+
     const [nationality, setNationality] = useState([]);
     const [readyInMinutes, setReadyInMinutes] = useState("");
     const [dishType, setDishType] = useState([]);
@@ -22,7 +23,47 @@ export function SearchFilter () {
     const [dairyFree, setDairyFree] = useState("");
     const [healthy, setHealthy] = useState("");
     const [ingredient, setIngredient] = useState([]);
+    const [filteredRecipes, setFilteredRecipes] = useState([]);
 
+    useEffect(() => {
+        setFilteredRecipes(filters)    
+    }, [filters]);
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        try {
+            const token = localStorage.getItem("token");
+            const filters = [
+                nationality,
+                readyInMinutes,
+                dishType,
+                preparationInMinutes,
+                cookingMinutes,
+                costFriendly,
+                servings,
+                nuts,
+                shellfish,
+                dairy,
+                soy,
+                eggs,
+                vegeterian,
+                vegan,
+                pescatarian,
+                glutenFree,
+                dairyFree,
+                healthy,
+                ingredient
+            ]
+
+            const filteredRecipes = await getFilteredRecipes(token, filters);
+            setFilteredRecipes()
+            
+
+        }
+        catch {
+        setError("Invalid input, please try again");
+        }
+    }
 
     function handleNationalities(event) {
         setNationality(event.target.value);
@@ -93,40 +134,6 @@ export function SearchFilter () {
 
     function handleIngredient(event) {
         setIngredient(event.target.value);
-    }
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        const loggedIn = token !== null;
-        if (loggedIn) {
-          getRecipesWithUserDetails(token)
-            .then((data) => {
-              setRecipes(data.recipes);
-              localStorage.setItem("token", data.token);
-            })
-            .catch((err) => {
-              console.error(err);
-              navigate("/login");
-            });
-        }
-      }, [navigate]);
-    
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      
-    async function handleSubmit(event) {
-        event.preventDefault();
-        try {
-            localStorage.setItem("token", token);
-
-        }
-        catch {
-        setError("Invalid input, please try again");
-        }
     }
     
     return (

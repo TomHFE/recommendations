@@ -2,11 +2,7 @@ const Recipe = require("../models/recipe");
 const { generateToken } = require("../lib/token");
 const Comment = require("../models/comment")
 const { ObjectId } = require("mongodb")
-// async function getAllPosts(req, res) {
-//   const posts = await Post.find().sort({ "created_at" : 1 })
-//   const token = generateToken(req.user_id);
-//   res.status(200).json({ posts: posts, token: token})
-// }
+
 
 // feed
 async function getRecipesWithUserDetails(req, res) {
@@ -19,6 +15,43 @@ async function getRecipesWithUserDetails(req, res) {
   }).sort({ "created_at": -1 })
   const token = generateToken(req.user_id);
   res.status(200).json({ recipes: recipesWithDetails, token: token })
+}
+
+// show filtered recipes
+async function getFilteredRecipes(req, res) {
+  const filters = req.body;
+
+  let filteredList = [
+    filters.nationality,
+    filters.dishType,
+    filters.readyInMinutes,
+    filters.preparationMinutes,
+    filters.cookingMinutes,
+    filters.costFriendly,
+    filters.servings,
+    filters.nuts,
+    filters.shellfish,
+    filters.dairy,
+    filters.soy,
+    filters.eggs,
+    filters.vegeterian,
+    filters.vegan,
+    filters.pescatarian,
+    filters.glutenFree,
+    filters.dairyFree,
+    filters.healthy,
+    filters.ingredients
+  ] 
+
+  const filteredRecipes = await Recipe.find(filteredList).populate({
+    path: "user",
+    select: "username profilePictureURL"
+  }).populate({
+    path: 'comments',
+    populate: { path: 'user', select: "username profilePictureURL" },
+  }).sort({ "created_at": -1 })
+  const token = generateToken(req.user_id);
+  res.status(200).json({ filteredRecipes: filteredRecipes, token: token})
 }
 
 // profile
@@ -91,7 +124,6 @@ async function createRecipe(req, res) {
   }
   catch (error) {
     res.status(404).json({ message: error.message});
-
   }
 }
 
@@ -131,12 +163,12 @@ async function addFavouriteToRecipe(user_id, recipe_id) {
 }
 
 const RecipesController = {
-  // getAllPosts: getAllPosts,
   getRecipesWithUserDetails: getRecipesWithUserDetails,
   createRecipe: createRecipe,
   addCommentToRecipe: addCommentToRecipe,
   getUserRecipes: getUserRecipes,
   toggleFavourites: toggleFavourites,
-  getUserRecipesById: getUserRecipesById
+  getUserRecipesById: getUserRecipesById,
+  getFilteredRecipes: getFilteredRecipes
 };
 module.exports = RecipesController;
