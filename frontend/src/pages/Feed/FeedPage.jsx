@@ -5,6 +5,7 @@ import { getRecipesWithUserDetails } from "../../services/recipes/getRecipesWith
 import Recipe from "../../components/Recipe";
 import LogoutButton from "../../components/LogoutButton";
 import NavBar from "../../navbar/navbar";
+import SearchFilter from "../../components/searchFilter";
 
 
 export function FeedPage() {
@@ -37,6 +38,8 @@ export function FeedPage() {
     <>
     <NavBar/>
     <div style={{marginTop: '10vh'}}>
+    <h2> What recipe do you fancy?</h2>
+        <SearchFilter/>
 
       <h2>Recipes</h2>
       <div className="feed" role="feed">
@@ -46,9 +49,9 @@ export function FeedPage() {
             recipes.map((recipe) => (
               <Recipe recipe={recipe} key={recipe._id} />
             ))
-          )}
-          
+          )} 
       </div>
+
       <div className="logout"> <LogoutButton /></div>
     </div>
     </>
