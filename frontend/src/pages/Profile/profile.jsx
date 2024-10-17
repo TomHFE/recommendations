@@ -27,6 +27,7 @@ export function Profile() {
           localStorage.setItem("token", data.token);
         })
         .then(() => {
+          token = localStorage.getItem("token");
           return getUserDetails(token);
         })
         .then((user) => {
