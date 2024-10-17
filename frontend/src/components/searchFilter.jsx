@@ -230,19 +230,14 @@ export function SearchFilter() {
           <label htmlFor="checkbox">Healthy</label>
           <p> Any ingredients?</p>
           <input type="text" value={ingredient} onChange={handleIngredient} />
+          <input
+            role="submit-button"
+            id="submit"
+            type="submit"
+            value="Submit"
+          />
         </form>
         {error && <div id="error">{error}</div>}
-
-        <h3>Your search results</h3>
-        {filteredRecipes.length > 0 ? (
-          <ul>
-            {filteredRecipes.map((recipe, index) => (
-              <li key={index}>{recipe.title}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>Sorry we couldn`&apos`t find you any recipe</p>
-        )}
       </div>
     </>
   );

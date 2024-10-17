@@ -1,22 +1,16 @@
-import '../navbar/navbar.css'
-import IncomingRequests from './components/incomingRequests'
-import SearchFriends from './components/searchFriends'
-
+import "../navbar/navbar.css";
+// import IncomingRequests from "./components/incomingRequests";
+// import SearchFriends from "./components/searchFriends";
 
 const NavBar = () => {
-    
-    return (
+  return (
+    <nav className="navbar-main">
+      <div className="navbar-incoming-requests">
+        {/* <IncomingRequests /> */}
+      </div>
+      <div className="navbar-search-bar">{/* <SearchFriends/> */}</div>
+    </nav>
+  );
+};
 
-            <nav className="navbar-main">
-                <div className='navbar-incoming-requests'>
-                <IncomingRequests />
-                </div>
-                <div className='navbar-search-bar'>
-                    <SearchFriends/>
-                </div>
-            </nav>
-
-    )
-}
-
-export default NavBar
+export default NavBar;
