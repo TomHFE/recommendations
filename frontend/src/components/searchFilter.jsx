@@ -1,26 +1,26 @@
 import { useEffect, useState, useMemo } from "react";
 import { getFilteredRecipes } from "../services/recipes/getFilteredRecipes";
 
-export function SearchFilter() {
+export function SearchFilter({ onSearch }) {
   const [nationality, setNationality] = useState([]);
   const [readyInMinutes, setReadyInMinutes] = useState("");
   const [dishType, setDishType] = useState([]);
-  const [preparationInMinutes, setPreparationInMinutes] = useState();
-  const [cookingMinutes, setCookingMinutes] = useState();
-  const [costFriendly, setCostFriendly] = useState();
+  const [preparationInMinutes, setPreparationInMinutes] = useState(0);
+  const [cookingMinutes, setCookingMinutes] = useState(0);
+  const [costFriendly, setCostFriendly] = useState(1);
   const [error, setError] = useState("");
-  const [servings, setServings] = useState();
-  const [nuts, setNutFree] = useState("");
-  const [shellfish, setShellfishFree] = useState("");
-  const [dairy, setDairy] = useState("");
-  const [soy, setSoy] = useState("");
-  const [eggs, setEggs] = useState("");
-  const [vegeterian, setVegeterian] = useState("");
-  const [vegan, setVegan] = useState("");
-  const [pescatarian, setPescatarian] = useState("");
-  const [glutenFree, setGlutenFree] = useState("");
-  const [dairyFree, setDairyFree] = useState("");
-  const [healthy, setHealthy] = useState("");
+  const [servings, setServings] = useState(1);
+  const [nuts, setNutFree] = useState(false);
+  const [shellfish, setShellfishFree] = useState(false);
+  const [dairy, setDairy] = useState(false);
+  const [soy, setSoy] = useState(false);
+  const [eggs, setEggs] = useState(false);
+  const [vegeterian, setVegeterian] = useState(false);
+  const [vegan, setVegan] = useState(false);
+  const [pescatarian, setPescatarian] = useState(false);
+  const [glutenFree, setGlutenFree] = useState(false);
+  const [dairyFree, setDairyFree] = useState(false);
+  const [healthy, setHealthy] = useState(false);
   const [ingredient, setIngredient] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
 
@@ -79,7 +79,8 @@ export function SearchFilter() {
       const token = localStorage.getItem("token");
 
       const filteredRecipes = await getFilteredRecipes(token, filters);
-      setFilteredRecipes(filteredRecipes);
+      // setFilteredRecipes(filteredRecipes);
+      onSearch(filteredRecipes);
     } catch {
       setError("Invalid input, please try again");
     }
@@ -113,43 +114,43 @@ export function SearchFilter() {
   }
 
   function handleNuts(event) {
-    setNutFree(event.target.value);
+    setNutFree(event.target.checked);
   }
 
   function handleShellfish(event) {
-    setShellfishFree(event.target.value);
+    setShellfishFree(event.target.checked);
   }
 
   function handleDairy(event) {
-    setDairy(event.target.value);
+    setDairy(event.target.checked);
   }
   function handleVegeterian(event) {
-    setVegeterian(event.target.value);
+    setVegeterian(event.target.checked);
   }
 
   function handleVegan(event) {
-    setVegan(event.target.value);
+    setVegan(event.target.checked);
   }
 
   function handlePescatarian(event) {
-    setPescatarian(event.target.value);
+    setPescatarian(event.target.checked);
   }
   function handleGlutenFree(event) {
-    setGlutenFree(event.target.value);
+    setGlutenFree(event.target.checked);
   }
 
   function handleDairyFree(event) {
-    setDairyFree(event.target.value);
+    setDairyFree(event.target.checked);
   }
   function handleHealthy(event) {
-    setHealthy(event.target.value);
+    setHealthy(event.target.checked);
   }
 
   function handleSoy(event) {
-    setSoy(event.target.value);
+    setSoy(event.target.checked);
   }
   function handleEggs(event) {
-    setEggs(event.target.value);
+    setEggs(event.target.checked);
   }
 
   function handleIngredient(event) {
@@ -165,32 +166,44 @@ export function SearchFilter() {
             type="text"
             value={nationality}
             onChange={handleNationalities}
+            placeholder="Enter nationality"
           />
-          <input type="text" value={dishType} onChange={handleDishType} />
+          <input
+            type="text"
+            value={dishType}
+            onChange={handleDishType}
+            placeholder="Enter dish type"
+          />
           <input
             type="text"
             value={preparationInMinutes}
             onChange={handlePreparationInMinutes}
+            placeholder="Enter preparation time"
           />
           <input
             type="text"
             value={cookingMinutes}
             onChange={handleCookingMinutes}
+            placeholder="Enter cooking time"
           />
           <input
             type="text"
             value={readyInMinutes}
             onChange={handleReadyInMinutes}
+            placeholder="Enter max time on cooking and prep"
           />
-          <input type="text" value={servings} onChange={handleServings} />
-          <p>
-            Cost-friendly - please rate the level of cost. Where 1 is for very
-            cost friendly and 5 is expensive
-          </p>
+          <input
+            type="text"
+            value={servings}
+            onChange={handleServings}
+            placeholder="Enter servings amount"
+          />
           <input
             type="text"
             value={costFriendly}
             onChange={handleCostFriendly}
+            placeholder="1 budget - 5 expensive"
+            // put in detailed information in a p tag and on a seperate line so a user knows what to input or change to drop down
           />
           <p>Allergies</p>
           <input type="checkbox" value={nuts} onChange={handleNuts} />
