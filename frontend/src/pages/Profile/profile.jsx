@@ -8,12 +8,14 @@ import { getRecipesWithUserDetails } from "../../services/recipes/getRecipesWith
 import Recipe from "./recipe";
 import './profile.css'
 import followList  from "./followingList";
+import { getUserDetails } from "../../services/getUserDetails";
 
 // build out recipe card and finish off profile page
 
 
 export function Profile(){
     const [recipes, setRecipes] = useState([]);
+    const [profile, setProfile] = useState([])
     const navigate = useNavigate();
     // const [newRecipe,setNewRecipe]=useState({message:'',pictureURL:''})
     useEffect(() => {
@@ -24,6 +26,12 @@ export function Profile(){
             .then((data) => {
               setRecipes(data.recipes);
               localStorage.setItem("token", data.token);
+            }).then(() => {
+              return getUserDetails(token)
+            }).then((user) => {
+              setProfile(user.message)
+              localStorage.setItem("token", user.token);
+
             })
             .catch((err) => {
               console.error(err);
@@ -64,10 +72,10 @@ export function Profile(){
 return (
     <>
       <div className="">
-      {recipes.length > 0 && (
+      {recipes.length > 0 && profile.length && (
         <div>
-          <h1>{recipes[0].username}</h1>
-          <img src={recipes[0].profilePictureURL} alt="Profile Picture" />
+          <h1>{profile[0].username}</h1>
+          <img src={profile[0].profilePictureURL} alt="Profile Picture" />
             <h3 onClick={handleFollowers}>followers</h3>
             <h3 onClick={handleFollowing}>following</h3>
           <h1>Favourites</h1>
