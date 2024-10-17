@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { login } from "../../services/authentication";
@@ -23,7 +23,7 @@ export function LoginPage() {
       try {
         const token = await login(email, password);
         localStorage.setItem("token", token);
-        navigate("/posts");
+        navigate("/recipes");
       } catch (err) {
         console.error(err);
         alert(err.message);

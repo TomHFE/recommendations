@@ -1,6 +1,6 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-export async function createComment(token, message, recipe_id, rating) {
+export async function createFavourite(token, recipe_id) {
   const requestOptions = {
     method: "PATCH",
     headers: {

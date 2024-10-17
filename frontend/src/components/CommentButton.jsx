@@ -25,6 +25,7 @@ export const CommentButton = (props) => {
       <p style={{ marginRight: "0.2rem" }}>{props.comments.length}</p>
       <img
         src={commentsIcon}
+        alt="Comments icon"
         style={{ maxWidth: "1.5rem", maxHeight: "1.5rem", cursor: "pointer" }}
         onClick={handleCommentsClick}
       />
@@ -32,7 +33,7 @@ export const CommentButton = (props) => {
         <Commentsalert
           comments={props.comments}
           onClose={closeCommentsModal}
-          post_id={props.postId}
+          recipe_id={props.recipeId}
         />
       )}
     </div>

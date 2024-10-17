@@ -6,7 +6,8 @@ import { LoginPage } from "./pages/Login/LoginPage";
 import { SignupPage } from "./pages/Signup/SignupPage";
 import { FeedPage } from "./pages/Feed/FeedPage";
 import { Profile } from "./pages/Profile/profile";
-import { PublicProfile } from "./pages/PublicProfile/PublicProfile";
+//import { PublicProfile } from "./pages/PublicProfile/PublicProfile";
+
 // docs: https://reactrouter.com/en/main/start/overview
 const router = createBrowserRouter([
   {
@@ -22,17 +23,17 @@ const router = createBrowserRouter([
     element: <SignupPage />,
   },
   {
-    path: "/posts",
+    path: "/recipes",
     element: <FeedPage />,
   },
   {
     path: "/profile",
     element: <Profile />,
   },
-  {
-    path: "/profile/:username",
-    element: <PublicProfile />
-  }
+  //{
+  //path: "/profile/:username",
+  //element: <PublicProfile />
+  //}
 ]);
 
 function App() {
