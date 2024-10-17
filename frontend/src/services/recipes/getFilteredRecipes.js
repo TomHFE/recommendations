@@ -7,15 +7,18 @@ export async function getFilteredRecipes(token, filters) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    body: JSON.stringify(filters),
   };
 
-  const response = await fetch(`${BACKEND_URL}/recipes/filtered`, requestOptions);
+  const response = await fetch(
+    `${BACKEND_URL}/recipes/filtered`,
+    requestOptions
+  );
 
   if (response.status !== 200) {
-    throw new Error("Unable to fetch posts");
+    throw new Error("Unable to fetch filteres recipes");
   }
 
   const data = await response.json();
   return data;
 }
-  

@@ -21,9 +21,8 @@ export function FeedPage() {
         .then((data) => {
           setRecipes(data.recipes);
           setFilteredRecipes(data.recipes);
-          if (filteredRecipes.length === 0) {
-            setSearchApplied(true);
-          }
+
+          // setSearchApplied(true);
 
           localStorage.setItem("token", data.token);
         })
@@ -40,13 +39,18 @@ export function FeedPage() {
     return;
   }
 
+  const handleAppliedSearch = (filteredRecipes) => {
+    setFilteredRecipes(filteredRecipes);
+    setSearchApplied(true);
+  };
+
   return (
     <>
       <NavBar />
 
       <div style={{ marginTop: "10vh" }}>
         <h2> What recipe do you fancy?</h2>
-        <SearchFilter />
+        <SearchFilter onSearch={handleAppliedSearch} />
 
         <h2>Recipes</h2>
         <div className="feed" role="feed">
