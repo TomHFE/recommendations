@@ -12,7 +12,7 @@ export function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
       getRecipesWithUserDetails(token)
         .then((data) => {

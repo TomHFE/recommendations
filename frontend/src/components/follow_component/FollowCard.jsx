@@ -1,7 +1,9 @@
 
 
 
-const FollowCard = (follow) => {
+const FollowCard = (props) => {
+    console.log(props)
+    const follow = props.props
 
     return (
         <div>

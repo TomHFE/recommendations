@@ -9,35 +9,54 @@ import FollowCard from "./FollowCard"
 const UsersFollowingPage = () => {
     const [following, setFollowing] = useState([])
     const navigate = useNavigate()
-
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const loggedIn = token !== null;
-        if (loggedIn) {
-            getUserFollowingList(token).then((data) => {
-                return getUserById(data.user)
-            }).then((followers) => {
-                setFollowing(followers)
-                localStorage.setItem("token", followers.token);
-            }).catch((error) => {
-                console.log(error)
-                navigate('/login')
-            })
-        }
-            },[navigate])
+        fetchFollowing()
+      }, []);
 
+      const fetchFollowing = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const loggedIn = token !== null;
+  
+          if (loggedIn) {
+            // Get user following list
+            const data = await getUserFollowingList(token);
+            localStorage.setItem("token", data.token);
+  
+            // Get user details
+            const followers = await getUserById(data.token, data.user);
+            console.log(followers.token)
+            localStorage.setItem("token", followers.token);
+            // Assuming followers.message is the list of followers
+            setFollowing(followers.message);
+        } else {
+            navigate("/login");
+        }
+    } catch (error) {
+        console.error(error);
+        navigate("/login");
+    }
+}
+
+console.log(following)
             const token = localStorage.getItem("token");
-             if (!token) {
-                 navigate("/login");
-                  return;
-                 }
+            if (!token) {
+                navigate("/login");
+                    return;
+                }
 
     return (
         <div>
-         {following.map((follow) => (
-            <FollowCard follow={follow}/>
-    ))}
-        </div>
+        { following.length > 0 ? (
+          <div>
+            {following.map((follow) => (
+              <FollowCard key={follow._id} props={follow} />
+            ))}
+          </div>
+        ) : (
+          <p>No following users found.</p>
+        )}
+      </div>
     )
 
 }
