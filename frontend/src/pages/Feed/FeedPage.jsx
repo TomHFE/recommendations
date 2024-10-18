@@ -19,10 +19,22 @@ export function FeedPage() {
     if (loggedIn) {
       getRecipesWithUserDetails(token)
         .then((data) => {
-          setRecipes(data.recipes);
-          setFilteredRecipes(data.recipes);
+          console.log(data);
+          console.log(data.recipes);
+          //console.log(data.filteredRecipes);
 
+          //   setRecipes(data.recipes);
+          setRecipes(Array.isArray(data.recipes) ? data.recipes : []);
+
+          //  setFilteredRecipes(data.recipes);
+          setFilteredRecipes(Array.isArray(data.recipes) ? data.recipes : []);
           // setSearchApplied(true);
+          console.log("This is the data.recipes " + data.recipes);
+
+          console.log(
+            "This is the data.recipes[0] " +
+              JSON.stringify(data.recipes[0], null, 2)
+          );
 
           localStorage.setItem("token", data.token);
         })
@@ -40,7 +52,7 @@ export function FeedPage() {
   }
 
   const handleAppliedSearch = (filteredRecipes) => {
-    setFilteredRecipes(filteredRecipes);
+    setFilteredRecipes(Array.isArray(filteredRecipes) ? filteredRecipes : []);
     setSearchApplied(true);
   };
 
@@ -55,7 +67,7 @@ export function FeedPage() {
         <h2>Recipes</h2>
         <div className="feed" role="feed">
           {searchApplied ? (
-            filteredRecipes.length === 0 ? (
+            Array.isArray(filteredRecipes) && filteredRecipes.length === 0 ? (
               <p>No recipes available for the selected filters</p>
             ) : (
               filteredRecipes.map((recipe) => (
