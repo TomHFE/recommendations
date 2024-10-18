@@ -76,8 +76,9 @@ async function getUserDetails(req,res) {
 async function getUserById(req, res) {
   console.log("this is req.body: ", req.body);
   // const userIds = req.body.friendsIds.friendsData.friendsList
-  const userIds = req.body.friendsId;
-
+  const userIds = req.body.friendsIds;
+  console.log('line 80', userIds)
+  console.log('line 81', req.user_id)
   console.log("line53", userIds);
   if (typeof userIds !== "string") {
     try {
@@ -164,12 +165,14 @@ async function getFollowerList(req, res) {
 
   if (doesUserExists !== null) {
     try {
-      const user = await User.findById(userId, "followingData.followers");
+      const user = await User.findById(userId);
+      // const user = await User.findById(userId).select('followers');
+
       const token = generateToken(req.user_id);
       res
         .status(201)
         // removed incomingRequestList: user from .json as we were unsure if it's needed
-        .json({ message: "OK", token: token });
+        .json({ message: "OK", user: user.followingData.followers, token: token });
     } catch (error) {
       res.status(401).json({ message: "error message: " + error.message });
     }
@@ -181,11 +184,13 @@ async function getFollowerList(req, res) {
 async function getFollowingList(req, res) {
   const userId = req.user_id;
   const doesUserExists = await userExists(userId);
-
+  console.log('this is the userid             ' , userId)
   if (doesUserExists !== null) {
     try {
-      const user = await User.findById(userId, "followingData.followingList");
-      res.status(201).json({ message: "OK" });
+      const user = await User.findById(userId);
+      const token = generateToken(req.user_id);
+
+      res.status(201).json({ message: "OK", user: user.followingData.following, token: token });
     } catch (error) {
       res.status(401).json({ message: "error message: " + error.message });
     }

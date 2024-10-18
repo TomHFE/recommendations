@@ -2,9 +2,10 @@
 // import { getUserDetailsByUsername } from "../../services/getUserDetailsByUsername";
 // import { useParams } from "react-router-dom";
 // // import { getUserPostsById } from "../../services/getUserPostsById";
-// // import Post from "../../components/Post";
+// import Post from "../../components/Post";
 // import { CreateRequest } from "../../services/friendrequest/createfriendrequest";
 
+// // user details changed
 // export const PublicProfile = () => {
 //   const [userDetails, setUserDetails] = useState();
 //   const [userPosts, setUserPosts] = useState([]);
@@ -31,7 +32,7 @@
 //         .then((data) => {
 //           console.log(data.posts);
 //           setUserPosts(data.posts);
-//           //   localStorage.setItem("token", data.token);
+//         //   localStorage.setItem("token", data.token);
 //         })
 //         .catch((err) => {
 //           console.log(err);
@@ -39,11 +40,11 @@
 //     }
 //   }, [userDetails]);
 //   const token = localStorage.getItem("token");
-//   const handlerequest = async (token, userid) => {
-//     console.log(token);
-//     console.log(userid);
-//     await CreateRequest(token, userid);
-//   };
+//   const handlerequest = async (token,userid) =>{
+//     console.log(token)
+//     console.log(userid)
+//     await CreateRequest(token,userid)
+//   }
 
 //   return (
 //     <>
@@ -54,10 +55,8 @@
 //           style={{ maxWidth: "10rem", borderRadius: "5rem" }}
 //           src={userDetails && userDetails.profilePictureURL}
 //         />
-//         <h3 style={{ color: "black", fontFamily: "sans-serif" }}>
-//           {userDetails && userDetails.username}
-//         </h3>
-//         <h4 style={{ color: "black", fontFamily: "sans-serif" }}>Friends:</h4>
+//         <h3 style={{color: "black", fontFamily: "sans-serif"}}>{userDetails && userDetails.username}</h3>
+//         <h4 style={{color: "black", fontFamily: "sans-serif"}}>Friends:</h4>
 //         {userDetails && userDetails.friendsData.friendsList.length > 0
 //           ? userDetails.friendsData.friendsList.map((friendName, index) => {
 //               return (
@@ -67,14 +66,13 @@
 //               );
 //             })
 //           : "No friends"}
-//         <button onClick={() => handlerequest(token, userDetails._id)}>
-//           Send a friend request
-//         </button>
+//           <button onClick={()=> handlerequest(token, userDetails._id)}>Send a friend request</button>
 //       </div>
 
 //       <div>
-//         {userPosts &&
-//           userPosts.map((post, index) => <Post post={post} key={index} />)}
+//         {userPosts && userPosts.map((post, index) => (
+//             <Post post={post} key={index} />
+//         ))}
 //       </div>
 //     </>
 //   );

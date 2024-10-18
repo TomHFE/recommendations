@@ -1,6 +1,9 @@
 
 
-const FollowerCard = (follower) => {
+const FollowerCard = (props) => {
+    const follower = props.props
+    console.log(follower.followingData)
+    console.log(follower)
 
     return (
         <div>
@@ -9,9 +12,9 @@ const FollowerCard = (follower) => {
             </h1>
             <img src={follower.profilePictureURL}/>
             <h3>followers</h3>
-            <h4>{follower.followeringData.followerers.length}</h4>
+            <h4>{follower.followingData.followers.length}</h4>
             <h3>following</h3>
-            <h4>{follower.followeringData.followering.length}</h4>
+            <h4>{follower.followingData.following.length}</h4>
         </div>
     )
 }
