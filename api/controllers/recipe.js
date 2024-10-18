@@ -29,29 +29,72 @@ async function getRecipesWithUserDetails(req, res) {
 async function getFilteredRecipes(req, res) {
   const filters = req.body;
 
-  let filteredList = [
-    filters.nationality,
-    filters.dishType,
-    filters.readyInMinutes,
-    filters.preparationMinutes,
-    filters.cookingMinutes,
-    filters.costFriendly,
-    filters.servings,
-    filters.nuts,
-    filters.shellfish,
-    filters.dairy,
-    filters.soy,
-    filters.eggs,
-    filters.vegeterian,
-    filters.vegan,
-    filters.pescatarian,
-    filters.glutenFree,
-    filters.dairyFree,
-    filters.healthy,
-    filters.ingredients,
-  ];
+  const query = {}; // Build query dynamically based on filters
 
-  const filteredRecipes = await Recipe.find(filteredList)
+  if (filters.nationality) {
+    query['SearchingParameters.nationalities'] = { $in: [filters.nationality] };
+  }
+  if (filters.dishType) {
+    query['SearchingParameters.dishType'] = { $in: [filters.dishType] };
+  }
+  if (filters.readyInMinutes) {
+    query['SearchingParameters.readyInMinutes'] = { $lte: filters.readyInMinutes };
+  }
+  if (filters.preparationMinutes) {
+    query['SearchingParameters.preparationMinutes'] = { $lte: filters.preparationMinutes };
+  }
+  if (filters.cookingMinutes) {
+    query['SearchingParameters.cookingMinutes'] = { $lte: filters.cookingMinutes };
+  }
+  if (filters.costFriendly) {
+    query['SearchingParameters.costFriendly'] = { $lte: filters.costFriendly };
+  }
+  if (filters.servings) {
+    query['SearchingParameters.servings'] = { $lte: filters.servings };
+  }
+  if (filters.dairyFree !== undefined) {
+    query['SearchingParameters.dairyFree'] = filters.dairyFree;
+  }
+  if (filters.nuts !== undefined) {
+    query['SearchingParameters.nuts'] = filters.nuts;
+  }
+  if (filters.shellfish !== undefined) {
+    query['SearchingParameters.shellfish'] = filters.shellfish;
+  }
+  if (filters.dairy !== undefined) {
+    query['SearchingParameters.dairy'] = filters.dairy;
+  }
+  if (filters.soy !== undefined) {
+    query['SearchingParameters.soy'] = filters.soy;
+  }
+  if (filters.eggs !== undefined) {
+    query['SearchingParameters.eggs'] = filters.eggs;
+  }
+  if (filters.vegeterian !== undefined) {
+    query['SearchingParameters.vegeterian'] = filters.vegeterian;
+  }
+  if (filters.vegan !== undefined) {
+    query['SearchingParameters.vegan'] = filters.vegan;
+  }
+  if (filters.pescatarian !== undefined) {
+    query['SearchingParameters.pescatarian'] = filters.pescatarian;
+  }
+  if (filters.dairyFree !== undefined) {
+    query['SearchingParameters.dairyFree'] = filters.dairyFree;
+  }
+  if (filters.glutenFree !== undefined) {
+    query['SearchingParameters.glutenFree'] = filters.glutenFree;
+  }
+  if (filters.healthy !== undefined) {
+    query['SearchingParameters.healthy'] = filters.healthy;
+  }
+  if (filters.ingredients) {
+    query['SearchingParameters.ingredients'] = { $in: [filters.ingredients] };
+  }
+  
+  //console.log("this is the query log " + query)
+
+  const filteredRecipes = await Recipe.find(query)
     .populate({
       path: "user",
       select: "username profilePictureURL",
@@ -62,7 +105,8 @@ async function getFilteredRecipes(req, res) {
     })
     .sort({ created_at: -1 });
   const token = generateToken(req.user_id);
-  res.status(200).json({ filteredRecipes: filteredRecipes, token: token });
+ // console.log("this is the filtered log " + filteredRecipes)
+  res.status(200).json({ recipes: Array.isArray(filteredRecipes) ? filteredRecipes : [], token: token });
 }
 
 // profile

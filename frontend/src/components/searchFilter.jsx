@@ -5,11 +5,11 @@ export function SearchFilter({ onSearch }) {
   const [nationality, setNationality] = useState([]);
   const [readyInMinutes, setReadyInMinutes] = useState("");
   const [dishType, setDishType] = useState([]);
-  const [preparationInMinutes, setPreparationInMinutes] = useState(0);
-  const [cookingMinutes, setCookingMinutes] = useState(0);
-  const [costFriendly, setCostFriendly] = useState(1);
+  const [preparationInMinutes, setPreparationInMinutes] = useState();
+  const [cookingMinutes, setCookingMinutes] = useState();
+  const [costFriendly, setCostFriendly] = useState();
   const [error, setError] = useState("");
-  const [servings, setServings] = useState(1);
+  const [servings, setServings] = useState();
   const [nuts, setNutFree] = useState(false);
   const [shellfish, setShellfishFree] = useState(false);
   const [dairy, setDairy] = useState(false);
@@ -206,40 +206,40 @@ export function SearchFilter({ onSearch }) {
             // put in detailed information in a p tag and on a seperate line so a user knows what to input or change to drop down
           />
           <p>Allergies</p>
-          <input type="checkbox" value={nuts} onChange={handleNuts} />
+          <input type="checkbox" checked={nuts} onChange={handleNuts} />
           <label htmlFor="checkbox">Nuts </label>
-          <input type="checkbox" value={shellfish} onChange={handleShellfish} />
+          <input type="checkbox" checked={shellfish} onChange={handleShellfish} />
           <label htmlFor="checkbox">Shellfish </label>
-          <input type="checkbox" value={dairy} onChange={handleDairy} />
+          <input type="checkbox" checked={dairy} onChange={handleDairy} />
           <label htmlFor="checkbox">Dairy </label>
-          <input type="checkbox" value={soy} onChange={handleSoy} />
+          <input type="checkbox" checked={soy} onChange={handleSoy} />
           <label htmlFor="checkbox">Soy </label>
-          <input type="checkbox" value={eggs} onChange={handleEggs} />
+          <input type="checkbox" checked={eggs} onChange={handleEggs} />
           <label htmlFor="checkbox">Eggs </label>
           <p>Dietary requirements</p>
           <input
             type="checkbox"
-            value={vegeterian}
+            checked={vegeterian}
             onChange={handleVegeterian}
           />
           <label htmlFor="checkbox">Vegeterian</label>
-          <input type="checkbox" value={vegan} onChange={handleVegan} />
+          <input type="checkbox" checked={vegan} onChange={handleVegan} />
           <label htmlFor="checkbox">Vegan</label>
           <input
             type="checkbox"
-            value={pescatarian}
+            checked={pescatarian}
             onChange={handlePescatarian}
           />
           <label htmlFor="checkbox">Pescatarian</label>
           <input
             type="checkbox"
-            value={glutenFree}
+            checked={glutenFree}
             onChange={handleGlutenFree}
           />
           <label htmlFor="checkbox">Gluten Free</label>
-          <input type="checkbox" value={dairyFree} onChange={handleDairyFree} />
+          <input type="checkbox" checked={dairyFree} onChange={handleDairyFree} />
           <label htmlFor="checkbox">Dairy Free</label>
-          e <input type="checkbox" value={healthy} onChange={handleHealthy} />
+          e <input type="checkbox" checked={healthy} onChange={handleHealthy} />
           <label htmlFor="checkbox">Healthy</label>
           <p> Any ingredients?</p>
           <input type="text" value={ingredient} onChange={handleIngredient} />
