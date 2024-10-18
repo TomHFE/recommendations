@@ -4,6 +4,7 @@ const cors = require("cors");
 const usersRouter = require("./routes/users");
 const recipeRouter = require("./routes/recipe");
 const authenticationRouter = require("./routes/authentication");
+const searchBarRouter = require("./routes/searchbar")
 const signUp = require('./routes/signup')
 const tokenChecker = require("./middleware/tokenChecker");
 
@@ -21,7 +22,9 @@ app.use(bodyParser.json());
 app.use('/signup', signUp)
 app.use("/users", tokenChecker, usersRouter);
 app.use("/recipes", tokenChecker, recipeRouter);
+app.use("/searchbar", tokenChecker, searchBarRouter);
 app.use("/tokens", authenticationRouter);
+
 
 // 404 Handler
 app.use((_req, res) => {

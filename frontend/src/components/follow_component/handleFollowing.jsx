@@ -25,6 +25,7 @@ const UsersFollowingPage = () => {
   
             // Get user details
             const followers = await getUserById(data.token, data.user);
+            console.log(followers.token)
             localStorage.setItem("token", followers.token);
             // Assuming followers.message is the list of followers
             setFollowing(followers.message);

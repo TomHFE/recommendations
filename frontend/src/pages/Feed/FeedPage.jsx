@@ -42,9 +42,8 @@ export function FeedPage() {
 
   return (
     <>
-      <NavBar />
 
-      <div style={{ marginTop: "10vh" }}>
+      <div>
         <h2> What recipe do you fancy?</h2>
         <SearchFilter />
 

@@ -88,10 +88,12 @@ async function getUserById(req, res) {
         })
       );
       const currentUserDetails = await User.findById(req.user_id);
+      const token = generateToken(req.user_id)
       res.status(201).json({
         message: userList,
         currentUserData: currentUserDetails,
         UsersLength: typeof req.user_id,
+        token: token,
       });
     } catch (error) {
       res.status(500).json({ message: "error retrieving users", error: error });

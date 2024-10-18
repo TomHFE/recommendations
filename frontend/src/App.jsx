@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Route, RouterProvider } from "react-router-dom";
 
 import "./App.css";
 import { HomePage } from "./pages/Home/HomePage";
@@ -9,14 +9,12 @@ import { Profile } from "./pages/Profile/profile";
 import RecipePage from './components/recipePage'
 import UsersFollowingPage from "./components/follow_component/handleFollowing";
 import UsersFollowerPage from "./components/follower_component/handleFollowing";
+import { MainLayout } from "./layouts/MainLayout";
 //import { PublicProfile } from "./pages/PublicProfile/PublicProfile";
 
 // docs: https://reactrouter.com/en/main/start/overview
+// 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <HomePage />,
-  },
   {
     path: "/login",
     element: <LoginPage />,
@@ -25,36 +23,28 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <SignupPage />,
   },
+  { path: "/home", element: <HomePage /> },
   {
-    path: "/recipes",
-    element: <FeedPage />,
+    
+    
+      path: "/", // Main layout for all these routes
+      element: <MainLayout />, // Wrap child routes with MainLayout
+      children: [
+        { path: "/recipes", element: <FeedPage /> },
+        { path: "/profile", element: <Profile /> },
+        { path: "/recipe_page", element: <RecipePage /> },
+        { path: "/user_followers", element: <UsersFollowerPage /> },
+        { path: "/user_following", element: <UsersFollowingPage /> },
+      ],
+    
   },
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
-  {
-    path: "/recipe_page",
-    element: <RecipePage />,
-  },
-  {
-    path: "/user_followers",
-    element: <UsersFollowerPage />,
-  },
-  {
-    path: "/user_following",
-    element: <UsersFollowingPage />,
-  },
-  //{
-  //path: "/profile/:username",
-  //element: <PublicProfile />
-  //}
 ]);
+
 
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+        <RouterProvider router={router} />
     </>
   );
 }
