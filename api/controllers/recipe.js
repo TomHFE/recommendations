@@ -1,7 +1,7 @@
 const Recipe = require("../models/recipe");
 const { generateToken } = require("../lib/token");
-const Comment = require("../models/comment")
-const { ObjectId } = require("mongodb")
+const Comment = require("../models/comment");
+const { ObjectId } = require("mongodb");
 // async function getAllPosts(req, res) {
 //   const posts = await Post.find().sort({ "created_at" : 1 })
 //   const token = generateToken(req.user_id);
@@ -11,102 +11,126 @@ const { ObjectId } = require("mongodb")
 // feed
 async function getRecipesWithUserDetails(req, res) {
   try {
-    const recipesWithDetails = await Recipe.find().populate({
-      path: "user",
-      select: "username profilePictureURL"
-    }).populate({
-      path: 'comments',
-      populate: { path: 'user', select: "username profilePictureURL" },
-    }).sort({ "created_at": -1 })
+    const recipesWithDetails = await Recipe.find()
+      .populate({
+        path: "user",
+        select: "username profilePictureURL",
+      })
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "username profilePictureURL" },
+      })
+      .sort({ created_at: -1 });
     const token = generateToken(req.user_id);
-    res.status(200).json({ recipes: recipesWithDetails, token: token })
-  }
-  catch (error) {
+    res.status(200).json({ recipes: recipesWithDetails, token: token });
+  } catch (error) {
     res.status(401).json({ message: "error message: " + error.message });
   }
 }
 // show filtered recipes
 async function getFilteredRecipes(req, res) {
-  const filters = req.body;
+  const filters = req.body.filters;
+  // console.log("This is req.body" + req.body);
+  console.log("This is req.body " + req.body.nationality);
+  // console.log(JSON.stringify("This is req.body" + req.body));
+  // const query = {}; // Build query dynamically based on filters
 
-  const query = {}; // Build query dynamically based on filters
+  // if (filters.nationality) {
 
-  if (filters.nationality) {
-    query['SearchingParameters.nationalities'] = { $in: [filters.nationality] };
-  }
-  if (filters.dishType) {
-    query['SearchingParameters.dishType'] = { $in: [filters.dishType] };
-  }
-  if (filters.readyInMinutes) {
-    query['SearchingParameters.readyInMinutes'] = { $lte: filters.readyInMinutes };
-  }
-  if (filters.preparationMinutes) {
-    query['SearchingParameters.preparationMinutes'] = { $lte: filters.preparationMinutes };
-  }
-  if (filters.cookingMinutes) {
-    query['SearchingParameters.cookingMinutes'] = { $lte: filters.cookingMinutes };
-  }
-  if (filters.costFriendly) {
-    query['SearchingParameters.costFriendly'] = { $lte: filters.costFriendly };
-  }
-  if (filters.servings) {
-    query['SearchingParameters.servings'] = { $lte: filters.servings };
-  }
-  if (filters.dairyFree !== undefined) {
-    query['SearchingParameters.dairyFree'] = filters.dairyFree;
-  }
-  if (filters.nuts !== undefined) {
-    query['SearchingParameters.nuts'] = filters.nuts;
-  }
-  if (filters.shellfish !== undefined) {
-    query['SearchingParameters.shellfish'] = filters.shellfish;
-  }
-  if (filters.dairy !== undefined) {
-    query['SearchingParameters.dairy'] = filters.dairy;
-  }
-  if (filters.soy !== undefined) {
-    query['SearchingParameters.soy'] = filters.soy;
-  }
-  if (filters.eggs !== undefined) {
-    query['SearchingParameters.eggs'] = filters.eggs;
-  }
-  if (filters.vegeterian !== undefined) {
-    query['SearchingParameters.vegeterian'] = filters.vegeterian;
-  }
-  if (filters.vegan !== undefined) {
-    query['SearchingParameters.vegan'] = filters.vegan;
-  }
-  if (filters.pescatarian !== undefined) {
-    query['SearchingParameters.pescatarian'] = filters.pescatarian;
-  }
-  if (filters.dairyFree !== undefined) {
-    query['SearchingParameters.dairyFree'] = filters.dairyFree;
-  }
-  if (filters.glutenFree !== undefined) {
-    query['SearchingParameters.glutenFree'] = filters.glutenFree;
-  }
-  if (filters.healthy !== undefined) {
-    query['SearchingParameters.healthy'] = filters.healthy;
-  }
-  if (filters.ingredients) {
-    query['SearchingParameters.ingredients'] = { $in: [filters.ingredients] };
-  }
-  
+  //   // query["SearchingParameters.nationalities"] = filters.nationality;
+  // }
+
+  // query["SearchingParameters.nationalities"] = { $in: filters.nationality };
+
+  // if (filters.dishType) {
+  //   query["SearchingParameters.dishType"] = { $in: [filters.dishType] };
+  // }
+  // if (filters.readyInMinutes) {
+  //   query["SearchingParameters.readyInMinutes"] = {
+  //     $lte: filters.readyInMinutes,
+  //   };
+  // }
+  // if (filters.preparationMinutes) {
+  //   query["SearchingParameters.preparationMinutes"] = {
+  //     $lte: filters.preparationMinutes,
+  //   };
+  // }
+  // if (filters.cookingMinutes) {
+  //   query["SearchingParameters.cookingMinutes"] = {
+  //     $lte: filters.cookingMinutes,
+  //   };
+  // }
+  // if (filters.costFriendly) {
+  //   query["SearchingParameters.costFriendly"] = { $lte: filters.costFriendly };
+  // }
+  // if (filters.servings) {
+  //   query["SearchingParameters.servings"] = { $lte: filters.servings };
+  // }
+  // if (filters.dairyFree !== undefined) {
+  //   query["SearchingParameters.dairyFree"] = filters.dairyFree;
+  // }
+  // if (filters.nuts !== undefined) {
+  //   query["SearchingParameters.nuts"] = filters.nuts;
+  // }
+  // if (filters.shellfish !== undefined) {
+  //   query["SearchingParameters.shellfish"] = filters.shellfish;
+  // }
+  // if (filters.dairy !== undefined) {
+  //   query["SearchingParameters.dairy"] = filters.dairy;
+  // }
+  // if (filters.soy !== undefined) {
+  //   query["SearchingParameters.soy"] = filters.soy;
+  // }
+  // if (filters.eggs !== undefined) {
+  //   query["SearchingParameters.eggs"] = filters.eggs;
+  // }
+  // if (filters.vegeterian !== undefined) {
+  //   query["SearchingParameters.vegeterian"] = filters.vegeterian;
+  // }
+  // if (filters.vegan !== undefined) {
+  //   query["SearchingParameters.vegan"] = filters.vegan;
+  // }
+  // if (filters.pescatarian !== undefined) {
+  //   query["SearchingParameters.pescatarian"] = filters.pescatarian;
+  // }
+  // if (filters.dairyFree !== undefined) {
+  //   query["SearchingParameters.dairyFree"] = filters.dairyFree;
+  // }
+  // if (filters.glutenFree !== undefined) {
+  //   query["SearchingParameters.glutenFree"] = filters.glutenFree;
+  // }
+  // if (filters.healthy !== undefined) {
+  //   query["SearchingParameters.healthy"] = filters.healthy;
+  // }
+  // if (filters.ingredients) {
+  //   query["SearchingParameters.ingredients"] = { $in: [filters.ingredients] };
+  // }
+
   //console.log("this is the query log " + query)
-
-  const filteredRecipes = await Recipe.find(query)
-    .populate({
-      path: "user",
-      select: "username profilePictureURL",
+  try {
+    const filteredRecipes = await Recipe.find({
+      "SearchingParameters.nationalities": req.body.nationality,
     })
-    .populate({
-      path: "comments",
-      populate: { path: "user", select: "username profilePictureURL" },
-    })
-    .sort({ created_at: -1 });
-  const token = generateToken(req.user_id);
- // console.log("this is the filtered log " + filteredRecipes)
-  res.status(200).json({ recipes: Array.isArray(filteredRecipes) ? filteredRecipes : [], token: token });
+      .populate({
+        path: "user",
+        select: "username profilePictureURL",
+      })
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "username profilePictureURL" },
+      })
+      .sort({ created_at: -1 });
+    const token = generateToken(req.user_id);
+    // console.log("this is the filtered log " + filteredRecipes)
+    res.status(200).json({
+      // recipes: Array.isArray(filteredRecipes) ? filteredRecipes : [],
+      recipes: filteredRecipes,
+      token: token,
+    });
+  } catch (error) {
+    res.status(401).json({ error: error.message });
+    console.log(error.message);
+  }
 }
 
 // profile
@@ -154,39 +178,35 @@ async function createRecipe(req, res) {
       image: recipeList.image,
       summary: recipeList.summary,
       instructions: recipeList.instructions,
-      SearchingParameters: [
-        {
-          nationalities: SearchingParameters.nationalities,
-          dishType: SearchingParameters.dishType,
-          preparationMinutes: SearchingParameters.preparationMinutes,
-          cookingMinutes: SearchingParameters.cookingMinutes,
-          servings: SearchingParameters.servings,
-          nuts: SearchingParameters.nuts,
-          shellfish: SearchingParameters.shellfish,
-          dairy: SearchingParameters.dairy,
-          soy: SearchingParameters.soy,
-          eggs: SearchingParameters.eggs,
+      SearchingParameters: {
+        nationalities: SearchingParameters.nationalities,
+        dishType: SearchingParameters.dishType,
+        preparationMinutes: SearchingParameters.preparationMinutes,
+        cookingMinutes: SearchingParameters.cookingMinutes,
+        servings: SearchingParameters.servings,
+        nuts: SearchingParameters.nuts,
+        shellfish: SearchingParameters.shellfish,
+        dairy: SearchingParameters.dairy,
+        soy: SearchingParameters.soy,
+        eggs: SearchingParameters.eggs,
 
-          vegeterian: SearchingParameters.vegeterian,
-          vegan: SearchingParameters.vegan,
-          pescatarian: SearchingParameters.pescatarian,
-          glutenFree: SearchingParameters.glutenFree,
-          dairyFree: SearchingParameters.dairyFree,
-          healthy: SearchingParameters.healthy,
-          costFriendly: SearchingParameters.costFriendly,
-          readyInMinutes: SearchingParameters.readyInMinutes,
-        },
-      ],
+        vegeterian: SearchingParameters.vegeterian,
+        vegan: SearchingParameters.vegan,
+        pescatarian: SearchingParameters.pescatarian,
+        glutenFree: SearchingParameters.glutenFree,
+        dairyFree: SearchingParameters.dairyFree,
+        healthy: SearchingParameters.healthy,
+        costFriendly: SearchingParameters.costFriendly,
+        readyInMinutes: SearchingParameters.readyInMinutes,
+      },
+
       ingredients: recipeList.ingredients,
     });
     recipe.save();
     const newToken = generateToken(req.user_id);
     res.status(201).json({ recipe: recipe, token: newToken });
-
-  }
-  catch (error) {
-    res.status(404).json({ message: error.message});
-
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 }
 
@@ -238,5 +258,4 @@ const RecipesController = {
   getFilteredRecipes: getFilteredRecipes,
 };
 
-module.exports = RecipesController
-
+module.exports = RecipesController;

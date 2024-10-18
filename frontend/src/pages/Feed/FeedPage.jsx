@@ -23,12 +23,18 @@ export function FeedPage() {
           console.log(data.recipes);
           //console.log(data.filteredRecipes);
 
-       //   setRecipes(data.recipes);
-          setRecipes(Array.isArray(data.recipes) ? data.recipes: []);
+          //   setRecipes(data.recipes);
+          setRecipes(Array.isArray(data.recipes) ? data.recipes : []);
 
-        //  setFilteredRecipes(data.recipes);
-        setFilteredRecipes(Array.isArray(data.recipes) ? data.recipes: []);
+          //  setFilteredRecipes(data.recipes);
+          setFilteredRecipes(Array.isArray(data.recipes) ? data.recipes : []);
           // setSearchApplied(true);
+          console.log("This is the data.recipes " + data.recipes);
+
+          console.log(
+            "This is the data.recipes[0] " +
+              JSON.stringify(data.recipes[0], null, 2)
+          );
 
           localStorage.setItem("token", data.token);
         })
@@ -60,8 +66,7 @@ export function FeedPage() {
 
         <h2>Recipes</h2>
         <div className="feed" role="feed">
-
-           {searchApplied ? (
+          {searchApplied ? (
             Array.isArray(filteredRecipes) && filteredRecipes.length === 0 ? (
               <p>No recipes available for the selected filters</p>
             ) : (
@@ -73,7 +78,7 @@ export function FeedPage() {
             <p> Sorry, we could not find you any recipe</p>
           ) : (
             recipes.map((recipe) => <Recipe recipe={recipe} key={recipe._id} />)
-          )} 
+          )}
         </div>
 
         <div className="logout">

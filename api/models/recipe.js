@@ -18,60 +18,55 @@ const RecipeSchema = new mongoose.Schema({
   ],
   favourites: [
     {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: "User",
-        required: true,
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+      required: true,
     },
   ],
-//   user_id: {
-//     type: mongoose.SchemaTypes.ObjectId,
-//     ref: "User",
-//     required: true,
-//   },
+  //   user_id: {
+  //     type: mongoose.SchemaTypes.ObjectId,
+  //     ref: "User",
+  //     required: true,
+  //   },
   title: String,
   image: String,
   summary: String,
   instructions: String,
-  SearchingParameters: [
-    {
-      nationalities: [{
+  SearchingParameters: {
+    nationalities: String,
+
+    dishType: [
+      {
         type: String,
-        
-      }],
-      dishType: [
-        {
-          type: String,
-          
-        },
-      ],
-      preparationMinutes: Number,
-      cookingMinutes: Number,
-      servings: Number,
-   
-      nuts: { type: Boolean, default: false },
-      shellfish: { type: Boolean, default: false },
-      dairy: { type: Boolean, default: false },
-      soy: { type: Boolean, default: false },
-      eggs: { type: Boolean, default: false },
-    
-          vegeterian: Boolean,
-          vegan: Boolean,
-          pescatarian: Boolean,
-          glutenFree: Boolean,
-          dairyFree: Boolean,
-          healthy: Boolean,
-          costFriendly: Number,
-          readyInMinutes: Number,
-      
+      },
+    ],
+    preparationMinutes: Number,
+    cookingMinutes: Number,
+    servings: Number,
+
+    nuts: { type: Boolean, default: false },
+    shellfish: { type: Boolean, default: false },
+    dairy: { type: Boolean, default: false },
+    soy: { type: Boolean, default: false },
+    eggs: { type: Boolean, default: false },
+
+    vegeterian: Boolean,
+    vegan: Boolean,
+    pescatarian: Boolean,
+    glutenFree: Boolean,
+    dairyFree: Boolean,
+    healthy: Boolean,
+    costFriendly: Number,
+    readyInMinutes: Number,
+  },
+
+  ingredients: [
+    {
+      name: String,
+      quantity: Number,
+      unit: String,
     },
   ],
-  ingredients: [
-  {
-    name: String,
-    quantity: Number,
-    unit: String,
-}]
-
 });
 
 // We use the Schema to create the Post model. Models are classes which we can
