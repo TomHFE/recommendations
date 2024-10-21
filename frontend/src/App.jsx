@@ -25,9 +25,10 @@ const router = createBrowserRouter([
   },
   { path: "/home", element: <HomePage /> },
   {
-    path: "/", // Main layout for all these routes
-    element: <MainLayout />, // Wrap child routes with MainLayout
+    path: "/", 
+    element: <MainLayout />, 
     children: [
+      { path: "", element: <HomePage /> }, 
       { path: "/recipes", element: <FeedPage /> },
       { path: "/profile", element: <Profile /> },
       { path: "/recipe_page", element: <RecipePage /> },
