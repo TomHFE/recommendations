@@ -2,10 +2,12 @@ require("../mongodb_helper");
 const Recipe = require("../../src/models/recipe");
 const ObjectId = require('mongodb').ObjectId;
 
+
 describe("Recipe model", () => {
   beforeEach(async () => {
     await Recipe.deleteMany({});
   });
+  
 
   it("has a title", () => {
     const recipe = new Recipe({ title: "Test Recipe" });
