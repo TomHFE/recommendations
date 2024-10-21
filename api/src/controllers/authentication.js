@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const { generateToken } = require("../lib/token");
-const verifyPassword = require("../components/passCheck");
+const verifyPassword = require("../utilities/passCheck");
 
 async function createToken(req, res) {
   const email = req.body.email;

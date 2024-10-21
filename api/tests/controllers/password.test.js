@@ -1,7 +1,7 @@
 
 const bcrypt = require("bcrypt")
 
-const verifyPassword = require('../../components/passCheck')
+const verifyPassword = require('../../src/utilities/passCheck')
 require("../mongodb_helper");
 
 

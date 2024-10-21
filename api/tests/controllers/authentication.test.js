@@ -1,8 +1,8 @@
 const app = require("../../app");
 const supertest = require("supertest");
 require("../mongodb_helper");
-const User = require("../../models/user");
-const hashpass = require("../../components/encryptPass")
+const User = require("../../src/models/user");
+const hashpass = require("../../src/utilities/encryptPass")
 
 describe("/tokens", () => {
   beforeAll(async () => {

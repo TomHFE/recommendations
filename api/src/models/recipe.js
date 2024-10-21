@@ -64,7 +64,6 @@ const RecipeSchema = new mongoose.Schema({
     costFriendly: Number,
     readyInMinutes: Number,
   },
-
   ingredients: [
     {
       name: String,

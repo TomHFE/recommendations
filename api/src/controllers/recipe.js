@@ -29,87 +29,76 @@ async function getRecipesWithUserDetails(req, res) {
 }
 // show filtered recipes
 async function getFilteredRecipes(req, res) {
-  const filters = req.body.filters;
-  // console.log("This is req.body" + req.body);
-  console.log("This is req.body " + req.body.nationality);
-  // console.log(JSON.stringify("This is req.body" + req.body));
-  // const query = {}; // Build query dynamically based on filters
+  const nutsIncluded = req.body.nuts === "on";
+  const shellfishIncluded = req.body.shellfish === "on";
+  const dairyIncluded = req.body.dairy === "on";
+  const soyIncluded = req.body.soy === "on";
+  const eggsIncluded = req.body.eggs === "on";
+  const isVegan = req.body.vegan === "on";
+  const isVegeterian = req.body.vegeterian === "on";
+  const isPescatarian = req.body.pescatarian === "on";
+  const isGlutenFree = req.body.glutenFree === "on";
+  const isDairyFree = req.body.dairyFree === "on";
+  const isHealthy = req.body.healthy === "on";
+  const ingredients = req.body.ingredients;
 
-  // if (filters.nationality) {
+  console.log("Received ingredients: ", req.body.ingredients);
 
-  //   // query["SearchingParameters.nationalities"] = filters.nationality;
-  // }
-
-  // query["SearchingParameters.nationalities"] = { $in: filters.nationality };
-
-  // if (filters.dishType) {
-  //   query["SearchingParameters.dishType"] = { $in: [filters.dishType] };
-  // }
-  // if (filters.readyInMinutes) {
-  //   query["SearchingParameters.readyInMinutes"] = {
-  //     $lte: filters.readyInMinutes,
-  //   };
-  // }
-  // if (filters.preparationMinutes) {
-  //   query["SearchingParameters.preparationMinutes"] = {
-  //     $lte: filters.preparationMinutes,
-  //   };
-  // }
-  // if (filters.cookingMinutes) {
-  //   query["SearchingParameters.cookingMinutes"] = {
-  //     $lte: filters.cookingMinutes,
-  //   };
-  // }
-  // if (filters.costFriendly) {
-  //   query["SearchingParameters.costFriendly"] = { $lte: filters.costFriendly };
-  // }
-  // if (filters.servings) {
-  //   query["SearchingParameters.servings"] = { $lte: filters.servings };
-  // }
-  // if (filters.dairyFree !== undefined) {
-  //   query["SearchingParameters.dairyFree"] = filters.dairyFree;
-  // }
-  // if (filters.nuts !== undefined) {
-  //   query["SearchingParameters.nuts"] = filters.nuts;
-  // }
-  // if (filters.shellfish !== undefined) {
-  //   query["SearchingParameters.shellfish"] = filters.shellfish;
-  // }
-  // if (filters.dairy !== undefined) {
-  //   query["SearchingParameters.dairy"] = filters.dairy;
-  // }
-  // if (filters.soy !== undefined) {
-  //   query["SearchingParameters.soy"] = filters.soy;
-  // }
-  // if (filters.eggs !== undefined) {
-  //   query["SearchingParameters.eggs"] = filters.eggs;
-  // }
-  // if (filters.vegeterian !== undefined) {
-  //   query["SearchingParameters.vegeterian"] = filters.vegeterian;
-  // }
-  // if (filters.vegan !== undefined) {
-  //   query["SearchingParameters.vegan"] = filters.vegan;
-  // }
-  // if (filters.pescatarian !== undefined) {
-  //   query["SearchingParameters.pescatarian"] = filters.pescatarian;
-  // }
-  // if (filters.dairyFree !== undefined) {
-  //   query["SearchingParameters.dairyFree"] = filters.dairyFree;
-  // }
-  // if (filters.glutenFree !== undefined) {
-  //   query["SearchingParameters.glutenFree"] = filters.glutenFree;
-  // }
-  // if (filters.healthy !== undefined) {
-  //   query["SearchingParameters.healthy"] = filters.healthy;
-  // }
-  // if (filters.ingredients) {
-  //   query["SearchingParameters.ingredients"] = { $in: [filters.ingredients] };
-  // }
-
-  //console.log("this is the query log " + query)
   try {
     const filteredRecipes = await Recipe.find({
-      "SearchingParameters.nationalities": req.body.nationality,
+      // "SearchingParameters.nationalities": req.body.nationality,
+      // "SearchingParameters.preparationMinutes": req.body.preparationMinutes,
+
+      // Spred syntax (...) allows you to conditionally add a filter to the query only if it's provided in the request
+      ...(req.body.nationality && {
+        "SearchingParameters.nationalities": {
+          $regex: new RegExp(req.body.nationality, "i"),
+        },
+      }),
+      ...(req.body.dishType && {
+        "SearchingParameters.dishType": {
+          $regex: new RegExp(req.body.dishType, "i"), // Case-insensitive matching for a single dish type
+        },
+      }),
+      ...(req.body.preparationMinutes && {
+        "SearchingParameters.preparationMinutes": {
+          $lte: req.body.preparationMinutes,
+        },
+      }),
+      ...(req.body.cookingMinutes && {
+        "SearchingParameters.cookingMinutes": { $lte: req.body.cookingMinutes },
+      }),
+      ...(req.body.readyInMinutes && {
+        "SearchingParameters.readyInMinutes": { $lte: req.body.readyInMinutes },
+      }),
+      ...(req.body.servings && {
+        "SearchingParameters.servings": { $lte: req.body.servings },
+      }),
+      ...(req.body.costFriendly && {
+        "SearchingParameters.costFriendly": { $lte: req.body.costFriendly },
+      }),
+      ...(nutsIncluded ? { "SearchingParameters.nuts": false } : {}),
+      ...(shellfishIncluded ? { "SearchingParameters.nuts": false } : {}),
+      ...(dairyIncluded ? { "SearchingParameters.dairy": false } : {}),
+      ...(soyIncluded ? { "SearchingParameters.soy": false } : {}),
+      ...(eggsIncluded ? { "SearchingParameters.dairy": false } : {}),
+      ...(isVegan ? { "SearchingParameters.vegeterian": true } : {}),
+      ...(isVegeterian ? { "SearchingParameters.vegeterian": true } : {}),
+      ...(isPescatarian ? { "SearchingParameters.vegeterian": true } : {}),
+      ...(isGlutenFree ? { "SearchingParameters.vegeterian": true } : {}),
+      ...(isDairyFree ? { "SearchingParameters.vegeterian": true } : {}),
+      ...(isHealthy ? { "SearchingParameters.vegeterian": true } : {}),
+      ...(ingredients &&
+        ingredients.length > 0 && {
+          // "ingredients.name": { $in: ingredients },
+          ingredients: {
+            $elemMatch: {
+              name: {
+                $in: ingredients.map((ingredient) => ingredient.toLowerCase()),
+              },
+            },
+          },
+        }),
     })
       .populate({
         path: "user",
@@ -121,9 +110,7 @@ async function getFilteredRecipes(req, res) {
       })
       .sort({ created_at: -1 });
     const token = generateToken(req.user_id);
-    // console.log("this is the filtered log " + filteredRecipes)
     res.status(200).json({
-      // recipes: Array.isArray(filteredRecipes) ? filteredRecipes : [],
       recipes: filteredRecipes,
       token: token,
     });
