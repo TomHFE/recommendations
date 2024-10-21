@@ -11,6 +11,7 @@ import RecipePage from './components/recipePage'
 import UsersFollowingPage from "./components/follow_component/handleFollowing";
 import UsersFollowerPage from "./components/follower_component/handleFollowing";
 import { MainLayout } from "./layouts/MainLayout";
+import FetchedRecipes from "./navbar/fetchedRecipes";
 //import { PublicProfile } from "./pages/PublicProfile/PublicProfile";
 
 // docs: https://reactrouter.com/en/main/start/overview
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       children: [
         { path: "/recipes", element: <FeedPage /> },
         { path: "/create", element: <CreatePage /> },
+        { path: "/create/fetched_recipe", element: <FetchedRecipes /> },
         { path: "/profile", element: <Profile /> },
         { path: "/recipe_page", element: <RecipePage /> },
         { path: "/user_followers", element: <UsersFollowerPage /> },
@@ -45,6 +47,7 @@ const router = createBrowserRouter([
 //     path: "/recipes/filtered",
 //     element: <FeedPage />,
 //   },
+// fetched_recipe
 ])
 
 
