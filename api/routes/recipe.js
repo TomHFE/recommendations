@@ -12,11 +12,11 @@ router.get(
 router.get("/get_user_recipes", recipeController.getUserRecipes);
 router.get("/get_user_recipes_by_id", recipeController.getUserRecipesById);
 router.post("/create_recipe", recipeController.createRecipe);
-router.patch("/add_comment", recipeController.addCommentToRecipe);
+// router.patch("/add_comment", recipeController.addCommentToRecipe);
 router.patch("/toggle_favourites", recipeController.toggleFavourites);
 
 router.post("/filtered", recipeController.getFilteredRecipes);
 
-router.post("/comments", CommentsController.createComment);
+router.patch("/comments", CommentsController.createComment);
 
 module.exports = router;
