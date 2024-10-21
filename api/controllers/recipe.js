@@ -42,7 +42,8 @@ async function getFilteredRecipes(req, res) {
   const isHealthy = req.body.healthy === "on";
   const ingredients = req.body.ingredients;
 
-  console.log("ingredients " + req.body);
+  console.log("Received ingredients: ", req.body.ingredients);
+
   try {
     const filteredRecipes = await Recipe.find({
       // "SearchingParameters.nationalities": req.body.nationality,
@@ -50,10 +51,14 @@ async function getFilteredRecipes(req, res) {
 
       // Spred syntax (...) allows you to conditionally add a filter to the query only if it's provided in the request
       ...(req.body.nationality && {
-        "SearchingParameters.nationalities": req.body.nationality,
+        "SearchingParameters.nationalities": {
+          $regex: new RegExp(req.body.nationality, "i"),
+        },
       }),
       ...(req.body.dishType && {
-        "SearchingParameters.dishType": { $in: [req.body.dishType] },
+        "SearchingParameters.dishType": {
+          $regex: new RegExp(req.body.dishType, "i"), // Case-insensitive matching for a single dish type
+        },
       }),
       ...(req.body.preparationMinutes && {
         "SearchingParameters.preparationMinutes": {
@@ -85,7 +90,14 @@ async function getFilteredRecipes(req, res) {
       ...(isHealthy ? { "SearchingParameters.vegeterian": true } : {}),
       ...(ingredients &&
         ingredients.length > 0 && {
-          "ingredients.name": { $in: ingredients },
+          // "ingredients.name": { $in: ingredients },
+          ingredients: {
+            $elemMatch: {
+              name: {
+                $in: ingredients.map((ingredient) => ingredient.toLowerCase()),
+              },
+            },
+          },
         }),
     })
       .populate({

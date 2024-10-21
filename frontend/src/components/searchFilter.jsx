@@ -2,27 +2,8 @@ import { useState } from "react";
 import { getFilteredRecipes } from "../services/recipes/getFilteredRecipes";
 
 export function SearchFilter({ onSearch }) {
-  // const [nationality, setNationality] = useState("");
-  // const [readyInMinutes, setReadyInMinutes] = useState("");
-  // const [dishType, setDishType] = useState([]);
-  // const [preparationInMinutes, setPreparationInMinutes] = useState();
-  // const [cookingMinutes, setCookingMinutes] = useState();
-  // const [costFriendly, setCostFriendly] = useState();
   const [error, setError] = useState("");
-  // const [servings, setServings] = useState();
-  // const [nuts, setNutFree] = useState(false);
-  // const [shellfish, setShellfishFree] = useState(false);
-  // const [dairy, setDairy] = useState(false);
-  // const [soy, setSoy] = useState(false);
-  // const [eggs, setEggs] = useState(false);
-  // const [vegeterian, setVegeterian] = useState(false);
-  // const [vegan, setVegan] = useState(false);
-  // const [pescatarian, setPescatarian] = useState(false);
-  // const [glutenFree, setGlutenFree] = useState(false);
-  // const [dairyFree, setDairyFree] = useState(false);
-  // const [healthy, setHealthy] = useState(false);
-  // const [ingredient, setIngredient] = useState([]);
-  // const [clicked, setClicked] = useState(0);
+
   const [searchFilters, setsearchFilters] = useState({
     nationality: "",
     readyInMinutes: 0,
@@ -91,50 +72,72 @@ export function SearchFilter({ onSearch }) {
     }));
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     setsearchFilters(initialFilters);
+
+    try {
+      const token = localStorage.getItem("token");
+      const recipes = await getFilteredRecipes(token, {}); // Fetch all recipes without filters
+      localStorage.setItem("token", recipes.token);
+
+      onSearch(recipes.recipes); // Display all recipes
+    } catch (error) {
+      console.log(error.message);
+      setError("Failed to reset filters and fetch all recipes");
+    }
   };
   return (
     <>
       <div>
         <h2>Form</h2>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={searchFilters.nationality}
-            onChange={(e) => handleChange("nationality", e.target.value)}
-            placeholder="Enter nationality"
-          />
-          <input
-            type="text"
-            value={searchFilters.dishType}
-            onChange={(e) => handleChange("dishType", e.target.value)}
-            placeholder="Enter dish type"
-          />
-          <input
-            type="text"
-            value={searchFilters.preparationMinutes}
-            onChange={(e) => handleChange("preparationMinutes", e.target.value)}
-            placeholder="Enter preparation time"
-          />
+          <div className="row">
+            <label>Nationality:</label>
+            <input
+              type="text"
+              value={searchFilters.nationality}
+              onChange={(e) => handleChange("nationality", e.target.value)}
+              placeholder="Enter nationality"
+            />
+            <label>Dish Type:</label>
+            <input
+              type="text"
+              value={searchFilters.dishType}
+              onChange={(e) => handleChange("dishType", e.target.value)}
+              placeholder="Enter dish type"
+            />
+            <label>Max prep time:</label>
+            <input
+              type="text"
+              value={searchFilters.preparationMinutes}
+              onChange={(e) =>
+                handleChange("preparationMinutes", e.target.value)
+              }
+              placeholder="Enter preparation time"
+            />
+          </div>
+          <label>Max cooking time:</label>
           <input
             type="text"
             value={searchFilters.cookingMinutes}
             onChange={(e) => handleChange("cookingMinutes", e.target.value)}
             placeholder="Enter cooking time"
           />
+          <label>Max prep and cook time:</label>
           <input
             type="text"
             value={searchFilters.readyInMinutes}
             onChange={(e) => handleChange("cookingMinutes", e.target.value)}
             placeholder="Enter total cooking and prep time"
           />
+          <label>Max servings:</label>
           <input
             type="text"
             value={searchFilters.servings}
             onChange={(e) => handleChange("servings", e.target.value)}
             placeholder="Enter servings amount"
           />
+          <label>Cost-friendly (1 budge - 5 expensive):</label>
           <input
             type="text"
             value={searchFilters.costFriendly}
@@ -216,9 +219,10 @@ export function SearchFilter({ onSearch }) {
             value={searchFilters.ingredients.join(", ")} // Display the ingredients
             onChange={(e) => {
               const values = e.target.value
-                .split(",")
-                .map((item) => item.trim()); // Split by commas
-              handleChange("ingredients", values); // Update state
+                .split(",") // Split the input by commas
+                .map((item) => item.trim()) // Trim spaces around items
+                .filter((item) => item !== ""); // Remove empty strings
+              handleChange("ingredients", values); // Update state with trimmed values
             }}
             placeholder="Enter main ingredient"
           />
