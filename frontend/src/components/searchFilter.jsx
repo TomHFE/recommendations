@@ -3,7 +3,6 @@ import { getFilteredRecipes } from "../services/recipes/getFilteredRecipes";
 
 export function SearchFilter({ onSearch }) {
   const [error, setError] = useState("");
-
   const [searchFilters, setsearchFilters] = useState({
     nationality: "",
     readyInMinutes: 0,
@@ -74,7 +73,6 @@ export function SearchFilter({ onSearch }) {
 
   const handleReset = async () => {
     setsearchFilters(initialFilters);
-
     try {
       const token = localStorage.getItem("token");
       const recipes = await getFilteredRecipes(token, {}); // Fetch all recipes without filters
@@ -86,6 +84,7 @@ export function SearchFilter({ onSearch }) {
       setError("Failed to reset filters and fetch all recipes");
     }
   };
+
   return (
     <>
       <div>
@@ -218,10 +217,8 @@ export function SearchFilter({ onSearch }) {
             type="text"
             value={searchFilters.ingredients.join(", ")} // Display the ingredients
             onChange={(e) => {
-              const values = e.target.value
-                .split(",") // Split the input by commas
-                .map((item) => item.trim()) // Trim spaces around items
-                .filter((item) => item !== ""); // Remove empty strings
+              const values = e.target.value.split(","); // Split the input by commas
+
               handleChange("ingredients", values); // Update state with trimmed values
             }}
             placeholder="Enter main ingredient"
