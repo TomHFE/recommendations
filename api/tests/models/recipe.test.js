@@ -2,10 +2,12 @@ require("../mongodb_helper");
 const Recipe = require("../../src/models/recipe");
 const ObjectId = require('mongodb').ObjectId;
 
+
 describe("Recipe model", () => {
   beforeEach(async () => {
     await Recipe.deleteMany({});
   });
+  
 
   it("has a title", () => {
     const recipe = new Recipe({ title: "Test Recipe" });
@@ -24,7 +26,7 @@ describe("Recipe model", () => {
 
   it("has instructions", () => {
     const recipe = new Recipe({ instructions: "Step 1: Test the recipe. Step 2: Enjoy!" });
-    expect(recipe.instructions).toEqual("Step 1: Test the recipe. Step 2: Enjoy!");
+    expect(recipe.instructions).toEqual(["Step 1: Test the recipe. Step 2: Enjoy!"]);
   });
 
   it("has a creation date", async () => {

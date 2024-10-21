@@ -1,4 +1,5 @@
 // docs: https://github.com/motdotla/dotenv#%EF%B8%8F-usage
+process.noDeprecation = true;     //removed punycode depreciation warning
 require("dotenv").config();
 
 const app = require("./app.js");

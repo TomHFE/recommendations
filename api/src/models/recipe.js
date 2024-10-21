@@ -73,13 +73,6 @@ const RecipeSchema = new mongoose.Schema({
   ],
 });
 
-// We use the Schema to create the Post model. Models are classes which we can
-// use to construct entries in our Database.
+
 const Recipe = mongoose.model("Recipe", RecipeSchema);
-
-// These lines will create a test post every time the server starts.
-// You can delete this once you are creating your own posts.
-//const dateTimeString = new Date().toLocaleString("en-GB");
-//new Post({ message: `Test message, created at ${dateTimeString}` }).save();
-
 module.exports = Recipe;
