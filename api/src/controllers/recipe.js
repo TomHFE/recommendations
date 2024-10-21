@@ -1,4 +1,5 @@
 const Recipe = require("../models/recipe");
+const User = require("../models/user");
 const { generateToken } = require("../lib/token");
 const Comment = require("../models/comment");
 const { ObjectId } = require("mongodb");
@@ -211,8 +212,26 @@ async function toggleFavourites(req, res) {
   //console.log("toggle_likes_user_id: ", user_id)
   //console.log("togg_like_post_id: ", post_id)
   const resMessage = await addFavouriteToRecipe(user_id, recipe_id);
-  const newToken = generateToken(req.user_id);
-  res.status(201).json({ resMessage: resMessage, token: newToken });
+  try {
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const hasFavourited = user.favourites.includes(recipe_id);
+    if (hasFavourited) {
+      user.favourites = user.favourites.filter(
+        (favRecipeId) => favRecipeId.toString() !== recipe_id
+      );
+    } else {
+      user.favourites.push(recipe_id);
+    }
+    await user.save();
+    const newToken = generateToken(req.user_id);
+    res.status(201).json({ resMessage: resMessage, token: newToken });
+  } catch (error) {
+    console.error("Cannot udate favourites:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 }
 
 async function addFavouriteToRecipe(user_id, recipe_id) {

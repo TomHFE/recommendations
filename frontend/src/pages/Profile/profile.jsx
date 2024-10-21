@@ -1,13 +1,12 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRecipesWithUserDetails } from "../../services/recipes/getRecipesWithUserDetails";
-import Recipe from "./recipe"; 
+import Recipe from "./recipe";
 import "./profile.css";
 import { getUserDetails } from "../../services/getUserDetails";
 
 export function Profile() {
-  const [recipes, setRecipes] = useState([]); 
+  const [recipes, setRecipes] = useState([]);
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
 
@@ -16,14 +15,14 @@ export function Profile() {
     if (token) {
       getRecipesWithUserDetails(token)
         .then((data) => {
-          setRecipes(data.recipes); 
+          setRecipes(data.recipes);
           localStorage.setItem("token", data.token);
           return getUserDetails(data.token);
         })
         .then((user) => {
           localStorage.setItem("token", user.token);
-          console.log(user)
-          setProfile(user.message); 
+          console.log(user);
+          setProfile(user.message);
         })
         .catch((err) => {
           console.error(err);
@@ -45,6 +44,10 @@ export function Profile() {
     return <div>Loading...</div>;
   }
 
+  const favouritedRecipes = recipes.filter((recipe) =>
+    profile[0].favourites.includes(recipe._id)
+  );
+
   return (
     <div className="profile-page">
       <div>
@@ -56,8 +59,8 @@ export function Profile() {
 
       <h1>Favourites</h1>
       <div className="feed" role="feed">
-        {recipes.map((recipe) => (
-          <Recipe key={recipe._id} {...recipe} /> 
+        {favouritedRecipes.map((recipe) => (
+          <Recipe key={recipe._id} {...recipe} />
         ))}
       </div>
     </div>
