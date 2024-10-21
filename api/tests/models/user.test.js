@@ -1,5 +1,5 @@
 require("../mongodb_helper");
-const User = require("../../models/user");
+const User = require("../../src/models/user");
 
 describe("User model", () => {
   beforeEach(async () => {
@@ -36,36 +36,38 @@ describe("User model", () => {
     expect(users[0].password).toEqual("password");
     expect(users[0].username).toEqual("someone-12345");
   });
-  it("can add incoming requests", async () => {
+
+  it("can add followers", async () => {
     const user = new User({
       email: "someone@example.com",
       password: "password",
       username: "someone-12345",
-      friendsData: {
-        incomingRequests: ['6700059cf4b7d7882098a353']
+      followingData: {
+        followers: ['6700059cf4b7d7882098a353']
       }
     });
-
+  
     await user.save();
     const users = await User.find();
-
-    expect(users[0].friendsData.incomingRequests.length).toEqual(1);
-    expect(users[0].friendsData.incomingRequests[0].toString()).toEqual("6700059cf4b7d7882098a353");
+  
+    expect(users[0].followingData.followers.length).toEqual(1);
+    expect(users[0].followingData.followers[0].toString()).toEqual("6700059cf4b7d7882098a353");
   });
-  it("can add friends list", async () => {
+  
+  it("can add following list", async () => {
     const user = new User({
       email: "someone@example.com",
       password: "password",
       username: "someone-12345",
-      friendsData: {
-        friendsList: ['6700059cf4b7d7882098a353']
+      followingData: {
+        following: ['6700059cf4b7d7882098a353']
       }
     });
-
+  
     await user.save();
     const users = await User.find();
-
-    expect(users[0].friendsData.friendsList.length).toEqual(1);
-    expect(users[0].friendsData.friendsList[0].toString()).toEqual("6700059cf4b7d7882098a353");
+  
+    expect(users[0].followingData.following.length).toEqual(1);
+    expect(users[0].followingData.following[0].toString()).toEqual("6700059cf4b7d7882098a353");
   });
 });

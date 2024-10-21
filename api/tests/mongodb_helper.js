@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { connectToDatabase } = require("../db/db");
+const { connectToDatabase } = require("../src/db/db");
 
 beforeAll(async () => {
   await connectToDatabase();

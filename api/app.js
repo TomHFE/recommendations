@@ -1,12 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const usersRouter = require("./routes/users");
-const recipeRouter = require("./routes/recipe");
-const authenticationRouter = require("./routes/authentication");
-const searchBarRouter = require("./routes/searchbar")
-const signUp = require('./routes/signup')
-const tokenChecker = require("./middleware/tokenChecker");
+const usersRouter = require("./src/routes/users");
+const recipeRouter = require("./src/routes/recipe");
+const authenticationRouter = require("./src/routes/authentication");
+const searchBarRouter = require("./src/routes/searchbar")
+const signUp = require('./src/routes/signup')
+const tokenChecker = require("./src/middleware/tokenChecker");
 
 const app = express();
 

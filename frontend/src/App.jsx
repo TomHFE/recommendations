@@ -43,7 +43,7 @@ const router = createBrowserRouter([
 //     element: <FeedPage />,
 //   },
 
-
+])
 
 function App() {
   return (

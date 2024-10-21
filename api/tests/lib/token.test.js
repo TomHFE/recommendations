@@ -1,4 +1,4 @@
-const { generateToken, decodeToken } = require("../../lib/token");
+const { generateToken, decodeToken } = require("../../src/lib/token");
 
 describe("TokenGenerator", () => {
   describe("jsonwebtoken", () => {
