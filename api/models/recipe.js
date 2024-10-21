@@ -31,7 +31,11 @@ const RecipeSchema = new mongoose.Schema({
   title: String,
   image: String,
   summary: String,
-  instructions: String,
+  instructions: [
+    {
+      type: String,
+    },
+  ],
   SearchingParameters: {
     nationalities: String,
 
@@ -43,12 +47,13 @@ const RecipeSchema = new mongoose.Schema({
     preparationMinutes: Number,
     cookingMinutes: Number,
     servings: Number,
-
-    nuts: { type: Boolean, default: false },
-    shellfish: { type: Boolean, default: false },
-    dairy: { type: Boolean, default: false },
-    soy: { type: Boolean, default: false },
-    eggs: { type: Boolean, default: false },
+    allergies: [{
+      nuts: { type: Boolean, default: false },
+      shellfish: { type: Boolean, default: false },
+      dairy: { type: Boolean, default: false },
+      soy: { type: Boolean, default: false },
+      eggs: { type: Boolean, default: false },
+   } ],
 
     vegeterian: Boolean,
     vegan: Boolean,

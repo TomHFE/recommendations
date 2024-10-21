@@ -23,6 +23,9 @@ const handleHomeButton = () => {
 const handleProfileButton = () => {
   navigate('./profile')
 }
+const handleCreateButton = () => {
+  navigate('./create')
+}
 const handleSearchBar = async () => {
   // e.preventDefault()
   const token = localStorage.getItem('token')
@@ -47,6 +50,7 @@ handleSearchBar()
         {/* <IncomingRequests /> */}
         <button onClick={handleHomeButton}>home</button>
         <button onClick={handleProfileButton}>profile</button>
+        <button onClick={handleCreateButton}>Create</button>
         <div className="search-container">
         <input type="text" className="search-box" placeholder="Search..." id="searchInput" onChange={handleSearchChange}/>
         <button className="search-button" onClick={handleSubmit}>Search</button>
