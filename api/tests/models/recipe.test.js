@@ -24,7 +24,7 @@ describe("Recipe model", () => {
 
   it("has instructions", () => {
     const recipe = new Recipe({ instructions: "Step 1: Test the recipe. Step 2: Enjoy!" });
-    expect(recipe.instructions).toEqual("Step 1: Test the recipe. Step 2: Enjoy!");
+    expect(recipe.instructions).toEqual(["Step 1: Test the recipe. Step 2: Enjoy!"]);
   });
 
   it("has a creation date", async () => {
