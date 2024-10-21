@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getFilteredRecipes } from "../services/recipes/getFilteredRecipes";
 
 export function SearchFilter({ onSearch }) {
@@ -22,12 +22,12 @@ export function SearchFilter({ onSearch }) {
   // const [dairyFree, setDairyFree] = useState(false);
   // const [healthy, setHealthy] = useState(false);
   // const [ingredient, setIngredient] = useState([]);
-  const [clicked, setClicked] = useState(0);
+  // const [clicked, setClicked] = useState(0);
   const [searchFilters, setsearchFilters] = useState({
     nationality: "",
     readyInMinutes: 0,
     dishType: "",
-    preparationInMinutes: 0,
+    preparationMinutes: 0,
     cookingMinutes: 0,
     costFriendly: 0,
     servings: 0,
@@ -42,77 +42,30 @@ export function SearchFilter({ onSearch }) {
     glutenFree: false,
     dairyFree: false,
     healthy: false,
-    ingredient: "",
+    ingredients: [],
   });
 
-  // const filters = useMemo(
-  //   () => [
-  //     nationality,
-  //     readyInMinutes,
-  //     dishType,
-  //     preparationInMinutes,
-  //     cookingMinutes,
-  //     costFriendly,
-  //     servings,
-  //     nuts,
-  //     shellfish,
-  //     dairy,
-  //     soy,
-  //     eggs,
-  //     vegeterian,
-  //     vegan,
-  //     pescatarian,
-  //     glutenFree,
-  //     dairyFree,
-  //     healthy,
-  //     ingredient,
-  //   ],
-  //   [
-  //     nationality,
-  //     readyInMinutes,
-  //     dishType,
-  //     preparationInMinutes,
-  //     cookingMinutes,
-  //     costFriendly,
-  //     servings,
-  //     nuts,
-  //     shellfish,
-  //     dairy,
-  //     soy,
-  //     eggs,
-  //     vegeterian,
-  //     vegan,
-  //     pescatarian,
-  //     glutenFree,
-  //     dairyFree,
-  //     healthy,
-  //     ingredient,
-  //   ]
-  // );
-
-  // const handleClicked = () => {
-  //   setClicked(clicked + 1);
-  // };
-
-  // const fetchData = () => {
-  //   useEffect(() => {
-  //     // console.log("Current nationality: ", filters.nationality);
-  //     // console.log("this is the filtered recipes: " + filteredRecipes);
-  //     // setFilteredRecipes(filteredRecipes);
-  //     handleSubmit();
-  //   }, []);
-  // };
-  // const fetchData = async () => {
-  //   try {
-  //     await handleSubmit(); // Fetch data or call another function here
-  //   } catch (error) {
-  //     console.error("Error fetching data: ", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchData(); // Call the fetchData function when the component mounts
-  // }, []); // The empty array means this runs once, after the initial render
+  const initialFilters = {
+    nationality: "",
+    readyInMinutes: 0,
+    dishType: "",
+    preparationMinutes: 0,
+    cookingMinutes: 0,
+    costFriendly: 0,
+    servings: 0,
+    nuts: false,
+    shellfish: false,
+    dairy: false,
+    soy: false,
+    eggs: false,
+    vegeterian: false,
+    vegan: false,
+    pescatarian: false,
+    glutenFree: false,
+    dairyFree: false,
+    healthy: false,
+    ingredients: [],
+  };
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -121,11 +74,10 @@ export function SearchFilter({ onSearch }) {
       // console.log("this is the filtered recipes: " + filters);
       const recipes = await getFilteredRecipes(token, searchFilters);
       localStorage.setItem("token", recipes.token);
-      // setFilteredRecipes(filteredRecipes);
 
-      // console.log("this is the filtered recipes: " + filteredRecipes);
+      console.log("this is the filtered recipes: " + searchFilters);
       onSearch(recipes.recipes);
-      console.log("recipes.recipes is " + recipes.recipes);
+      console.log("recipes.recipes is " + JSON.stringify(recipes.recipes));
     } catch (error) {
       console.log(error.message);
       setError("Invalid input, please try again");
@@ -137,80 +89,11 @@ export function SearchFilter({ onSearch }) {
       ...prev,
       [a]: value,
     }));
-    console.log("This is a filter " + searchFilters.nationality);
   };
 
-  // function handleNationalities(event) {
-  //   setNationality(event.target.value);
-  // }
-
-  // function handleDishType(event) {
-  //   setDishType(event.target.value);
-  // }
-
-  // function handlePreparationInMinutes(event) {
-  //   setPreparationInMinutes(event.target.value);
-  // }
-
-  // function handleReadyInMinutes(event) {
-  //   setReadyInMinutes(event.target.value);
-  // }
-
-  // function handleCookingMinutes(event) {
-  //   setCookingMinutes(event.target.value);
-  // }
-  // function handleServings(event) {
-  //   setServings(event.target.value);
-  // }
-
-  // function handleCostFriendly(event) {
-  //   setCostFriendly(event.target.value);
-  // }
-
-  // function handleNuts(event) {
-  //   setNutFree(event.target.checked);
-  // }
-
-  // function handleShellfish(event) {
-  //   setShellfishFree(event.target.checked);
-  // }
-
-  // function handleDairy(event) {
-  //   setDairy(event.target.checked);
-  // }
-  // function handleVegeterian(event) {
-  //   setVegeterian(event.target.checked);
-  // }
-
-  // function handleVegan(event) {
-  //   setVegan(event.target.checked);
-  // }
-
-  // function handlePescatarian(event) {
-  //   setPescatarian(event.target.checked);
-  // }
-  // function handleGlutenFree(event) {
-  //   setGlutenFree(event.target.checked);
-  // }
-
-  // function handleDairyFree(event) {
-  //   setDairyFree(event.target.checked);
-  // }
-  // function handleHealthy(event) {
-  //   setHealthy(event.target.checked);
-  // }
-
-  // function handleSoy(event) {
-  //   setSoy(event.target.checked);
-  // }
-  // function handleEggs(event) {
-  //   setEggs(event.target.checked);
-  // }
-
-  // function handleIngredient(event) {
-  //   setIngredient(event.target.value);
-  // }
-
+  const handleReset = () => {
+    setsearchFilters(initialFilters);
+  };
   return (
     <>
       <div>
@@ -222,79 +105,129 @@ export function SearchFilter({ onSearch }) {
             onChange={(e) => handleChange("nationality", e.target.value)}
             placeholder="Enter nationality"
           />
-          {/* <input
+          <input
             type="text"
-            value={dishType}
-            onChange={handleChange}
+            value={searchFilters.dishType}
+            onChange={(e) => handleChange("dishType", e.target.value)}
             placeholder="Enter dish type"
           />
           <input
             type="text"
-            value={preparationInMinutes}
-            onChange={handleChange}
+            value={searchFilters.preparationMinutes}
+            onChange={(e) => handleChange("preparationMinutes", e.target.value)}
             placeholder="Enter preparation time"
           />
           <input
             type="text"
-            value={cookingMinutes}
-            onChange={handleChange}
+            value={searchFilters.cookingMinutes}
+            onChange={(e) => handleChange("cookingMinutes", e.target.value)}
             placeholder="Enter cooking time"
           />
           <input
             type="text"
-            value={readyInMinutes}
-            onChange={handleChange}
-            placeholder="Enter max time on cooking and prep"
+            value={searchFilters.readyInMinutes}
+            onChange={(e) => handleChange("cookingMinutes", e.target.value)}
+            placeholder="Enter total cooking and prep time"
           />
           <input
             type="text"
-            value={servings}
-            onChange={handleChange}
+            value={searchFilters.servings}
+            onChange={(e) => handleChange("servings", e.target.value)}
             placeholder="Enter servings amount"
           />
           <input
             type="text"
-            value={costFriendly}
-            onChange={handleChange}
+            value={searchFilters.costFriendly}
+            onChange={(e) => handleChange("costFriendly", e.target.value)}
             placeholder="1 budget - 5 expensive"
             // put in detailed information in a p tag and on a seperate line so a user knows what to input or change to drop down
           />
-          <p>Allergies</p>
-          <input type="checkbox" checked={nuts} onChange={handleChange} />
+          <p>Allergies: Check the box to remove items which contain:</p>
+          <input
+            type="checkbox"
+            checked={searchFilters.nuts}
+            onChange={(e) => handleChange("nuts", e.target.value)}
+          />
           <label htmlFor="checkbox">Nuts </label>
-          <input type="checkbox" checked={shellfish} onChange={handleChange} />
+          <input
+            type="checkbox"
+            checked={searchFilters.shellfish}
+            onChange={(e) => handleChange("shellfish", e.target.value)}
+          />
           <label htmlFor="checkbox">Shellfish </label>
-          <input type="checkbox" checked={dairy} onChange={handleChange} />
+          <input
+            type="checkbox"
+            checked={searchFilters.dairy}
+            onChange={(e) => handleChange("dairy", e.target.value)}
+          />
           <label htmlFor="checkbox">Dairy </label>
-          <input type="checkbox" checked={soy} onChange={handleChange} />
+          <input
+            type="checkbox"
+            checked={searchFilters.soy}
+            onChange={(e) => handleChange("soy", e.target.value)}
+          />
           <label htmlFor="checkbox">Soy </label>
-          <input type="checkbox" checked={eggs} onChange={handleChange} />
+          <input
+            type="checkbox"
+            checked={searchFilters.eggs}
+            onChange={(e) => handleChange("eggs", e.target.value)}
+          />
           <label htmlFor="checkbox">Eggs </label>
           <p>Dietary requirements</p>
-          <input type="checkbox" checked={vegeterian} onChange={handleChange} />
+          <input
+            type="checkbox"
+            checked={searchFilters.vegeterian}
+            onChange={(e) => handleChange("vegeterian", e.target.value)}
+          />
           <label htmlFor="checkbox">Vegeterian</label>
-          <input type="checkbox" checked={vegan} onChange={handleChange} />
+          <input
+            type="checkbox"
+            checked={searchFilters.vegan}
+            onChange={(e) => handleChange("vegan", e.target.value)}
+          />
           <label htmlFor="checkbox">Vegan</label>
           <input
             type="checkbox"
-            checked={pescatarian}
-            onChange={handleChange}
+            checked={searchFilters.pescatarian}
+            onChange={(e) => handleChange("pescatarian", e.target.value)}
           />
           <label htmlFor="checkbox">Pescatarian</label>
-          <input type="checkbox" checked={glutenFree} onChange={handleChange} />
+          <input
+            type="checkbox"
+            checked={searchFilters.glutenFree}
+            onChange={(e) => handleChange("glutenFree", e.target.value)}
+          />
           <label htmlFor="checkbox">Gluten Free</label>
-          <input type="checkbox" checked={dairyFree} onChange={handleChange} />
-          <label htmlFor="checkbox">Dairy Free</label>
-          e <input type="checkbox" checked={healthy} onChange={handleChange} />
+          <input
+            type="checkbox"
+            checked={searchFilters.dairyFree}
+            onChange={(e) => handleChange("dairyFree", e.target.value)}
+          />
+          <label htmlFor="checkbox">Dairy Free</label>e{" "}
+          <input
+            type="checkbox"
+            checked={searchFilters.healthy}
+            onChange={(e) => handleChange("healthy", e.target.value)}
+          />
           <label htmlFor="checkbox">Healthy</label>
           <p> Any ingredients?</p>
-          <input type="text" value={ingredient} onChange={handleChange} /> */}
-          <button
-            role="submit-button"
-            id="submit"
-            type="submit"
-            value="Submit"
+          <input
+            type="text"
+            value={searchFilters.ingredients.join(", ")} // Display the ingredients
+            onChange={(e) => {
+              const values = e.target.value
+                .split(",")
+                .map((item) => item.trim()); // Split by commas
+              handleChange("ingredients", values); // Update state
+            }}
+            placeholder="Enter main ingredient"
           />
+          <button role="submit-button" id="submit" type="submit" value="Submit">
+            Search
+          </button>
+          <button type="button" onClick={handleReset}>
+            Reset
+          </button>
         </form>
         {error && <div id="error">{error}</div>}
       </div>
