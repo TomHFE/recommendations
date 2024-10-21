@@ -4,6 +4,8 @@ const User = require("../../src/models/user");
 const { generateToken } = require("../../src/lib/token");
 require("../mongodb_helper");
 
+
+
 describe("/users", () => {
   let token, user1, user2;
 
@@ -19,6 +21,8 @@ describe("/users", () => {
     token = generateToken(user1._id);  
   });
 
+
+
   // Test user creation with email, username, and password
   describe("POST /users, when valid details provided", () => {
     test("the response code is 201", async () => {
@@ -29,6 +33,44 @@ describe("/users", () => {
 
       expect(response.statusCode).toBe(201);
     });
+
+    describe("POST /users, when username is missing", () => {
+      test("the response code is 400", async () => {
+        const response = await request(app)
+          .post("/users")
+          .set("Authorization", `Bearer ${token}`)  
+          .send({ email: "testuser@test.com", password: "validPass1!" });
+    
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toEqual("Something went wrong");
+      });
+    });
+
+    describe("POST /users, when password is too short", () => {
+      test("the response code is 400", async () => {
+        const response = await request(app)
+          .post("/users")
+          .set("Authorization", `Bearer ${token}`)  
+          .send({ email: "shortpass@test.com", password: "123", username: "shortpassuser" });
+    
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toEqual("Password invalid");
+      });
+    });
+
+
+  describe("POST /users, when email is incorrectly formatted", () => {
+    test("the response code is 400", async () => {
+      const response = await request(app)
+        .post("/users")
+        .set("Authorization", `Bearer ${token}`)  
+        .send({ email: "invalidemail@", password: "ValidPass1!", username: "newuser" });
+  
+      expect(response.statusCode).toBe(400);
+      expect(response.body.message).toEqual("Email address invalid");
+    });
+  });
+    
 
     test("a user is created", async () => {
       await request(app)
