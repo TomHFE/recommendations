@@ -15,13 +15,14 @@ function Commentsalert({ comments, onClose, recipe_id }) {
     const token = localStorage.getItem("token");
     try {
       const thisComment = await createComment(token, comment, recipe_id);
-      setCommentState((prev) => [...prev, thisComment.comment]); //avoid page reload
+      console.log("thisComment is " + thisComment);
+      const newComment = thisComment.comment;
+      setCommentState((prev) => [...prev, newComment]); //avoid page reload
       setComment(""); // Clear input
     } catch (error) {
       console.error(error);
     }
   };
-  
 
   return (
     <div className="modal">
@@ -30,6 +31,7 @@ function Commentsalert({ comments, onClose, recipe_id }) {
           &times;
         </span>
         <h3>Comments Section</h3>
+
         {commentState.length > 0 ? (
           <ul>
             {commentState.map((comment, index) => (
