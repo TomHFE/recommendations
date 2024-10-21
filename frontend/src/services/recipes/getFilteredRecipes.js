@@ -10,7 +10,6 @@ export async function getFilteredRecipes(token, filters) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(filters),
-    // body: JSON.stringify({ nationality: "Indian" }),
   };
 
   console.log("this is request options" + requestOptions);
