@@ -43,7 +43,7 @@ async function getFilteredRecipes(req, res) {
   const isHealthy = req.body.healthy === "on";
   const ingredients = req.body.ingredients;
 
-  console.log("Received ingredients: ", req.body.ingredients);
+  //console.log("Received ingredients: ", req.body.ingredients);
 
   try {
     const filteredRecipes = await Recipe.find({
@@ -117,7 +117,7 @@ async function getFilteredRecipes(req, res) {
     });
   } catch (error) {
     res.status(401).json({ error: error.message });
-    console.log(error.message);
+  //  console.log(error.message);
   }
 }
 
@@ -229,7 +229,7 @@ async function toggleFavourites(req, res) {
     const newToken = generateToken(req.user_id);
     res.status(201).json({ resMessage: resMessage, token: newToken });
   } catch (error) {
-    console.error("Cannot udate favourites:", error);
+  //  console.error("Cannot udate favourites:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
@@ -254,7 +254,6 @@ async function addFavouriteToRecipe(user_id, recipe_id) {
 }
 
 const RecipesController = {
-  // getAllPosts: getAllPosts,
   getRecipesWithUserDetails: getRecipesWithUserDetails,
   createRecipe: createRecipe,
   addCommentToRecipe: addCommentToRecipe,

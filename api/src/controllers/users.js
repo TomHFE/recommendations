@@ -12,19 +12,14 @@ async function create(req, res) {
   const usernameExist = await doesUsernameExist(username);
 
   if (usernameExist) {
-    console.log("Username already exists");
     res.status(400).json({ message: "Username already exists" });
   } else if (emailExist) {
-    console.log("Email already exists");
     res.status(400).json({ message: "Email already exists" });
   } else if (password == null) {
-    console.log("Password is missing");
     res.status(400).json({ message: "Password is missing" });
   } else if (!isPasswordValid(password)) {
-    console.log("Password invalid");
     res.status(400).json({ message: "Password invalid" });
   } else if (!verifyEmail(email)) {
-    console.log("Email address invalid");
     res.status(400).json({ message: "Email address invalid" });
   } else {
     const encryptpass = await hashpass(password);
@@ -39,11 +34,11 @@ async function create(req, res) {
     user
       .save()
       .then((user) => {
-        console.log("User created, id:", user._id.toString());
+       // console.log("User created, id:", user._id.toString());
         res.status(201).json({ message: "OK"});
       })
       .catch((err) => {
-        console.error("after", err);
+        //console.error("after", err);
         res.status(400).json({ message: "Something went wrong" });
       });
   }
@@ -74,12 +69,12 @@ async function getUserDetails(req,res) {
 
 //This gets a following
 async function getUserById(req, res) {
-  console.log("this is req.body: ", req.body);
+//  console.log("this is req.body: ", req.body);
   // const userIds = req.body.friendsIds.friendsData.friendsList
   const userIds = req.body.friendsIds;
-  console.log('line 80', userIds)
-  console.log('line 81', req.user_id)
-  console.log("line53", userIds);
+//  console.log('line 80', userIds)
+//  console.log('line 81', req.user_id)
+//  console.log("line53", userIds);
   if (typeof userIds !== "string") {
     try {
       const userList = await Promise.all(
@@ -130,8 +125,8 @@ async function userExists(userId) {
 async function createFollowerRequest(req, res) {
   const senderId = req.user_id;
   const recipientId = req.body.recipientId;
-  console.log("line108", recipientId);
-  console.log(senderId);
+//  console.log("line108", recipientId);
+//  console.log(senderId);
   const recipient = await userExists(recipientId);
 
   if (recipient !== null) {
@@ -186,7 +181,7 @@ async function getFollowerList(req, res) {
 async function getFollowingList(req, res) {
   const userId = req.user_id;
   const doesUserExists = await userExists(userId);
-  console.log('this is the userid             ' , userId)
+ // console.log('this is the userid             ' , userId)
   if (doesUserExists !== null) {
     try {
       const user = await User.findById(userId);
@@ -229,7 +224,7 @@ async function deleteFollowing(req, res) {
     _id: userId,
     "followingData.followingList": followingId,
   });
-  console.log(subjectNotInUserFollowingList);
+ // console.log(subjectNotInUserFollowingList);
 
   if (userReal !== null) {
     if (subjectNotInUserFollowingList !== null) {
@@ -259,16 +254,16 @@ async function deleteFollowing(req, res) {
 }
 async function findByUsername(req, res) {
   const userSearchName = req.body.userSearchName;
-  console.log("this is the user search name", userSearchName);
+//  console.log("this is the user search name", userSearchName);
   try {
     const users = await User.find({
       username: { $regex: userSearchName, $options: "i" },
     }).select("_id username");
-    console.log(users);
+ //   console.log(users);
     const token = generateToken(req.user_id);
     res.status(201).json({ users: users, token: token });
   } catch (error) {
-    console.log(error);
+  //  console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 }
@@ -276,8 +271,8 @@ async function findByUsername(req, res) {
 async function toggleFollowing(req, res) {
   const user_id = req.user_id;
   const target_id = req.body.target_id;
-  console.log("toggle_likes_user_id: ", user_id);
-  console.log("toggle_likes_target_id: ", target_id);
+ // console.log("toggle_likes_user_id: ", user_id);
+ // console.log("toggle_likes_target_id: ", target_id);
   const hasFollowed = await target_id.followingData.followerList.includes(
     user_id.toString()
   );
@@ -317,7 +312,7 @@ async function getPublicDetailsById(req, res) {
     const token = generateToken(req.user_id);
     res.status(200).json({ user_details: publicUserDetails, token: token });
   } catch (error) {
-    console.log(error);
+  //  console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 }
@@ -331,7 +326,7 @@ async function getPublicDetailsByUsername(req, res) {
     const token = generateToken(req.user_id);
     res.status(200).json({ user_details: publicUserDetails, token: token });
   } catch (error) {
-    console.log(error);
+  //  console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 }

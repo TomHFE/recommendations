@@ -8,7 +8,7 @@ const hashpass = async (password) => {
         const hashpassword = await bcrypt.hash(password, 10)
         return (hashpassword)
     } catch (error) {
-        console.log(`something went wrong ${error}`)
+    //    console.log(`something went wrong ${error}`)
         return false
     }
 }
