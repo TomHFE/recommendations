@@ -46,10 +46,6 @@ const NavBar = () => {
   return (
     <nav className="navbar-main">
       <div className="navbar-incoming-requests">
-        {/* <IncomingRequests /> */}
-        <button onClick={handleHomeButton}>home</button>
-        <button onClick={handleProfileButton}>profile</button>
-        <button onClick={handleCreateButton}>Create</button>
         <button className="home" onClick={handleHomeButton}>
           Home
         </button>
@@ -57,6 +53,10 @@ const NavBar = () => {
         <button className="profile" onClick={handleProfileButton}>
           Profile
         </button>
+        <button className="create" onClick={handleCreateButton}>
+          Create
+        </button>
+
         <div className="search-container">
           <input
             type="text"
