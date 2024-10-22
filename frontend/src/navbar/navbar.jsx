@@ -23,6 +23,9 @@ const NavBar = () => {
   const handleProfileButton = () => {
     navigate("./profile");
   };
+  const handleCreateButton = () => {
+    navigate("./create");
+  };
   const handleSearchBar = async () => {
     // e.preventDefault()
     const token = localStorage.getItem("token");
@@ -44,6 +47,9 @@ const NavBar = () => {
     <nav className="navbar-main">
       <div className="navbar-incoming-requests">
         {/* <IncomingRequests /> */}
+        <button onClick={handleHomeButton}>home</button>
+        <button onClick={handleProfileButton}>profile</button>
+        <button onClick={handleCreateButton}>Create</button>
         <button className="home" onClick={handleHomeButton}>
           Home
         </button>
