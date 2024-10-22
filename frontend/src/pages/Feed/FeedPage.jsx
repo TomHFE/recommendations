@@ -64,11 +64,6 @@ export function FeedPage() {
             recipes.map((recipe) => <Recipe recipe={recipe} key={recipe._id} />)
           )}
         </div>
-
-        <div className="logout">
-          {" "}
-          <LogoutButton />
-        </div>
       </div>
     </>
   );

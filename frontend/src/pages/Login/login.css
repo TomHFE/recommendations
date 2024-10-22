@@ -1,44 +1,45 @@
 .login {
-    display: inline-block;
-    padding: 15px 30px;
-    background-color: #3498db;
-    color: #fff;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    font-size: 18px;
-    min-width: 300px; /* Adjust width for form */
-    text-align: left; /* Ensure labels and inputs are aligned */
-  }
-  
-  .login:hover {
-    background-color: #2980b9;
-  }
-  
-  .login label {
-    display: block;
-    margin-bottom: 5px;
-    color: #fff;
-  }
-  
-  .login input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border-radius: 3px;
-    border: none;
-  }
-  
-  .login input[type="submit"] {
-    background-color: #fff;
-    color: #3498db;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .login input[type="submit"]:hover {
-    background-color: #ecf0f1;
-  }
-  
-  h2{
-    font-family:'brush script mt',cursive;
-  }
+  display: inline-block;
+  padding: 15px 30px;
+  background-color: #000000;
+  color: #fff;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  font-size: 18px;
+  min-width: 300px; /* Adjust width for form */
+  text-align: left; /* Ensure labels and inputs are aligned */
+  font-family: Verdana, sans-serif;
+}
+
+.login:hover {
+  background-color: #000000;
+}
+
+.login label {
+  display: block;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.login input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border-radius: 3px;
+  border: none;
+}
+
+.login input[type="submit"] {
+  background-color: #fff;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login input[type="submit"]:hover {
+  background-color: #ecf0f1;
+}
+
+h2 {
+  font-family: Verdana, sans-serif;
+}

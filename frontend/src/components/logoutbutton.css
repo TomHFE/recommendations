@@ -1,20 +1,20 @@
 .logout-button {
-    display: inline-block; /* Ensure it behaves like a block element */
-    padding: 15px 30px; /* Same padding as the profile box */
-    background-color: #3498db; /* Same background color */
-    color: white; /* Change text color as needed */
-    border-radius: 5px; /* Same border radius */
-    transition: background-color 0.3s ease; /* Same transition effect */
-    font-size: 20px; /* Same font size */
-    min-width: 100px; /* Same minimum width */
-    text-align: center; /* Center text inside button */
-    border: none; /* Remove default border */
-    cursor: pointer; /* Show pointer on hover */
+  display: inline-block; /* Ensure it behaves like a block element */
+  padding: 3px 8px; /* Same padding as the profile box */
+  background-color: #000000; /* Same background color */
+  color: white; /* Change text color as needed */
+  border-radius: 5px; /* Same border radius */
+  transition: background-color 0.3s ease; /* Same transition effect */
+  font-size: 13px; /* Same font size */
+  min-width: 50px; /* Same minimum width */
+  text-align: center; /* Center text inside button */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Show pointer on hover */
 }
 
-.logout-button:hover {
-    background-color: #2980b9; /* Change background color on hover */
-}
+/* .logout-button:hover {
+  background-color: #2980b9;
+} */
 
 .popup-overlay {
   position: fixed;

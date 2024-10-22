@@ -1,0 +1,5 @@
+.profile-actions {
+  display: flex; /* Enables flexbox layout */
+  gap: 20px;
+  justify-content: center;
+}

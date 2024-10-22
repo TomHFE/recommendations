@@ -6,7 +6,7 @@ export function HomePage() {
     <div className="home">
       <h1>Welcome to the Recipe Finder!</h1>
       <div className="button-container">
-        <Link to="/signup" className="box signup-box"> 
+        <Link to="/signup" className="box signup-box">
           Sign Up
         </Link>
         <Link to="/login" className="box login-box">
@@ -16,4 +16,3 @@ export function HomePage() {
     </div>
   );
 }
-
