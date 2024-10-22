@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 function Recipe(props) {
   //console.log("props: ", props)
   const navigate = useNavigate();
-
+  console.log(props.recipe)
   return (
     <>
       <div
@@ -35,7 +35,7 @@ function Recipe(props) {
             {props.recipe.summary}
             <button
               onClick={() =>
-                navigate(`/recipe_page`, { state: { recipe: props } })
+                navigate(`/recipe_page`, { state: { recipe: props.recipe } })
               }
             >
               Click to See More
