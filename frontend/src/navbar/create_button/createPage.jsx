@@ -34,8 +34,8 @@ const CreatePage = () => {
 
   const navigate = useNavigate();
 
-  const handleNavigate = (recipes) => {
-    navigate('./fetched_recipe', { state: { props: recipes}})
+  const handleNavigate = (recipes, searchFilters) => {
+    navigate('./fetched_recipe', { state: { props: recipes, allergies: searchFilters}})
   }
 
 
@@ -129,6 +129,7 @@ const handleIngredients = (iteration, value) => {
       
       if (result.results && Array.isArray(result.results)) {
         setRecipes(result.results); 
+        console.log(result.results)
       } else {
         setRecipes([]); 
       }
@@ -249,7 +250,7 @@ return (
           </form>
           {recipes !== undefined ? (
      recipes.map((recipe) => (
-        <div key={recipe.id} onClick={() => handleNavigate(recipe)}>
+        <div key={recipe.id} onClick={() => handleNavigate(recipe, searchFilters.allergies)}>
       <h1>{recipe.title}</h1>
       <img src={recipe.image} alt="recipe photo" />
         </div>
