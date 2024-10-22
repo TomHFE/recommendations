@@ -1,8 +1,6 @@
-## Acebook MERN Template
+## Recipe Finder Website
 
-In this project, you are task with working on an existing application. A
-significant part of the challenge will be to familiarise yourself with the
-codebase you've inherited, as you work to **improve and extend** it.
+This project has been built using the MERN stack.
 
 ### Structure
 
@@ -17,13 +15,10 @@ run separately.
 ### Documentation
 
 [More documentation of the codebase and its architecture can be found here.](./DOCUMENTATION.md)
-It's recommended you all read the suggested docs _after making sure the whole
-setup below worked for everyone_. Then work together on a diagram describing how
-the application works.
 
 ### Card wall
 
-REPLACE THIS TEXT WITH A LINK TO YOUR CARD WALL
+https://trello.com/b/9rEDW8IM/recommendations
 
 ### Quickstart
 
@@ -37,27 +32,25 @@ If you haven't already, make sure you have node and NVM installed.
    ```
    Then follow the instructions to update your `~/.bash_profile`.
 2. Open a new terminal
-3. Install the latest version of [Node.js](https://nodejs.org/en/), (`20.5.0` at
-   time of writing).
+3. Install the latest version of [Node.js](https://nodejs.org/en/).
    ```
    nvm install 20
    ```
 
 ### Set up your project
 
-1. Have one team member fork this repository
-2. Rename the fork to `acebook-<team name>`
-3. Every team member clone the fork to their local machine
-4. Install dependencies for both the `frontend` and `api` applications:
+1. Fork this repository
+2. Every team member clone the fork to their local machine
+3. Install dependencies for both the `frontend` and `api` applications:
    ```
    cd frontend
    npm install
    cd ../api
    npm install
    ```
-5. Install an ESLint plugin for your editor, for example
+4. Install an ESLint plugin for your editor, for example
    [ESLint for VSCode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-6. Install MongoDB
+5. Install MongoDB
    ```
    brew tap mongodb/brew
    brew install mongodb-community@6.0
@@ -65,7 +58,7 @@ If you haven't already, make sure you have node and NVM installed.
    _Note:_ If you see a message that says
    `If you need to have mongodb-community@6.0 first in your PATH, run:`, follow
    the instruction. Restart your terminal after this.
-7. Start MongoDB
+6. Start MongoDB
 
    ```
    brew services start mongodb-community@6.0
@@ -88,7 +81,7 @@ VITE_BACKEND_URL="http://localhost:3000"
 Create a file `api/.env` with the following contents:
 
 ```
-MONGODB_URL="mongodb://0.0.0.0/acebook"
+MONGODB_URL="mongodb://0.0.0.0/recommendations"
 NODE_ENV="development"
 JWT_SECRET="secret"
 ```
@@ -114,10 +107,9 @@ In a new terminal session...
 ```
 
 You should now be able to open your browser and go to
-`http://localhost:5174/signup` to create a new user.
+`http://localhost:5173/signup` to create a new user.
 
 Then, after signing up, you should be able to log in by going to
-`http://localhost:5174/login`.
+`http://localhost:5173/login`.
 
-After logging in, you won't see much but you can create posts using PostMan and
-they should then show up in the browser if you refresh the page.
+Once logged in, you should be able to see a feed of recipes, get a new recipe, favourite it and have it saved in your profile page.
