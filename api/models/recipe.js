@@ -52,17 +52,18 @@ const RecipeSchema = new mongoose.Schema({
       dairy: { type: Boolean, default: false },
       soy: { type: Boolean, default: false },
       eggs: { type: Boolean, default: false },
-   
+
 
     vegeterian: Boolean,
     vegan: Boolean,
     pescatarian: Boolean,
     glutenFree: Boolean,
     dairyFree: Boolean,
-    healthy: Number,
+    healthy: Boolean,
     costFriendly: Number,
     readyInMinutes: Number,
   },
+
   ingredients: [
     {
       name: String,
@@ -72,6 +73,13 @@ const RecipeSchema = new mongoose.Schema({
   ],
 });
 
-
+// We use the Schema to create the Post model. Models are classes which we can
+// use to construct entries in our Database.
 const Recipe = mongoose.model("Recipe", RecipeSchema);
+
+// These lines will create a test post every time the server starts.
+// You can delete this once you are creating your own posts.
+//const dateTimeString = new Date().toLocaleString("en-GB");
+//new Post({ message: `Test message, created at ${dateTimeString}` }).save();
+
 module.exports = Recipe;
