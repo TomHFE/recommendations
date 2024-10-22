@@ -265,4 +265,275 @@ describe("/recipes", () => {
       favouriteIds = updatedUser.favourites.map(fav => fav.toString());
       expect(favouriteIds).not.toContain(recipe._id.toString());
     });
+
+    describe("POST /recipes/get_filtered_recipes", () => {
+      let token, userId;
+    
+      beforeAll(async () => {
+        const user = new User({
+          email: "filtered-recipes@test.com",
+          password: "12345678",
+          username: "filterTester",
+        });
+        await user.save();
+        userId = user._id; 
+        token = generateToken(userId);
+      });
+    
+      afterEach(async () => {
+        await Recipe.deleteMany({});
+        await User.deleteMany({});
+      });
+    
+      test("returns filtered recipes based on search criteria", async () => {
+        const recipe1 = {
+          title: "Vegan Pancakes",
+          image: "http://example.com/pancake.jpg",
+          summary: "Delicious and fluffy vegan pancakes",
+          instructions: "Mix all ingredients and cook.",
+          SearchingParameters: {
+            nationalities: "American",
+            dishType: ["breakfast"],
+            preparationMinutes: 10,
+            cookingMinutes: 15,
+            servings: 4,
+            vegan: true,
+          },
+          ingredients: [
+            { name: "flour", quantity: 2, unit: "cups" },
+            { name: "almond milk", quantity: 1, unit: "cup" },
+          ],
+        };
+    
+        const recipe2 = {
+          title: "Egg Pancakes",
+          image: "http://example.com/pancake.jpg",
+          summary: "Delicious pancakes with eggs",
+          instructions: "Mix all ingredients and cook.",
+          SearchingParameters: {
+            nationalities: "American",
+            dishType: ["breakfast"],
+            preparationMinutes: 10,
+            cookingMinutes: 15,
+            servings: 4,
+            vegan: false,
+          },
+          ingredients: [
+            { name: "eggs", quantity: 2, unit: "pieces" },
+            { name: "milk", quantity: 1, unit: "cup" },
+          ],
+        };
+    
+        await request(app)
+          .post("/recipes/create_recipe")
+          .set("Authorization", `Bearer ${token}`)
+          .send({ recipeList: recipe1 });
+    
+        await request(app)
+          .post("/recipes/create_recipe")
+          .set("Authorization", `Bearer ${token}`)
+          .send({ recipeList: recipe2 });
+    
+        const response = await request(app)
+          .post("/recipes/filtered")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            vegan: true, 
+            nationality: "American",
+            ingredients: ["flour", "almond milk"],
+          });
+          
+    
+        expect(response.status).toBe(200);
+        expect(response.body.recipes.length).toBe(1); // Only one vegan recipe should match
+        expect(response.body.recipes[0].title).toBe("Vegan Pancakes");
+      });
+    });
+    
+
+    describe("PATCH /comments", () => {
+      let token, userId, recipeId;
+    
+      beforeAll(async () => {
+        const user = new User({
+          email: "comment-test@test.com",
+          password: "12345678",
+          username: "commentTester",
+        });
+        await user.save();
+        userId = user._id; 
+        token = generateToken(userId);
+    
+        const recipe = new Recipe({
+          user: userId,
+          title: "Test Recipe",
+          summary: "Summary of the test recipe",
+          instructions: ["Step 1", "Step 2"],
+          SearchingParameters: { nationalities: "American", dishType: ["dinner"] },
+        });
+        await recipe.save();
+        recipeId = recipe._id;
+      });
+    
+      afterEach(async () => {
+        await Recipe.deleteMany({});
+        await User.deleteMany({});
+      });
+    
+      test("adds a comment to the recipe", async () => {
+        const commentData = {
+          recipe_id: recipeId,
+          message: "This recipe is great!", 
+        };
+      
+        const response = await request(app)
+          .patch("/recipes/comments") 
+          .set("Authorization", `Bearer ${token}`)
+          .send(commentData);
+
+        expect(response.status).toBe(201);
+        expect(response.body.comment.message).toEqual("This recipe is great!");
+        expect(response.body.comment.recipe_id).toBe(recipeId.toString()); 
+      });
+    
+    
+      describe("GET /recipes/get_user_recipes_by_id", () => {
+        let userId, recipeId, otherUserId;
+      
+        beforeAll(async () => {
+          const user = new User({
+            email: "user-test@test.com",
+            password: "12345678",
+            username: "userTester",
+          });
+          await user.save();
+          userId = user._id; 
+
+          const otherUser = new User({
+            email: "other-user@test.com",
+            password: "12345678",
+            username: "otherUserTester",
+          });
+          await otherUser.save();
+          otherUserId = otherUser._id; 
+      
+          // Create a recipe for the first user
+          const recipe = new Recipe({
+            user: userId,
+            title: "Pasta Primavera",
+            summary: "Delicious pasta with vegetables",
+            instructions: ["Boil water", "Add pasta", "Cook vegetables", "Combine"],
+            SearchingParameters: { nationalities: "Italian", dishType: ["main course"] },
+          });
+          await recipe.save();
+          recipeId = recipe._id; 
+        });
+      
+        afterEach(async () => {
+          await Recipe.deleteMany({});
+          await User.deleteMany({});
+        });
+      
+        test("returns recipes by user ID", async () => {
+          const response = await request(app)
+            .get("/recipes/get_user_recipes_by_id")
+            .set("Authorization", `Bearer ${token}`) 
+            .send({ user_id: userId }); 
+      
+          expect(response.status).toBe(200); 
+          expect(response.body.recipes.length).toBe(1); // Expect one recipe returned
+          expect(response.body.recipes[0].title).toBe("Pasta Primavera"); 
+          expect(response.body.recipes[0].user.username).toBe("userTester"); // Check the username of the user associated with the recipe
+        });
+      
+        test("returns an empty array when user has no recipes", async () => {
+          const response = await request(app)
+            .get("/recipes/get_user_recipes_by_id")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ user_id: otherUserId }); // Send a different user ID that has no recipes
+      
+          expect(response.status).toBe(200); // Check for a successful response
+          expect(response.body.recipes).toEqual([]); // Expect an empty array returned
+        });
+      });
+    })
+
+
+    describe("GET /recipes/get_user_recipes", () => {
+      let userId, token;
+    
+      beforeAll(async () => {
+        // Create a user
+        const user = new User({
+          email: "user-profile@test.com",
+          password: "12345678",
+          username: "userProfileTester",
+        });
+        await user.save();
+        userId = user._id; // Store the user's ID for use in tests
+    
+        // Generate a token for the user
+        token = generateToken(userId);
+    
+        // Create some recipes for the user
+        const recipe1 = new Recipe({
+          user: userId,
+          title: "Apple Pie",
+          summary: "Delicious apple pie with a flaky crust.",
+          instructions: ["Prepare crust", "Fill with apples", "Bake"],
+          SearchingParameters: { nationalities: "American", dishType: ["dessert"] },
+        });
+        await recipe1.save();
+    
+        const recipe2 = new Recipe({
+          user: userId,
+          title: "Caesar Salad",
+          summary: "Fresh salad with Caesar dressing.",
+          instructions: ["Mix greens", "Add dressing", "Toss"],
+          SearchingParameters: { nationalities: "Italian", dishType: ["salad"] },
+        });
+        await recipe2.save();
+      });
+    
+      afterEach(async () => {
+        await Recipe.deleteMany({});
+        await User.deleteMany({});
+      });
+    
+      test("returns recipes for the authenticated user", async () => {
+        const response = await request(app)
+          .get("/recipes/get_user_recipes") 
+          .set("Authorization", `Bearer ${token}`);
+      
+        expect(response.status).toBe(200); 
+        expect(response.body.recipes.length).toBe(2); 
+      
+        const recipeTitles = response.body.recipes.map(recipe => recipe.title);
+        expect(recipeTitles).toContain("Apple Pie"); 
+        expect(recipeTitles).toContain("Caesar Salad"); 
+      
+        // Validate the details of the first recipe
+        const applePie = response.body.recipes.find(recipe => recipe.title === "Apple Pie");
+        expect(applePie.summary).toBe("Delicious apple pie with a flaky crust.");
+        expect(applePie.user.username).toBe("userProfileTester"); 
+      
+        // Validate the details of the second recipe
+        const caesarSalad = response.body.recipes.find(recipe => recipe.title === "Caesar Salad");
+        expect(caesarSalad.summary).toBe("Fresh salad with Caesar dressing.");
+        expect(caesarSalad.user.username).toBe("userProfileTester"); 
+      });
+      
+    
+      test("returns an empty array when user has no recipes", async () => {
+        await Recipe.deleteMany({});
+    
+        const response = await request(app)
+          .get("/recipes/get_user_recipes")
+          .set("Authorization", `Bearer ${token}`);
+    
+        expect(response.status).toBe(200);
+        expect(response.body.recipes).toEqual([]); // Expect an empty array returned
+      });
+    });
+    
   });

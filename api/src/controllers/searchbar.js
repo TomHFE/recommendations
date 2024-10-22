@@ -8,7 +8,7 @@ const { ObjectId } = require("mongodb")
 // profile
 async function findUsersAndRecipes(req, res){
     const search = req.body.searchparam
-    console.log(req.body.searchparam)
+    //console.log(req.body.searchparam)
     const userExists = await User.exists({username: search})
     const recipeExists = await Recipe.exists({title: search})
 
@@ -24,7 +24,7 @@ async function findUsersAndRecipes(req, res){
             res.status(200).json({ recipes: recipes, user: user, token: token})
         }
         catch (error) {
-                console.log(error);
+            //    console.log(error);
                 res.status(500).json({ message: "Server error" });
               
         }
@@ -36,7 +36,7 @@ async function findUsersAndRecipes(req, res){
             res.status(200).json({ recipes: recipes, user: 'false', token: token})
         }
         catch (error) {
-                console.log(error);
+              //  console.log(error);
                 res.status(500).json({ message: "Server error" });
               
         }
@@ -48,7 +48,7 @@ async function findUsersAndRecipes(req, res){
             res.status(200).json({ recipes: 'false', user: user, token: token})
         }
         catch (error) {
-                console.log(error);
+            //    console.log(error);
                 res.status(500).json({ message: "Server error" });       
         }
     }
