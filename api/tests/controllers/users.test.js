@@ -4,6 +4,7 @@ const User = require("../../src/models/user");
 const { generateToken } = require("../../src/lib/token");
 const { toggleFollowing } = require("../../src/controllers/users");
 require("../mongodb_helper");
+const mongoose = require("mongoose");
 
 
 describe("/users", () => {
@@ -293,14 +294,6 @@ describe("/users", () => {
 });
 
 
-
-
-const request = require("supertest");
-const app = require("../../app");
-const User = require("../../src/models/user");
-const { generateToken } = require("../../src/lib/token");
-require("../mongodb_helper");
-
 describe("GET /users/get_user_details", () => {
   let token, user;
 
@@ -330,16 +323,16 @@ describe("GET /users/get_user_details", () => {
   });
 
  // Test error handling when the user ID is invalid
- test("should return a 404 error when user ID is invalid", async () => {
-  const invalidUserId = "invalidUserId"; // An invalid ObjectId
-  const invalidToken = generateToken(invalidUserId); // Generate token with invalid ID
+  test("should return a 404 error when user ID is invalid", async () => {
+    const invalidUserId = "invalidUserId"; // An invalid ObjectId
+    const invalidToken = generateToken(invalidUserId); // Generate token with invalid ID
 
-  const response = await request(app)
-    .get("/users/get_user_details")
-    .set("Authorization", `Bearer ${invalidToken}`);
+    const response = await request(app)
+      .get("/users/get_user_details")
+      .set("Authorization", `Bearer ${invalidToken}`);
 
-  expect(response.statusCode).toBe(404);
-});
+    expect(response.statusCode).toBe(404); 
+  });
 });
 
 describe('POST /users/findByUsername', () => {
@@ -360,7 +353,7 @@ describe('POST /users/findByUsername', () => {
 
   test('should return matching users based on username', async () => {
     const response = await request(app)
-      .post('/users/findByUsername')
+      .post('/users/find_by_username')
       .set('Authorization', `Bearer ${token}`)
       .send({ userSearchName: 'test' }); 
 
@@ -370,4 +363,234 @@ describe('POST /users/findByUsername', () => {
     expect(response.body.token).toBeDefined();
   });
 })
+
+describe("POST /users/get_public_details", () => {
+  let token, user;
+
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    user = new User({
+      email: "user@test.com",
+      password: "password1!",
+      username: "user1",
+      profilePictureURL: "http://example.com/user1.jpg",
+      followingData: { followingList: [] },
+    });
+
+    await user.save();
+    token = generateToken(user._id);
+  });
+
+  test("should return public user details when a valid user ID is provided", async () => {
+    const response = await request(app)
+      .post("/users/public_details_id")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ user_id: user._id.toString() });
+
+ //     console.log(response.body); 
+      expect(response.statusCode).toBe(200);
+      expect(response.body.user_details[0].username).toBe(user.username); 
+      expect(response.body.user_details[0].profilePictureURL).toBe(user.profilePictureURL); 
+      expect(response.body.token).toBeDefined();
+  });
+
+  test("should return 500 when an invalid user ID is provided", async () => {
+    const response = await request(app)
+      .post("/users/public_details_id")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ user_id: "invalidUserId" });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toEqual("Server error");
+  });
+});
+
+describe("POST /users/get_public_details_by_username", () => {
+  let token, user;
+
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    user = new User({
+      email: "user@test.com",
+      password: "password1!",
+      username: "user1",
+      profilePictureURL: "http://example.com/user1.jpg",
+      followingData: { followingList: [] },
+    });
+
+    await user.save();
+    token = generateToken(user._id);
+  });
+
+  test("should return public user details when a valid username is provided", async () => {
+    const response = await request(app)
+      .post("/users/public_details_username")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ username: user.username });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.user_details[0].username).toBe(user.username);
+    expect(response.body.user_details[0].profilePictureURL).toBe(user.profilePictureURL);
+    
+    if (response.body.user_details[0].followingData) {
+      expect(response.body.user_details[0].followingData.followingList).toEqual(user.followingData.followingList);
+    }
+    expect(response.body.token).toBeDefined();
+  });
+
+  test("should return a 404 error code when username is not found", async () => {
+    const response = await request(app)
+      .post("/users/public_details_by_username")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ username: "nonexistentuser" }); 
+
+      expect(response.statusCode).toBe(404);
+    });
+});
+
+describe("GET /users/get_following_list", () => {
+  let token, user;
+
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    user = new User({
+      email: "user@test.com",
+      password: "password1!",
+      username: "user1",
+      followingData: { following: [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()] }, // Use 'new' to create ObjectId
+    });
+
+    await user.save();
+    token = generateToken(user._id); 
+  });
+
+  test("should return the following list when user exists", async () => {
+    // Mock User.exists to return true (user exists)
+    jest.spyOn(User, 'exists').mockResolvedValue(true);
+
+    const response = await request(app)
+      .get("/users/get_following_list")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(201); 
+    expect(response.body.message).toBe("OK"); 
+    expect(response.body.user).toEqual(user.followingData.following.map(String)); // Check if the following list matches
+    expect(response.body.token).toBeDefined(); // Ensure token is returned
+  });
+
+  test("should return 404 when user does not exist", async () => {
+    jest.spyOn(User, 'exists').mockResolvedValue(null);
+
+    const response = await request(app)
+      .get("/users/get_following_list")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(404); 
+    expect(response.body.message).toBe("user does not exist"); 
+  });
+
+  test("should return 401 if there is an error", async () => {
+    jest.spyOn(User, 'exists').mockResolvedValue(true);
+    jest.spyOn(User, 'findById').mockImplementation(() => {
+      throw new Error("Database error");
+    });
+
+    const response = await request(app)
+      .get("/users/get_following_list")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(401); 
+    expect(response.body.message).toContain("error message: Database error"); // Check the error message
+  });
+});
+
+
+
+
+
+
+
+
+
+describe("GET /users/get_follower_list", () => {
+  let token, user;
+
+  beforeEach(async () => {
+    await User.deleteMany({}); 
+  
+    user = new User({
+      _id: new mongoose.Types.ObjectId(), // Ensure this user ID is valid
+      email: "user@test.com",
+      password: "password1!",
+      username: "user1",
+      followingData: { followers: [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()] }
+    });
+  
+    await user.save(); 
+    token = generateToken(user._id); 
+  });
+  
+
+
+  test("should return the follower list when user exists", async () => {
+    const mockedFollowers = [new mongoose.Types.ObjectId().toString(), new mongoose.Types.ObjectId().toString()];
+  
+    // Mock User.findById to return a user with the mocked followers
+    jest.spyOn(User, 'findById').mockResolvedValue({
+      _id: new mongoose.Types.ObjectId().toString(), // Mock a valid ObjectId string
+      followingData: { followers: mockedFollowers } // Mock the followers array
+    });
+  
+    jest.spyOn(User, 'exists').mockResolvedValue(true);
+  
+    const response = await request(app)
+      .get("/users/get_follower_list")
+      .set("Authorization", `Bearer ${token}`);
+  
+    // console.log("Token being sent:", token); // Log the token to ensure it's correct
+    // console.log("Response body:", response.body); // Log the response body
+    // console.log("Response status:", response.statusCode); // Log the response status
+  
+    expect(response.statusCode).toBe(201); 
+    expect(response.body.message).toBe("OK"); 
+  
+    // Compare the response's followers to the mocked followers array
+    expect(response.body.user).toEqual(mockedFollowers); // Expect followers to match
+    expect(response.body.token).toBeDefined(); 
+  });
+  
+  test("should return 404 when user does not exist", async () => {
+    // Mock User.exists to return null (user does not exist)
+    jest.spyOn(User, 'exists').mockResolvedValue(null);
+
+    const response = await request(app)
+      .get("/users/get_follower_list")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(404); 
+    expect(response.body.message).toBe("user does not exist"); 
+  });
+
+  test("should return 401 if there is an error", async () => {
+    jest.spyOn(User, 'exists').mockResolvedValue(true);
+
+    // Mock an error when User.findById is called
+    jest.spyOn(User, 'findById').mockImplementation(() => {
+      throw new Error("Database error");
+    });
+
+    const response = await request(app)
+      .get("/users/get_follower_list")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(401); 
+    expect(response.body.message).toContain("error message: Database error");
+  });
+});
+
+
+
 })

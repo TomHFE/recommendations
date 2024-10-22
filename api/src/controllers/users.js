@@ -159,6 +159,7 @@ async function createFollowerRequest(req, res) {
 async function getFollowerList(req, res) {
   const userId = req.user_id;
   const doesUserExists = await userExists(userId);
+  //console.log("Looking up user by ID:", userId); // Log the userId here
 
   if (doesUserExists !== null) {
     try {
