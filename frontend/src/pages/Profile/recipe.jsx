@@ -1,28 +1,36 @@
-import DOMPurify from 'dompurify'; // Import the DOMPurify library
-import { useEffect, useState } from "react"
+import DOMPurify from "dompurify";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FavouriteButton } from "../../components/FavouriteButton";
+import { CommentButton } from "../../components/CommentButton";
 
 const Recipe = (props) => {
   const navigate = useNavigate();
-  const[sanitizedHtmlSummary, setSanitizedHtmlSummary] = useState('')
-  
+  const [sanitizedHtmlSummary, setSanitizedHtmlSummary] = useState("");
+
   useEffect(() => {
-        setSanitizedHtmlSummary(DOMPurify.sanitize(props.summary)); 
+    setSanitizedHtmlSummary(DOMPurify.sanitize(props.summary));
+  }, []);
 
-    },[])
-
-  const navigateToRecipe = () => {
-        navigate('/recipe_page', {state: {recipe: props, summary: sanitizedHtmlSummary}})
-    }
+  // const navigateToRecipe = () => {
+  //   navigate("/recipe_page", {
+  //     state: { recipe: props, summary: sanitizedHtmlSummary },
+  //   });
+  // };
 
   return (
-    <div className="whole-card" onClick={navigateToRecipe}>
+    <div className="whole-card">
       <article className="card">
         <div className="individual-card">
           <h1 className="card-title">{props.title}</h1>
-          <img src={props.image} alt="recipe image" />
-         <div className="card-text" dangerouslySetInnerHTML={{ __html: sanitizedHtmlSummary }}/>
-          {/* <button
+          <div className="image-container">
+            <img className="image" src={props.image} alt="recipe image" />
+          </div>
+          <div
+            className="card-text"
+            dangerouslySetInnerHTML={{ __html: sanitizedHtmlSummary }}
+          />
+          <button
             className="card-button"
             onClick={() =>
               navigate(`/recipe_page`, { state: { recipe: props } })
@@ -32,14 +40,14 @@ const Recipe = (props) => {
           </button>
           <div className="buttons">
             <FavouriteButton
-              number={props.recipe.favourites.length}
-              recipeId={props.recipe._id}
+              number={props.recipe?.favourites?.length || 0} // Default to 0 if undefined
+              recipeId={props.recipe?._id}
             />
             <CommentButton
-              comments={props.recipe.comments}
-              recipeId={props.recipe._id}
+              comments={props.recipe?.comments || []} // Default to empty array if undefined
+              recipeId={props.recipe?._id}
             />
-          </div> */}
+          </div>
         </div>
       </article>
     </div>
