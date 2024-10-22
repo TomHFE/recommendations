@@ -7,7 +7,6 @@ export async function getUsersAndRecipes(token, searchparam) {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
-
     },    
     body: JSON.stringify({ searchparam: searchparam }),
 

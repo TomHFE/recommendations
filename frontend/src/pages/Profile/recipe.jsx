@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
-// import { FavouriteButton } from "../../components/FavouriteButton";
-// import { CommentButton } from "../../components/CommentButton";
+import DOMPurify from 'dompurify'; // Import the DOMPurify library
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 
 const Recipe = (props) => {
   const navigate = useNavigate();
+  const[sanitizedHtmlSummary, setSanitizedHtmlSummary] = useState('')
+  
+  useEffect(() => {
+        setSanitizedHtmlSummary(DOMPurify.sanitize(props.summary)); 
+
+    },[])
 
   const navigateToRecipe = () => {
-    navigate("/recipe_page", { state: { recipe: props } });
-  };
+        navigate('/recipe_page', {state: {recipe: props, summary: sanitizedHtmlSummary}})
+    }
 
   return (
     <div className="whole-card" onClick={navigateToRecipe}>
@@ -16,7 +21,7 @@ const Recipe = (props) => {
         <div className="individual-card">
           <h1 className="card-title">{props.title}</h1>
           <img src={props.image} alt="recipe image" />
-          <p className="card-text">{props.summary}</p>
+         <div className="card-text" dangerouslySetInnerHTML={{ __html: sanitizedHtmlSummary }}/>
           {/* <button
             className="card-button"
             onClick={() =>

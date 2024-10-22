@@ -210,7 +210,7 @@ async function toggleFavourites(req, res) {
   const user_id = req.user_id;
   const recipe_id = req.body.recipe_id;
   //console.log("toggle_likes_user_id: ", user_id)
-  //console.log("togg_like_post_id: ", post_id)
+  console.log('this is recipe id       ', recipe_id)
   const resMessage = await addFavouriteToRecipe(user_id, recipe_id);
   try {
     const user = await User.findById(user_id);

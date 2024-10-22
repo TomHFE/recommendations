@@ -12,7 +12,11 @@ async function findUsersAndRecipes(req, res){
     const userExists = await User.exists({username: search})
     const recipeExists = await Recipe.exists({title: search})
 
-    if (userExists && recipeExists) {
+    if (!recipeExists && !userExists) {
+        res.status(404).json({ message: "search parameters do not exist on the site" });       
+    }
+    
+    else if (userExists && recipeExists) {
         try {
             const recipes = await Recipe.find({title: search})
             const user = await User.find({username: search})
@@ -48,9 +52,7 @@ async function findUsersAndRecipes(req, res){
                 res.status(500).json({ message: "Server error" });       
         }
     }
-    else if (!recipeExists && !userExists) {
-        res.status(404).json({ message: "search parameters do not exist on the site" });       
-    }
+   
 }
 
 

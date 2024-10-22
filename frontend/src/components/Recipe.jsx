@@ -6,7 +6,7 @@ import "./recipe.css";
 function Recipe(props) {
   //console.log("props: ", props)
   const navigate = useNavigate();
-
+  console.log(props.recipe)
   return (
     <>
       <div className="whole-card">
@@ -21,7 +21,7 @@ function Recipe(props) {
             <button
               className="card-button"
               onClick={() =>
-                navigate(`/recipe_page`, { state: { recipe: props } })
+                navigate(`/recipe_page`, { state: { recipe: props.recipe } })
               }
             >
               Click to See More

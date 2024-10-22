@@ -32,9 +32,10 @@ const CreatePage = () => {
 
   const navigate = useNavigate();
 
-  const handleNavigate = (recipes) => {
-    navigate("./fetched_recipe", { state: { props: recipes } });
-  };
+
+  const handleNavigate = (recipes, searchFilters) => {
+    navigate('./fetched_recipe', { state: { props: recipes, allergies: searchFilters}})
+  }
 
   const handleChange = (a, value) => {
     setsearchFilters((prev) => ({
@@ -130,6 +131,7 @@ const CreatePage = () => {
 
       if (result.results && Array.isArray(result.results)) {
         setRecipes(result.results);
+
       } else {
         setRecipes([]);
       }
@@ -270,6 +272,20 @@ const CreatePage = () => {
             onChange={(e) => handleIngredients(4, e.target.value)}
             placeholder="Enter ingredients"
           />
+
+          </div>
+            <button
+              role="submit-button"
+              id="submit"
+              type="submit"
+              value="Submit"
+            />
+          </form>
+          {recipes !== undefined ? (
+     recipes.map((recipe) => (
+        <div key={recipe.id} onClick={() => handleNavigate(recipe, searchFilters.allergies)}>
+      <h1>{recipe.title}</h1>
+      <img src={recipe.image} alt="recipe photo" />
         </div>
         <button role="submit-button" id="submit" type="submit" value="Submit">
           Search
