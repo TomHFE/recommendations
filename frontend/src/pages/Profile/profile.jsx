@@ -49,16 +49,18 @@ export function Profile() {
   );
 
   return (
-    <div className="profile-page">
+    <div>
       <div>
         <h1>{profile[0].username}</h1>
-        <img src={profile[0].profilePictureURL} alt="Profile" />
-        <h3 onClick={handleFollowers}>Followers</h3>
-        <h3 onClick={handleFollowing}>Following</h3>
+        <img src={profile[0].profilePictureURL} alt="User image" />
+        <div className="profile-actions">
+          <h3 onClick={handleFollowers}>Followers</h3>
+          <h3 onClick={handleFollowing}>Following</h3>
+        </div>
       </div>
 
       <h1>Favourites</h1>
-      <div className="feed" role="feed">
+      <div>
         {favouritedRecipes.map((recipe) => (
           <Recipe key={recipe._id} {...recipe} />
         ))}

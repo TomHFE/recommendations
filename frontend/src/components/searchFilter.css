@@ -1,0 +1,21 @@
+.row {
+  margin-bottom: 20px;
+}
+
+.input {
+  margin-right: 20px;
+  border-radius: 4px; /* Rounded corners */
+}
+
+input[type="checkbox"] {
+  margin-right: 5px; /* Space between checkbox and label */
+  margin-bottom: 10px; /* Space below each checkbox */
+}
+
+.ingredient-search-button {
+  margin-right: 10px;
+}
+
+.label {
+  margin-right: 5px;
+}

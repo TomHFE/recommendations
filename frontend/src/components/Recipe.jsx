@@ -2,52 +2,31 @@ import "./post.css";
 import { FavouriteButton } from "./FavouriteButton";
 import { CommentButton } from "./CommentButton";
 import { useNavigate } from "react-router-dom";
-
+import "./recipe.css";
 function Recipe(props) {
   //console.log("props: ", props)
   const navigate = useNavigate();
 
   return (
     <>
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "white",
-          marginTop: "1rem",
-          marginBottom: "1rem",
-          borderRadius: "1rem",
-        }}
-      >
-        <article
-          key={props.recipe._id}
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "column" }}></div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {props.recipe.title}
+      <div className="whole-card">
+        <article className="card" key={props.recipe._id}>
+          <div className="individual-card">
+            <h3 className="card-title"> {props.recipe.title}</h3>
+
             {props.recipe.image && (
               <img src={props.recipe.image} alt="Recipe visual" />
             )}
-            {props.recipe.summary}
+            <p className="card-text">{props.recipe.summary}</p>
             <button
+              className="card-button"
               onClick={() =>
                 navigate(`/recipe_page`, { state: { recipe: props } })
               }
             >
               Click to See More
             </button>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                maxWidth: "5rem",
-                justifyContent: "flex-start",
-              }}
-            >
+            <div className="buttons">
               <FavouriteButton
                 number={props.recipe.favourites.length}
                 recipeId={props.recipe._id}

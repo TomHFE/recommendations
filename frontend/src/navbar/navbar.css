@@ -26,3 +26,63 @@
     grid-row: 2;
     margin: 0;
 } */
+
+.navbar-main {
+  position: sticky; /* Make the navbar sticky */
+  top: 0; /* Stick to the top of the page */
+  background-color: #f8f9fa; /* Light background color */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a slight shadow */
+  padding: 10px 20px; /* Padding for better spacing */
+  z-index: 1000; /* Ensure it stays above other content */
+}
+
+.navbar-incoming-requests {
+  display: flex;
+  align-items: center;
+}
+
+.search-container {
+  display: flex;
+  margin-left: auto;
+}
+.search-box {
+  padding: 5px; /* Padding for the search input */
+  border: 1px solid #ccc; /* Border for the input */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.home {
+  padding: 5px 10px; /* Padding for the search button */
+  margin-left: 10px; /* Space between input and button */
+  margin-right: 5px; /* Space between input and button */
+  background-color: #000001; /* Primary button color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.profile {
+  padding: 5px 10px; /* Padding for the search button */
+  margin-left: 10px; /* Space between input and button */
+  margin-right: 5px; /* Space between input and button */
+  background-color: #000001; /* Primary button color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+.search-button {
+  padding: 5px 10px; /* Padding for the search button */
+  margin-left: 10px; /* Space between input and button */
+  margin-right: 10px; /* Space between input and button */
+  background-color: #000001; /* Primary button color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.search-button:hover {
+  background-color: #808080; /* Darker shade on hover */
+}
