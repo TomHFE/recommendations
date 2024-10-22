@@ -1,9 +1,10 @@
 import { useState } from "react";
-import commentsIcon from "../pictures/commentsicon.png";
+import commentsIcon from "../pictures/speech-bubble.png";
 import Commentsalert from "./commentsalert.jsx";
 
 export const CommentButton = (props) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+
   const handleCommentsClick = () => {
     setIsCommentsOpen(true);
   };

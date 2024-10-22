@@ -18,6 +18,7 @@ function Commentsalert({ comments, onClose, recipe_id }) {
       console.log("thisComment is " + thisComment);
       const newComment = thisComment.comment;
       setCommentState((prev) => [...prev, newComment]); //avoid page reload
+
       setComment(""); // Clear input
     } catch (error) {
       console.error(error);

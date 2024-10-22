@@ -1,5 +1,8 @@
 .whole-card {
   place-items: center;
+  display: grid;
+  place-items: center;
+  padding: 20px;
 }
 
 .card {
@@ -8,29 +11,51 @@
   align-items: center;
   border-radius: 10px;
   text-align: center;
-  width: 300px;
-  height: 230px;
+  width: 100%; /* Allow card to fill available width */
+  max-width: 500px; /* Maximum width constraint */
+  min-height: 50px; /* Allow card to grow based on content */
+
   place-items: center;
   position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for better visuals */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .individual-card {
   display: flex;
   flex-direction: column;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
+  flex-grow: 1;
 }
 
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Ensure the image takes up full width of the card */
+  margin-bottom: 20px; /* Adjust as needed for spacing */
+}
+.image {
+  max-width: 100%; /* Make the image responsive */
+  height: auto; /* Maintain the aspect ratio */
+  border-radius: 10px; /* Optional: rounded corners */
+}
 .card-title {
   font-size: 1.5rem; /* Title size */
   font-weight: bold; /* Bold text */
   margin-bottom: 10px; /* Space between title and content */
   color: black;
+  word-wrap: break-word;
 }
 
 .card-text {
   color: #777; /* Gray text for a softer look */
   font-size: 1rem;
   margin-bottom: 20px;
+  word-wrap: break-word;
+  flex-grow: 1;
 }
 
 .card-button {
@@ -50,5 +75,5 @@
 
 .buttons {
   display: flex;
-  justify-content: space-between; /* Space between buttons */
+  justify-content: space-between;
 }

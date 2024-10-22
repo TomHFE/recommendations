@@ -1,4 +1,4 @@
-import iconlike from "../pictures/iconlikebutton.png";
+import iconlike from "../pictures/favourite_icon.png";
 import { createFavourite } from "../services/recipes/toggleFavourites";
 
 export const FavouriteButton = (props) => {
