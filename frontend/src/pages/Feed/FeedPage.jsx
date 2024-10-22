@@ -19,7 +19,7 @@ export function FeedPage() {
     if (loggedIn) {
       getRecipesWithUserDetails(token)
         .then((data) => {
-          setRecipes(Array.isArray(data.recipes) ? data.recipes : []);
+          setRecipes(data.recipes);
           setFilteredRecipes(Array.isArray(data.recipes) ? data.recipes : []);
           localStorage.setItem("token", data.token);
         })
@@ -27,7 +27,8 @@ export function FeedPage() {
           console.error(err);
           navigate("/login");
         });
-    }
+      }
+      console.log(recipes)
   }, [navigate]);
 
   const token = localStorage.getItem("token");
