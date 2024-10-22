@@ -40,6 +40,8 @@ import { useEffect, useState } from "react";
 import { createRecipe } from '../services/recipes/createRecipe';
 import { useNavigate } from 'react-router-dom';
 import cleanData from './cleanData';
+import { createFavourite } from '../services/recipes/toggleFavourites';
+
 const FetchedRecipes = () => {
   const location = useLocation();
   const { props, allergies } = location.state || {};
@@ -47,6 +49,7 @@ const FetchedRecipes = () => {
   const [favourite, setFavourite] = useState('favourited')
   const[sanitizedHtmlSummary, setSanitizedHtmlSummary] = useState('')
   const[sanitizedHtmlRecipe, setSanitizedHtmlRecipe] = useState('')
+
   const navigate = useNavigate()
 
   const handleFavourite = async () => {
@@ -57,7 +60,8 @@ const FetchedRecipes = () => {
     if (loggedIn) {
       await createRecipe(token, cleanData(recipe, allergies))
         .then((data) => {
-          console.log(data.recipe)
+          createFavourite(data.token, data.recipe._id)
+          console.log('this is data.recipe ',   data.recipe)
           localStorage.setItem("token", data.token);
           setFavourite('favourited!!!!!')
 

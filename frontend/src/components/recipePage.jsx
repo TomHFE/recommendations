@@ -33,12 +33,17 @@ import { useEffect, useState } from "react";
 
 const RecipePage = () => {
     const [recipes, setRecipes] = useState(null)
+    const [sum, setSum] = useState('')
     const location = useLocation();
-    const recipe = location.state || {};
+    const {recipe, summary} = location.state || {};
     useEffect(() => {
-        setRecipes(recipe.recipe)
+        setRecipes(recipe)
+        setSum(summary)
+        console.log(summary)
+        console.log(recipe)
 
     },[])
+
     // console.log(recipe.recipe.image)
     return (
         <div>
@@ -48,7 +53,7 @@ const RecipePage = () => {
             <h1>{recipes.title}</h1>
             <img src={recipes.image} alt="Recipe" />
             <h2>Summary</h2>
-            <p>{recipes.summary}</p>
+            <div dangerouslySetInnerHTML={{ __html: sum }}/>
 
             <h2>Ingredients</h2>
             {recipes.ingredients.map((ingredient, index) => (
