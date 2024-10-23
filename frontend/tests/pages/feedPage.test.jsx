@@ -3,6 +3,20 @@ import { describe, vi, beforeEach } from "vitest";
 import { FeedPage } from "../../src/pages/Feed/FeedPage";
 import { getRecipesWithUserDetails } from "../../src/services/recipes/getRecipesWithUserDetails";
 import '@testing-library/jest-dom'; 
+import { getFilteredRecipes } from "../../src/services/recipes/getFilteredRecipes";
+import { useNavigate } from "react-router-dom";
+
+vi.mock("../../src/services/recipes/getFilteredRecipes", () => {
+  const getFilteredRecipesMock = vi.fn();
+  return { getFilteredRecipes: getFilteredRecipesMock };
+});
+
+vi.mock("react-router-dom", () => {
+  const navigateMock = vi.fn();
+  const useNavigateMock = () => navigateMock; // Create a mock function for useNavigate
+  return { useNavigate: useNavigateMock };
+});
+
 
 // Mocking the getRecipesWithUserDetails service
 vi.mock("../../src/services/recipes/getRecipesWithUserDetails", () => ({
@@ -24,6 +38,7 @@ vi.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
+
 describe("FeedPage Component", () => {
   beforeEach(() => {
     window.localStorage.clear();
@@ -43,9 +58,12 @@ describe("FeedPage Component", () => {
       token: "newToken",
     });
     render(<FeedPage />);
+
+
     await waitFor(() => {
       expect(screen.getByText("Sorry, we could not find you any recipe")).toBeInTheDocument();
     });
+
   });
 
   test("navigates to /login on API error", async () => {
