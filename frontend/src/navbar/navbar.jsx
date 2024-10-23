@@ -6,6 +6,7 @@ import LogoutButton from "../components/LogoutButton";
 // import IncomingRequests from "./components/incomingRequests";
 // import SearchFriends from "./components/searchFriends";
 
+
 const NavBar = () => {
   const [searchParam, setSearchParam] = useState("");
   const [result, setResult] = useState({});
@@ -32,7 +33,8 @@ const NavBar = () => {
     const data = await getUsersAndRecipes(token, searchParam);
     setResult(data);
     localStorage.setItem("token", data.token);
-    console.log(result);
+    console.log(data);
+    navigate('./searches', {state: {recipes: data.recipes, user: data.user}})
   };
   const handleSearchChange = (e) => {
     setSearchParam(e.target.value);
@@ -65,7 +67,7 @@ const NavBar = () => {
             id="searchInput"
             onChange={handleSearchChange}
           />
-          <button className="search-button" onClick={handleSubmit}>
+          <button className="search-button" onClick={() => {handleSearchBar()}}>
             Search
           </button>
           <LogoutButton />

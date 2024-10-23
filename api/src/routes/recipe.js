@@ -9,6 +9,7 @@ router.get(
   "/get_recipe_with_user_details",
   recipeController.getRecipesWithUserDetails
 );
+router.post('/get_favourite_data', recipeController.getUserFavourites)
 router.get("/get_user_recipes", recipeController.getUserRecipes);
 router.get("/get_user_recipes_by_id", recipeController.getUserRecipesById);
 router.post("/create_recipe", recipeController.createRecipe);

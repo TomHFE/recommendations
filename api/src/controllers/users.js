@@ -122,7 +122,7 @@ async function userExists(userId) {
   return await User.exists({ _id: userId });
 }
 
-async function createFollowerRequest(req, res) {
+/* async function createFollowerRequest(req, res) {
   const senderId = req.user_id;
   const recipientId = req.body.recipientId;
 //  console.log("line108", recipientId);
@@ -154,7 +154,7 @@ async function createFollowerRequest(req, res) {
       .status(402)
       .json({ message: "request already sent by either sender or reciever" });
   }
-}
+} */
 
 async function getFollowerList(req, res) {
   const userId = req.user_id;
@@ -217,7 +217,7 @@ function verifyEmail(email) {
   return emailPattern.test(email);
 }
 
-async function deleteFollowing(req, res) {
+/* async function deleteFollowing(req, res) {
   const userId = req.user_id;
   const followingId = req.body.followingId;
   const userReal = await userExists(userId);
@@ -252,7 +252,8 @@ async function deleteFollowing(req, res) {
   } else {
     res.status(404).json({ message: "user doesnt exist" });
   }
-}
+} */
+
 async function findByUsername(req, res) {
   const userSearchName = req.body.userSearchName;
 //  console.log("this is the user search name", userSearchName);
@@ -272,36 +273,47 @@ async function findByUsername(req, res) {
 async function toggleFollowing(req, res) {
   const user_id = req.user_id;
   const target_id = req.body.target_id;
- // console.log("toggle_likes_user_id: ", user_id);
- // console.log("toggle_likes_target_id: ", target_id);
-  const hasFollowed = await target_id.followingData.followerList.includes(
-    user_id.toString()
-  );
 
-  if (hasFollowed) {
-    target_id.followingData.followerList =
-      target_id.followingData.followerList.filter(
-        (followerList) => followerList.toString() !== user_id.toString()
+  try {
+    const user = await User.findById(user_id);
+    const target = await User.findById(target_id);
+    if (!user || !target) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the user is already following the target
+    const hasFollowed = target.followingData.followers.includes(user_id);
+    if (hasFollowed) {
+      // Unfollow 
+      target.followingData.followers = target.followingData.followers.filter(
+        (followerId) => followerId.toString() !== user_id.toString()
       );
-    await target_id.save();
-    user_id.followingData.followingList =
-      user_id.followingData.followingList.filter(
-        (followingList) => followingList.toString() !== target_id.toString()
+      await target.save();
+
+      user.followingData.following = user.followingData.following.filter(
+        (followingId) => followingId.toString() !== target_id.toString()
       );
-    await user_id.save();
-    const newToken = generateToken(req.user_id);
-    res
-      .status(201)
-      .json({ message: `${target_id} unfollowed`, token: newToken });
-  } else {
-    target_id.followingData.followerList.push(user_id);
-    await target_id.save();
-    user_id.followingData.followingList.push(target_id);
-    await user_id.save();
-    const newToken = generateToken(req.user_id);
-    res.status(201).json({ message: `${target_id} followed`, token: newToken });
+      await user.save();
+
+      const newToken = generateToken(req.user_id);
+      res.status(201).json({ message: `${target_id} unfollowed`, token: newToken });
+    } else {
+      // Follow 
+      target.followingData.followers.push(user_id);
+      await target.save();
+
+      user.followingData.following.push(target_id);
+      await user.save();
+
+      const newToken = generateToken(req.user_id);
+      res.status(201).json({ message: `${target_id} followed`, token: newToken });
+    }
+  } catch (error) {
+    console.error("Error in toggleFollowing:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }
+
 
 async function getPublicDetailsById(req, res) {
   const user_id = req.body.user_id;
@@ -342,8 +354,8 @@ const UsersController = {
   verifyEmail: verifyEmail,
   getUserDetails: getUserDetails,
 
-  createFollowerRequest: createFollowerRequest,
-  deleteFollowing: deleteFollowing,
+  //createFollowerRequest: createFollowerRequest,
+  //deleteFollowing: deleteFollowing,
   getAllFollowingData: getAllFollowingData,
 
   getFollowingList: getFollowingList,

@@ -32,8 +32,9 @@ async function findUsersAndRecipes(req, res){
     else if (!userExists) {
         try {
             const recipes = await Recipe.find({title: search})
+        //    console.log(recipes)
             const token = generateToken(req.user_id);
-            res.status(200).json({ recipes: recipes, user: 'false', token: token})
+            res.status(200).json({ recipes: recipes, user: false, token: token})
         }
         catch (error) {
               //  console.log(error);
@@ -45,7 +46,7 @@ async function findUsersAndRecipes(req, res){
         try {
             const user = await User.find({username: search})
             const token = generateToken(req.user_id);
-            res.status(200).json({ recipes: 'false', user: user, token: token})
+            res.status(200).json({ recipes: false, user: user, token: token})
         }
         catch (error) {
             //    console.log(error);

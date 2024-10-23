@@ -10,8 +10,10 @@ import CreatePage from "./navbar/create_button/createPage";
 import RecipePage from "./components/recipePage";
 import UsersFollowingPage from "./components/follow_component/handleFollowing";
 import UsersFollowerPage from "./components/follower_component/handleFollowing";
+import Searches from "./navbar/Searches";
 import { MainLayout } from "./layouts/MainLayout";
 import FetchedRecipes from "./navbar/fetchedRecipes";
+import UserPage from "./components/UserPage";
 //import { PublicProfile } from "./pages/PublicProfile/PublicProfile";
 
 // docs: https://reactrouter.com/en/main/start/overview
@@ -32,10 +34,13 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> }, 
       { path: "/recipes", element: <FeedPage /> },
+      { path: "/searches", element: <Searches /> },
+
       { path: "/create", element: <CreatePage /> },
       { path: "/create/fetched_recipe", element: <FetchedRecipes /> },
       { path: "/profile", element: <Profile /> },
       { path: "/recipe_page", element: <RecipePage /> },
+      { path: "/user_page", element: <UserPage /> },
       { path: "/user_followers", element: <UsersFollowerPage /> },
       { path: "/user_following", element: <UsersFollowingPage /> },
     ],

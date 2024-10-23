@@ -206,6 +206,29 @@ async function addCommentToRecipe(comment, recipe_id) {
   );
 }
 
+async function getUserFavourites(req, res) {
+  const favourites = req.body.favourites
+ // console.log(favourites)
+  if (favourites) {
+    try {
+      const favouriteData = await Promise.all(favourites.map((favourite) => {
+        if (favourite !== null) {
+         return Recipe.find({_id: favourite})
+        }
+      }))
+      const token = generateToken(req.user_id)
+       res.status(201).json({ token: token, favourites: favouriteData });
+    }
+    catch (error){
+      return res.status(404).json({ error: error.message });
+    }
+  }
+  else {
+    return res.status(500).json({ message: 'no favourites data found'});
+
+  }
+}
+
 async function toggleFavourites(req, res) {
   const user_id = req.user_id;
   const recipe_id = req.body.recipe_id;
@@ -261,6 +284,7 @@ const RecipesController = {
   toggleFavourites: toggleFavourites,
   getUserRecipesById: getUserRecipesById,
   getFilteredRecipes: getFilteredRecipes,
+  getUserFavourites: getUserFavourites,
 };
 
 module.exports = RecipesController;

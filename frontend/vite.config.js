@@ -8,9 +8,10 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     coverage: {
+      all: true, // Ensure that all files are included in coverage, even if not tested
       provider: "istanbul", // default provider, could be 'c8' for newer Node.js
       reporter: ["text", "json", "html"], // specify coverage reporters
-      // include: ['src/**/*'], // specify files to include, optional
+      include: ["src/**/*.{js,jsx,ts,tsx}"], // Include all files in src directory
       // exclude: ['node_modules/**'], // specify files to exclude, optional
     },
   },
