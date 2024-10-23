@@ -2,13 +2,13 @@ import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { FeedPage } from "../../src/pages/Feed/FeedPage";
-import { getPosts } from "../../src/services/getposts";
+import { getFilteredRecipes } from "../../src/services/recipes/getFilteredRecipes";
 import { useNavigate } from "react-router-dom";
 
 // Mocking the getPosts service
-vi.mock("../../src/services/getposts", () => {
-  const getPostsMock = vi.fn();
-  return { getPosts: getPostsMock };
+vi.mock("../../src/services/recipes/getFilteredRecipes", () => {
+  const getFilteredRecipesMock = vi.fn();
+  return { getFilteredRecipes: getFilteredRecipesMock };
 });
 
 // Mocking React Router's useNavigate function
@@ -23,17 +23,24 @@ describe("Feed Page", () => {
     window.localStorage.removeItem("token");
   });
 
-  test("It displays posts from the backend", async () => {
+  test("It displays filtered recipes from the backend", async () => {
     window.localStorage.setItem("token", "testToken");
 
-    const mockPosts = [{ _id: "12345", message: "Test Post 1 ", userEmail:'abc@com.com'}];
+    const mockFilteredRecipes = [
+      { _id: "12345", title: "Test recipe ", summary: "Test summary" },
+    ];
 
-    getPosts.mockResolvedValue({ posts: mockPosts, token: "newToken" });
+    getFilteredRecipes.mockResolvedValue({
+      filteredRecipes: mockFilteredRecipes,
+      token: "newToken",
+    });
 
     render(<FeedPage />);
 
-    const post = await screen.findByRole("article");
-    expect(post.textContent).toEqual("Test Post 1  by abc@com.com");
+    const headerElement = screen.getByText("What recipe do you fancy?");
+
+    // Assert the text content directly using toBe
+    expect(headerElement.textContent.trim()).toBe("What recipe do you fancy?");
   });
 
   test("It navigates to login if no token is present", async () => {

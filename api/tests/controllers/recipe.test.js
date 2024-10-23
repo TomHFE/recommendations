@@ -4,7 +4,7 @@ const app = require("../../app");
 const Recipe = require("../../src/models/recipe");
 const User = require("../../src/models/user");
 const { generateToken } = require("../../src/lib/token");
-
+const mongoose = require('mongoose');
 require("../mongodb_helper");
 
 const secret = process.env.JWT_SECRET;
@@ -70,6 +70,7 @@ describe("/recipes", () => {
       expect(recipes[0].title).toBe("Vegan Pancakes");
     });
 
+    
     test("returns a new token after creating a recipe", async () => {
       const recipeData = {
         title: "Gluten-Free Pizza",
@@ -218,12 +219,11 @@ describe("/recipes", () => {
     });
   
     beforeEach(async () => {
-      // Clear favourites before each test
       await User.updateOne({ _id: user._id }, { favourites: [] });
     });
     
     test("toggle to favourite a recipe", async () => {
-      // First toggle (add to favourites)
+      // add to favourites
       let response = await request(app)
         .patch("/recipes/toggle_favourites")
         .set("Authorization", `Bearer ${token}`)
@@ -231,7 +231,7 @@ describe("/recipes", () => {
     
       expect(response.status).toBe(201);
     
-      // Fetch updated user and check if recipe is in favourites
+      // check if recipe is in favourites
       const updatedUser = await User.findById(user._id);
       const favouriteIds = updatedUser.favourites.map(fav => fav.toString());
       expect(favouriteIds).toContain(recipe._id.toString());
@@ -239,7 +239,7 @@ describe("/recipes", () => {
     
 
     test("toggle twice to unfavourite a recipe", async () => {
-      // First toggle (add to favourites)
+      // add to favourites
       let response = await request(app)
         .patch("/recipes/toggle_favourites")
         .set("Authorization", `Bearer ${token}`)
@@ -247,7 +247,6 @@ describe("/recipes", () => {
     
       expect(response.status).toBe(201);
     
-      // Fetch updated user and check if recipe is in favourites
       let updatedUser = await User.findById(user._id);
       let favouriteIds = updatedUser.favourites.map(fav => fav.toString());
       expect(favouriteIds).toContain(recipe._id.toString());
@@ -260,9 +259,362 @@ describe("/recipes", () => {
     
       expect(response.status).toBe(201);
     
-      // Fetch updated user and check if recipe is removed from favourites
+      // check if recipe is removed from favourites
       updatedUser = await User.findById(user._id);
       favouriteIds = updatedUser.favourites.map(fav => fav.toString());
       expect(favouriteIds).not.toContain(recipe._id.toString());
     });
+
+
+    test("returns 404 and error message when user is not found in toggleFavourites", async () => {
+      // simulating a user not found
+      jest.spyOn(User, "findById").mockImplementationOnce(() => null);
+    
+      // Send a request to trigger the toggleFavourites function
+      const response = await request(app)
+      .patch("/recipes/toggle_favourites")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        recipe_id: new mongoose.Types.ObjectId(), 
+      });
+    
+    
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe("User not found");
+    });
+
+    test("returns 500 and error message when there is a failure in toggleFavourites", async () => {
+      // Mock User.findById to throw an error
+      jest.spyOn(User.prototype, "save").mockImplementationOnce(() => {
+        throw new Error("Database save failed");
+      });
+    
+      const response = await request(app)
+        .patch("/recipes/toggle_favourites")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          recipe_id: new mongoose.Types.ObjectId(), 
+        });
+    
+      expect(response.status).toBe(500);
+      expect(response.body.error).toBe("Internal Server Error");
+    });
+    
+    
+
+    describe("POST /recipes/get_filtered_recipes", () => {
+      let token, userId;
+    
+      beforeAll(async () => {
+        const user = new User({
+          email: "filtered-recipes@test.com",
+          password: "12345678",
+          username: "filterTester",
+        });
+        await user.save();
+        userId = user._id; 
+        token = generateToken(userId);
+      });
+    
+      afterEach(async () => {
+        await Recipe.deleteMany({});
+        await User.deleteMany({});
+      });
+    
+      test("returns filtered recipes based on search criteria", async () => {
+        const recipe1 = {
+          title: "Vegan Pancakes",
+          image: "http://example.com/pancake.jpg",
+          summary: "Delicious and fluffy vegan pancakes",
+          instructions: "Mix all ingredients and cook.",
+          SearchingParameters: {
+            nationalities: "American",
+            dishType: ["breakfast"],
+            preparationMinutes: 10,
+            cookingMinutes: 15,
+            servings: 4,
+            vegan: true,
+          },
+          ingredients: [
+            { name: "flour", quantity: 2, unit: "cups" },
+            { name: "almond milk", quantity: 1, unit: "cup" },
+          ],
+        };
+    
+        const recipe2 = {
+          title: "Egg Pancakes",
+          image: "http://example.com/pancake.jpg",
+          summary: "Delicious pancakes with eggs",
+          instructions: "Mix all ingredients and cook.",
+          SearchingParameters: {
+            nationalities: "American",
+            dishType: ["breakfast"],
+            preparationMinutes: 10,
+            cookingMinutes: 15,
+            servings: 4,
+            vegan: false,
+          },
+          ingredients: [
+            { name: "eggs", quantity: 2, unit: "pieces" },
+            { name: "milk", quantity: 1, unit: "cup" },
+          ],
+        };
+    
+        await request(app)
+          .post("/recipes/create_recipe")
+          .set("Authorization", `Bearer ${token}`)
+          .send({ recipeList: recipe1 });
+    
+        await request(app)
+          .post("/recipes/create_recipe")
+          .set("Authorization", `Bearer ${token}`)
+          .send({ recipeList: recipe2 });
+    
+        const response = await request(app)
+          .post("/recipes/filtered")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            vegan: true, 
+            nationality: "American",
+            ingredients: ["flour", "almond milk"],
+          });
+          
+    
+        expect(response.status).toBe(200);
+        expect(response.body.recipes.length).toBe(1); // Only one vegan recipe should match
+        expect(response.body.recipes[0].title).toBe("Vegan Pancakes");
+      });
+    });
+
+    test("returns all recipes when no filters are provided", async () => {
+      const user = new User({
+        email: "user@example.com",
+        password: "password123",
+        username: "testUser",
+      });
+      await user.save();
+    
+      const recipe1 = new Recipe({
+        user: user._id, 
+        title: "Recipe 1",
+        SearchingParameters: { vegan: false },
+      });
+      const recipe2 = new Recipe({
+        user: user._id, 
+        title: "Recipe 2",
+        SearchingParameters: { vegan: true },
+      });
+      await recipe1.save();
+      await recipe2.save();
+    
+      const response = await request(app)
+        .post("/recipes/filtered")
+        .set("Authorization", `Bearer ${token}`)
+        .send({});
+    
+      expect(response.status).toBe(200);
+      expect(response.body.recipes.length).toBe(2); // Should return all recipes
+    });
+
+    test("returns 401 and error message on database failure in getFilteredRecipes", async () => {
+      // Mock the Recipe.find method to throw an error
+      jest.spyOn(Recipe, "find").mockImplementationOnce(() => {
+        throw new Error("Database query failed");
+      });
+    
+      const response = await request(app)
+        .post("/recipes/filtered")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          vegan: true,
+          ingredients: ["flour", "sugar"]
+        });
+    
+      expect(response.status).toBe(401);
+      expect(response.body.error).toBe("Database query failed");
+    });
+    
+
+    
+
+    describe("PATCH /comments", () => {
+      let token, userId, recipeId;
+    
+      beforeAll(async () => {
+        const user = new User({
+          email: "comment-test@test.com",
+          password: "12345678",
+          username: "commentTester",
+        });
+        await user.save();
+        userId = user._id; 
+        token = generateToken(userId);
+    
+        const recipe = new Recipe({
+          user: userId,
+          title: "Test Recipe",
+          summary: "Summary of the test recipe",
+          instructions: ["Step 1", "Step 2"],
+          SearchingParameters: { nationalities: "American", dishType: ["dinner"] },
+        });
+        await recipe.save();
+        recipeId = recipe._id;
+      });
+    
+      afterEach(async () => {
+        await Recipe.deleteMany({});
+        await User.deleteMany({});
+      });
+    
+      test("adds a comment to the recipe", async () => {
+        const commentData = {
+          recipe_id: recipeId,
+          message: "This recipe is great!", 
+        };
+      
+        const response = await request(app)
+          .patch("/recipes/comments") 
+          .set("Authorization", `Bearer ${token}`)
+          .send(commentData);
+
+        expect(response.status).toBe(201);
+        expect(response.body.comment.message).toEqual("This recipe is great!");
+        expect(response.body.comment.recipe_id).toBe(recipeId.toString()); 
+      });
+    
+    
+      describe("GET /recipes/get_user_recipes_by_id", () => {
+        let userId, recipeId, otherUserId;
+      
+        beforeAll(async () => {
+          const user = new User({
+            email: "user-test@test.com",
+            password: "12345678",
+            username: "userTester",
+          });
+          await user.save();
+          userId = user._id; 
+
+          const otherUser = new User({
+            email: "other-user@test.com",
+            password: "12345678",
+            username: "otherUserTester",
+          });
+          await otherUser.save();
+          otherUserId = otherUser._id; 
+      
+          // Create a recipe for the first user
+          const recipe = new Recipe({
+            user: userId,
+            title: "Pasta Primavera",
+            summary: "Delicious pasta with vegetables",
+            instructions: ["Boil water", "Add pasta", "Cook vegetables", "Combine"],
+            SearchingParameters: { nationalities: "Italian", dishType: ["main course"] },
+          });
+          await recipe.save();
+          recipeId = recipe._id; 
+        });
+      
+        afterEach(async () => {
+          await Recipe.deleteMany({});
+          await User.deleteMany({});
+        });
+      
+        test("returns recipes by user ID", async () => {
+          const response = await request(app)
+            .get("/recipes/get_user_recipes_by_id")
+            .set("Authorization", `Bearer ${token}`) 
+            .send({ user_id: userId }); 
+      
+          expect(response.status).toBe(200); 
+          expect(response.body.recipes.length).toBe(1); // Expect one recipe returned
+          expect(response.body.recipes[0].title).toBe("Pasta Primavera"); 
+          expect(response.body.recipes[0].user.username).toBe("userTester"); // Check the username of the user associated with the recipe
+        });
+      
+        test("returns an empty array when user has no recipes", async () => {
+          const response = await request(app)
+            .get("/recipes/get_user_recipes_by_id")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ user_id: otherUserId }); // Send a different user ID that has no recipes
+      
+          expect(response.status).toBe(200); 
+          expect(response.body.recipes).toEqual([]); 
+        });
+      });
+    })
+
+
+    describe("GET /recipes/get_user_recipes", () => {
+      let userId, token;
+    
+      beforeAll(async () => {
+        const user = new User({
+          email: "user-profile@test.com",
+          password: "12345678",
+          username: "userProfileTester",
+        });
+        await user.save();
+        userId = user._id; 
+    
+        token = generateToken(userId);
+    
+        const recipe1 = new Recipe({
+          user: userId,
+          title: "Apple Pie",
+          summary: "Delicious apple pie with a flaky crust.",
+          instructions: ["Prepare crust", "Fill with apples", "Bake"],
+          SearchingParameters: { nationalities: "American", dishType: ["dessert"] },
+        });
+        await recipe1.save();
+    
+        const recipe2 = new Recipe({
+          user: userId,
+          title: "Caesar Salad",
+          summary: "Fresh salad with Caesar dressing.",
+          instructions: ["Mix greens", "Add dressing", "Toss"],
+          SearchingParameters: { nationalities: "Italian", dishType: ["salad"] },
+        });
+        await recipe2.save();
+      });
+    
+      afterEach(async () => {
+        await Recipe.deleteMany({});
+        await User.deleteMany({});
+      });
+    
+      test("returns recipes for the authenticated user", async () => {
+        const response = await request(app)
+          .get("/recipes/get_user_recipes") 
+          .set("Authorization", `Bearer ${token}`);
+      
+        expect(response.status).toBe(200); 
+        expect(response.body.recipes.length).toBe(2); 
+      
+        const recipeTitles = response.body.recipes.map(recipe => recipe.title);
+        expect(recipeTitles).toContain("Apple Pie"); 
+        expect(recipeTitles).toContain("Caesar Salad"); 
+      
+        const applePie = response.body.recipes.find(recipe => recipe.title === "Apple Pie");
+        expect(applePie.summary).toBe("Delicious apple pie with a flaky crust.");
+        expect(applePie.user.username).toBe("userProfileTester"); 
+      
+        const caesarSalad = response.body.recipes.find(recipe => recipe.title === "Caesar Salad");
+        expect(caesarSalad.summary).toBe("Fresh salad with Caesar dressing.");
+        expect(caesarSalad.user.username).toBe("userProfileTester"); 
+      });
+      
+    
+      test("returns an empty array when user has no recipes", async () => {
+        await Recipe.deleteMany({});
+    
+        const response = await request(app)
+          .get("/recipes/get_user_recipes")
+          .set("Authorization", `Bearer ${token}`);
+    
+        expect(response.status).toBe(200);
+        expect(response.body.recipes).toEqual([]); 
+      });
+    });
+    
   });

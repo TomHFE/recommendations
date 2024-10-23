@@ -9,7 +9,7 @@ import { LoginPage } from "../../src/pages/Login/LoginPage";
 
 vi.mock("react-router-dom", () => {
   const navigateMock = vi.fn();
-  const useNavigateMock = () => navigateMock; 
+  const useNavigateMock = () => navigateMock;
   return { useNavigate: useNavigateMock };
 });
 
@@ -41,12 +41,11 @@ async function wrongEmailLoginForm() {
   await user.click(submitButtonEl);
 }
 
-
 describe("Login Page", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.spyOn(window, 'alert').mockImplementation(() => {});
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(window, "alert").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   test("allows a user to login", async () => {
@@ -57,7 +56,7 @@ describe("Login Page", () => {
     expect(login).toHaveBeenCalledWith("test@email.com", "1234");
   });
 
-  test("navigates to /posts on successful login", async () => {
+  test("navigates to /recipes on successful login", async () => {
     render(<LoginPage />);
 
     login.mockResolvedValue("secrettoken123");
@@ -65,7 +64,7 @@ describe("Login Page", () => {
 
     await completeLoginForm();
 
-    expect(navigateMock).toHaveBeenCalledWith("/posts");
+    expect(navigateMock).toHaveBeenCalledWith("/recipes");
   });
 
   test("navigates to /login on unsuccessful login", async () => {
@@ -74,20 +73,18 @@ describe("Login Page", () => {
     login.mockRejectedValue(new Error("Error logging in"));
     const navigateMock = useNavigate();
     await completeLoginForm();
-    
-    expect(window.alert).toHaveBeenCalledWith('Error logging in');
+
+    expect(window.alert).toHaveBeenCalledWith("Error logging in");
     expect(console.error).toHaveBeenCalledWith(expect.any(Error));
     expect(navigateMock).toHaveBeenCalledWith("/login");
-
   });
   test("check email is invalid", async () => {
-    const {container} = render(<LoginPage />);
+    const { container } = render(<LoginPage />);
     const navigateMock = useNavigate();
-    
-    await wrongEmailLoginForm();
-    const errorMessage = await container.querySelector('#error')
-    const text = await errorMessage.textContent
-    expect(text).toBe('Email is invalid try again')
 
+    await wrongEmailLoginForm();
+    const errorMessage = await container.querySelector("#error");
+    const text = await errorMessage.textContent;
+    expect(text).toBe("Email is invalid try again");
   });
 });

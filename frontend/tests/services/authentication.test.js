@@ -79,7 +79,7 @@ describe("authentication service", () => {
       const url = fetchArguments[0];
       const options = fetchArguments[1];
 
-      expect(url).toEqual(`${BACKEND_URL}/users`);
+      expect(url).toEqual(`${BACKEND_URL}/signup`);
       expect(options.method).toEqual("POST");
       expect(options.body).toEqual(
         JSON.stringify({ email: testEmail, password: testPassword })
@@ -113,9 +113,7 @@ describe("authentication service", () => {
       try {
         await signup(testEmail, testPassword);
       } catch (err) {
-        expect(err.message).toEqual(
-          "User already exists"
-        );
+        expect(err.message).toEqual("User already exists");
       }
     });
   });
