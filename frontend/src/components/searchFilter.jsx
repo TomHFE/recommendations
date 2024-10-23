@@ -144,7 +144,7 @@ export function SearchFilter({ onSearch }) {
               placeholder="Enter servings amount"
             />
             <label className="label">
-              Cost-friendly (1 budge - 5 expensive):
+              Cost-friendly (1 budget - 5 expensive):
             </label>
             <input
               className="input"
