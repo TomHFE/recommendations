@@ -2,9 +2,10 @@ import "./Commentsalert.css";
 import { createComment } from "../services/recipes/createComment";
 import { useEffect, useState } from "react";
 
-function Commentsalert({ comments, onClose, recipe_id }) {
+function Commentsalert({ comments, onClose, recipe_id, setComments }) {
   const [commentState, setCommentState] = useState([]);
   const [comment, setComment] = useState("");
+  const [updateKey, setUpdateKey] = useState(0);
 
   useEffect(() => {
     setCommentState(comments);
@@ -12,21 +13,28 @@ function Commentsalert({ comments, onClose, recipe_id }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log("Form submitted!");
     const token = localStorage.getItem("token");
+    console.log("Token:", token);
+    
     try {
       const thisComment = await createComment(token, comment, recipe_id);
       console.log("thisComment is " + thisComment);
       const newComment = thisComment.comment;
-      setCommentState((prev) => [...prev, newComment]); //avoid page reload
-
+      setComments((prev) => {
+        const updatedComments = [...prev, newComment];
+        console.log("Updated comments:", updatedComments); // Log updated comments
+        return updatedComments;
+      });      
       setComment(""); // Clear input
+      setUpdateKey(prev => prev + 1); // Force a re-render
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div className="modal">
+    <div className="modal" key={updateKey}>
       <div className="modal-content">
         <span className="close" onClick={onClose}>
           &times;

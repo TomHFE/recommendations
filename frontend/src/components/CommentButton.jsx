@@ -4,7 +4,7 @@ import Commentsalert from "./commentsalert.jsx";
 
 export const CommentButton = (props) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-
+  const [comments, setComments] = useState(props.comments)
   const handleCommentsClick = () => {
     setIsCommentsOpen(true);
   };
@@ -23,7 +23,7 @@ export const CommentButton = (props) => {
         justifyContent: "space-evenly",
       }}
     >
-      <p style={{ marginRight: "0.2rem" }}>{props.comments.length}</p>
+      <p style={{ marginRight: "0.2rem" }}>{comments.length}</p>
       <img
         src={commentsIcon}
         alt="Comments icon"
@@ -32,9 +32,10 @@ export const CommentButton = (props) => {
       />
       {isCommentsOpen && (
         <Commentsalert
-          comments={props.comments}
+          comments={comments}
           onClose={closeCommentsModal}
           recipe_id={props.recipeId}
+          setComments={setComments}
         />
       )}
     </div>
