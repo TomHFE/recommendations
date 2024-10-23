@@ -1,51 +1,59 @@
-import { render, screen } from "@testing-library/react";
-import { vi } from "vitest";
-
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, vi, beforeEach } from "vitest";
 import { FeedPage } from "../../src/pages/Feed/FeedPage";
-import { getFilteredRecipes } from "../../src/services/recipes/getFilteredRecipes";
-import { useNavigate } from "react-router-dom";
+import { getRecipesWithUserDetails } from "../../src/services/recipes/getRecipesWithUserDetails";
+import '@testing-library/jest-dom'; 
 
-// Mocking the getPosts service
-vi.mock("../../src/services/recipes/getFilteredRecipes", () => {
-  const getFilteredRecipesMock = vi.fn();
-  return { getFilteredRecipes: getFilteredRecipesMock };
-});
+// Mocking the getRecipesWithUserDetails service
+vi.mock("../../src/services/recipes/getRecipesWithUserDetails", () => ({
+  getRecipesWithUserDetails: vi.fn(),
+}));
+
+// Mocking the SearchFilter component (if you want to mock it)
+vi.mock("../../components/searchFilter", () => ({
+  SearchFilter: ({ onSearch }) => (
+    <button onClick={() => onSearch([{ _id: "1", title: "Test Recipe 1", summary: "Test summary 1" }])}>
+      Search
+    </button>
+  ),
+}));
 
 // Mocking React Router's useNavigate function
-vi.mock("react-router-dom", () => {
-  const navigateMock = vi.fn();
-  const useNavigateMock = () => navigateMock; // Create a mock function for useNavigate
-  return { useNavigate: useNavigateMock };
-});
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", () => ({
+  useNavigate: () => mockNavigate,
+}));
 
-describe("Feed Page", () => {
+describe("FeedPage Component", () => {
   beforeEach(() => {
-    window.localStorage.removeItem("token");
+    window.localStorage.clear();
+    mockNavigate.mockReset();
   });
 
-  test("It displays filtered recipes from the backend", async () => {
+  test("navigates to /login if token is missing", () => {
+    render(<FeedPage />);
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
+  });
+
+  test("displays 'Sorry, we could not find you any recipe' when no recipes are returned", async () => {
     window.localStorage.setItem("token", "testToken");
 
-    const mockFilteredRecipes = [
-      { _id: "12345", title: "Test recipe ", summary: "Test summary" },
-    ];
-
-    getFilteredRecipes.mockResolvedValue({
-      filteredRecipes: mockFilteredRecipes,
+    getRecipesWithUserDetails.mockResolvedValue({
+      recipes: [],
       token: "newToken",
     });
-
     render(<FeedPage />);
-
-    const headerElement = screen.getByText("What recipe do you fancy?");
-
-    // Assert the text content directly using toBe
-    expect(headerElement.textContent.trim()).toBe("What recipe do you fancy?");
+    await waitFor(() => {
+      expect(screen.getByText("Sorry, we could not find you any recipe")).toBeInTheDocument();
+    });
   });
 
-  test("It navigates to login if no token is present", async () => {
+  test("navigates to /login on API error", async () => {
+    window.localStorage.setItem("token", "testToken");
+    getRecipesWithUserDetails.mockRejectedValue(new Error("API Error"));
     render(<FeedPage />);
-    const navigateMock = useNavigate();
-    expect(navigateMock).toHaveBeenCalledWith("/login");
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/login");
+    });
   });
 });

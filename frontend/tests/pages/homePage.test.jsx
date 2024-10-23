@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-
 import { HomePage } from "../../src/pages/Home/HomePage";
 
 describe("Home Page", () => {
@@ -36,5 +35,5 @@ describe("Home Page", () => {
 
     const loginLink = screen.getByText("Log In");
     expect(loginLink.getAttribute("href")).toEqual("/login");
-  });
+  });  
 });

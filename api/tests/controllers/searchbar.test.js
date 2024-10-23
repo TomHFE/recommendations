@@ -64,7 +64,7 @@ describe('SearchBarController.findUsersAndRecipes', () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
             recipes: [{ title: 'testRecipe' }],
-            user: 'false',
+            user: false,
             token: 'mockToken'
         });
     });
@@ -83,7 +83,7 @@ describe('SearchBarController.findUsersAndRecipes', () => {
         expect(generateToken).toHaveBeenCalledWith('12345');
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
-            recipes: 'false',
+            recipes: false,
             user: [{ username: 'testUser' }],
             token: 'mockToken'
         });

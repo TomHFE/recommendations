@@ -1,10 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-
 import { useNavigate } from "react-router-dom";
 import { login } from "../../src/services/authentication";
-
 import { LoginPage } from "../../src/pages/Login/LoginPage";
 
 vi.mock("react-router-dom", () => {
@@ -78,6 +76,7 @@ describe("Login Page", () => {
     expect(console.error).toHaveBeenCalledWith(expect.any(Error));
     expect(navigateMock).toHaveBeenCalledWith("/login");
   });
+  
   test("check email is invalid", async () => {
     const { container } = render(<LoginPage />);
     const navigateMock = useNavigate();
