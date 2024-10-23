@@ -1,29 +1,32 @@
 import createFetchMock from "vitest-fetch-mock";
 import { describe, expect, vi } from "vitest";
 
-import { getPosts } from "../../src/services/getposts";
+import { getFilteredRecipes } from "../../src/services/recipes/getFilteredRecipes";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Mock fetch function
 createFetchMock(vi).enableMocks();
 
-describe("posts service", () => {
-  describe("getPosts", () => {
+describe("filtered recipes service", () => {
+  describe("getFilteredRecipes", () => {
     test("includes a token with its request", async () => {
-      fetch.mockResponseOnce(JSON.stringify({ posts: [], token: "newToken" }), {
-        status: 200,
-      });
+      fetch.mockResponseOnce(
+        JSON.stringify({ filters: [], token: "newToken" }),
+        {
+          status: 200,
+        }
+      );
 
-      await getPosts("testToken");
+      await getFilteredRecipes("testToken");
 
       // This is an array of the arguments that were last passed to fetch
       const fetchArguments = fetch.mock.lastCall;
       const url = fetchArguments[0];
       const options = fetchArguments[1];
 
-      expect(url).toEqual(`${BACKEND_URL}/posts`);
-      expect(options.method).toEqual("GET");
+      expect(url).toEqual(`${BACKEND_URL}/recipes/filtered`);
+      expect(options.method).toEqual("POST");
       expect(options.headers["Authorization"]).toEqual("Bearer testToken");
     });
 
@@ -34,9 +37,9 @@ describe("posts service", () => {
       );
 
       try {
-        await getPosts("testToken");
+        await getFilteredRecipes("testToken");
       } catch (err) {
-        expect(err.message).toEqual("Unable to fetch posts");
+        expect(err.message).toEqual("Unable to fetch filteres recipes");
       }
     });
   });
