@@ -5,13 +5,11 @@ import { FeedPage } from "../../src/pages/Feed/FeedPage";
 import { getFilteredRecipes } from "../../src/services/recipes/getFilteredRecipes";
 import { useNavigate } from "react-router-dom";
 
-// Mocking the getPosts service
 vi.mock("../../src/services/recipes/getFilteredRecipes", () => {
   const getFilteredRecipesMock = vi.fn();
   return { getFilteredRecipes: getFilteredRecipesMock };
 });
 
-// Mocking React Router's useNavigate function
 vi.mock("react-router-dom", () => {
   const navigateMock = vi.fn();
   const useNavigateMock = () => navigateMock; // Create a mock function for useNavigate
@@ -39,7 +37,6 @@ describe("Feed Page", () => {
 
     const headerElement = screen.getByText("What recipe do you fancy?");
 
-    // Assert the text content directly using toBe
     expect(headerElement.textContent.trim()).toBe("What recipe do you fancy?");
   });
 
