@@ -208,10 +208,13 @@ async function addCommentToRecipe(comment, recipe_id) {
 
 async function getUserFavourites(req, res) {
   const favourites = req.body.favourites
+  console.log(favourites)
   if (favourites) {
     try {
       const favouriteData = await Promise.all(favourites.map((favourite) => {
-        Recipe.find({id: favourite})
+        if (favourite !== null) {
+         return Recipe.find({_id: favourite})
+        }
       }))
       const token = generateToken(req.user_id)
        res.status(201).json({ token: token, favourites: favouriteData });

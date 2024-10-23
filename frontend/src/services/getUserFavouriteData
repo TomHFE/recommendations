@@ -2,9 +2,9 @@
 // docs: https://vitejs.dev/guide/env-and-mode.html
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-export async function getUserFavouriteDat(token, favouriteData) {
+export async function getUserFavouriteData(token, favouriteData) {
   const requestOptions = {
-    method: "GET",
+    method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
