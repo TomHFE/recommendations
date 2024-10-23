@@ -35,12 +35,18 @@ import DOMPurify from 'dompurify'; // Import the DOMPurify library
 
 
 import { useLocation } from "react-router-dom"
+import { useNavigate } from 'react-router-dom';
 
 const Searches = () => {
   const location = useLocation();
   const { recipes = [], user = [] } = location.state || {};
-
-
+const navigate = useNavigate()
+  const handleRecipe = (recipe, summary) => {
+    navigate('/recipe_page' , {state: {recipe: recipe, summary: summary}})
+  }
+  const handleUser = (user) => {
+    navigate('/user_page' , {state: {user: user}})
+  }
 console.log(user)
 console.log(recipes)
 
@@ -53,7 +59,7 @@ return (
             recipes.map((res, i) => {
               let summary = DOMPurify.sanitize(res.summary); 
             return (
-            <div key={res.id}>
+            <div key={res.id} onClick={() => {handleRecipe(res, summary)}}>
                 <h1>{res.title}</h1>
                 <img src={res.image} alt='recipe image' />
                 <div dangerouslySetInnerHTML={{ __html: summary }}/>
@@ -68,7 +74,7 @@ return (
         <h2>Users</h2>
         {user.length > 0 ? (
           user.map((use) => (
-            <div key={use.id}>
+            <div key={use.id} onClick={() => handleUser(use)}>
                 <h1 >{use.username}</h1>
                 <img src={use.profilePictureURL} alt='profile picture'/>
                 <h3>{use.followingData.followers.length} followers</h3>
