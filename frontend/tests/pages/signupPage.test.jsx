@@ -42,9 +42,7 @@ describe("Signup Page", () => {
 
   test("allows a user to signup", async () => {
     render(<SignupPage />);
-
     await completeSignupForm();
-
     expect(signup).toHaveBeenCalledWith(
       "test@email.com",
       "Password123!",
@@ -55,11 +53,8 @@ describe("Signup Page", () => {
 
   test("navigates to /login on successful signup", async () => {
     render(<SignupPage />);
-
     const navigateMock = useNavigate();
-
     await completeSignupForm();
-
     expect(navigateMock).toHaveBeenCalledWith("/login");
   });
 
@@ -107,12 +102,14 @@ describe("Signup Page", () => {
       "Password must:\n - Be min. 8 characters\n - Have a capital letter\n - Have a special character"
     );
   });
+
   test("test alert sign up successfully ", async () => {
     render(<SignupPage />);
     await completeSignupForm();
 
     expect(window.alert).toHaveBeenCalledWith("You signed up successfully");
   });
+
   test("test alert email already exists ", async () => {
     signup.mockRejectedValue(new Error("Email is invalid try again"));
     render(<SignupPage />);
@@ -126,16 +123,4 @@ describe("Signup Page", () => {
 
     expect(window.alert).toHaveBeenCalledWith("Email is invalid try again");
   });
-  // test("test alert Username already exists ", async () => {
-  //   signup.mockRejectedValue(new Error("Username already exist"));
-  //   render(<SignupPage />);
-  //   await completeSignupForm();
-  //   expect(signup).toHaveBeenCalledWith(
-  //     "test@email.com",
-  //     "Password123!",
-  //     "Someone-12345?"
-  //   );
-
-  //   expect(window.alert).toHaveBeenCalledWith("Username already exist");
-  // });
 });

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./feedpage.css";
 import { getRecipesWithUserDetails } from "../../services/recipes/getRecipesWithUserDetails";
 import Recipe from "../../components/Recipe";
-import LogoutButton from "../../components/LogoutButton";
-import NavBar from "../../navbar/navbar";
+//import LogoutButton from "../../components/LogoutButton";
+//import NavBar from "../../navbar/navbar";
 import { SearchFilter } from "../../components/searchFilter";
 
 export function FeedPage() {

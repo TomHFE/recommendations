@@ -32,7 +32,7 @@ async function findUsersAndRecipes(req, res){
     else if (!userExists) {
         try {
             const recipes = await Recipe.find({title: search})
-            console.log(recipes)
+        //    console.log(recipes)
             const token = generateToken(req.user_id);
             res.status(200).json({ recipes: recipes, user: false, token: token})
         }

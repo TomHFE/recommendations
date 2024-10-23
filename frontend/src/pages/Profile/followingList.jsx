@@ -1,4 +1,3 @@
-import './followingList.css'
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserFollowingList } from '../../services/getUserFollowing';
@@ -6,7 +5,7 @@ import { getUserById } from '../../services/getUserById';
 import { toggleFollowingServ } from '../../services/toggleFollowingServ';
 
 
- const followingList = () => {
+const followingList = () => {
     const [following, setfollowing]= useState([])
     const navigate = useNavigate();
 
