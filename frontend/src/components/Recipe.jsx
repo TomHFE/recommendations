@@ -1,4 +1,3 @@
-import "./post.css";
 import "./recipe.css";
 import { FavouriteButton } from "./FavouriteButton";
 import { CommentButton } from "./CommentButton";
