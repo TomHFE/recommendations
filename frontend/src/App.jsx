@@ -10,6 +10,7 @@ import CreatePage from "./navbar/create_button/createPage";
 import RecipePage from "./components/recipePage";
 import UsersFollowingPage from "./components/follow_component/handleFollowing";
 import UsersFollowerPage from "./components/follower_component/handleFollowing";
+import Searches from "./navbar/Searches";
 import { MainLayout } from "./layouts/MainLayout";
 import FetchedRecipes from "./navbar/fetchedRecipes";
 //import { PublicProfile } from "./pages/PublicProfile/PublicProfile";
@@ -31,6 +32,8 @@ const router = createBrowserRouter([
     element: <MainLayout />, // Wrap child routes with MainLayout
     children: [
       { path: "/recipes", element: <FeedPage /> },
+      { path: "/searches", element: <Searches /> },
+
       { path: "/create", element: <CreatePage /> },
       { path: "/create/fetched_recipe", element: <FetchedRecipes /> },
       { path: "/profile", element: <Profile /> },
