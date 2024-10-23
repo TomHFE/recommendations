@@ -13,7 +13,6 @@ describe("/users", () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
-    // Create two users and generate their tokens
     user1 = new User({ email: "user1@test.com", password: "password1!", username: "user1" });
     user2 = new User({ email: "user2@test.com", password: "password2!", username: "user2" });
     await user1.save();
@@ -23,8 +22,6 @@ describe("/users", () => {
   });
 
 
-
-  // Test user creation with email, username, and password
   describe("POST /users, when valid details provided", () => {
     test("the response code is 201", async () => {
       const response = await request(app)
@@ -300,7 +297,6 @@ describe("GET /users/get_user_details", () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
-    // Create a user for testing
     user = new User({
       email: "user@test.com",
       password: "password!",
@@ -311,7 +307,6 @@ describe("GET /users/get_user_details", () => {
     token = generateToken(user._id); 
   });
 
-  // Test successful retrieval of user details
   test("should return user details when a valid user ID is provided", async () => {
     const response = await request(app)
       .get("/users/get_user_details")
@@ -324,8 +319,8 @@ describe("GET /users/get_user_details", () => {
 
  // Test error handling when the user ID is invalid
   test("should return a 404 error when user ID is invalid", async () => {
-    const invalidUserId = "invalidUserId"; // An invalid ObjectId
-    const invalidToken = generateToken(invalidUserId); // Generate token with invalid ID
+    const invalidUserId = "invalidUserId"; 
+    const invalidToken = generateToken(invalidUserId); 
 
     const response = await request(app)
       .get("/users/get_user_details")
@@ -341,13 +336,11 @@ describe('POST /users/findByUsername', () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
-    // Create test users
     user1 = new User({ email: 'user1@test.com', password: 'password1!', username: 'user1' });
     user2 = new User({ email: 'user2@test.com', password: 'password2!', username: 'testUser' });
     await user1.save();
     await user2.save();
 
-    // Generate token
     token = generateToken(user1._id);
   });
 
@@ -388,7 +381,6 @@ describe("POST /users/get_public_details", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({ user_id: user._id.toString() });
 
- //     console.log(response.body); 
       expect(response.statusCode).toBe(200);
       expect(response.body.user_details[0].username).toBe(user.username); 
       expect(response.body.user_details[0].profilePictureURL).toBe(user.profilePictureURL); 
@@ -478,7 +470,7 @@ describe("GET /users/get_following_list", () => {
     expect(response.statusCode).toBe(201); 
     expect(response.body.message).toBe("OK"); 
     expect(response.body.user).toEqual(user.followingData.following.map(String)); // Check if the following list matches
-    expect(response.body.token).toBeDefined(); // Ensure token is returned
+    expect(response.body.token).toBeDefined(); 
   });
 
   test("should return 404 when user does not exist", async () => {
@@ -507,14 +499,6 @@ describe("GET /users/get_following_list", () => {
   });
 });
 
-
-
-
-
-
-
-
-
 describe("GET /users/get_follower_list", () => {
   let token, user;
 
@@ -522,7 +506,7 @@ describe("GET /users/get_follower_list", () => {
     await User.deleteMany({}); 
   
     user = new User({
-      _id: new mongoose.Types.ObjectId(), // Ensure this user ID is valid
+      _id: new mongoose.Types.ObjectId(), 
       email: "user@test.com",
       password: "password1!",
       username: "user1",
@@ -533,7 +517,6 @@ describe("GET /users/get_follower_list", () => {
     token = generateToken(user._id); 
   });
   
-
 
   test("should return the follower list when user exists", async () => {
     const mockedFollowers = [new mongoose.Types.ObjectId().toString(), new mongoose.Types.ObjectId().toString()];
@@ -550,15 +533,11 @@ describe("GET /users/get_follower_list", () => {
       .get("/users/get_follower_list")
       .set("Authorization", `Bearer ${token}`);
   
-    // console.log("Token being sent:", token); // Log the token to ensure it's correct
-    // console.log("Response body:", response.body); // Log the response body
-    // console.log("Response status:", response.statusCode); // Log the response status
-  
     expect(response.statusCode).toBe(201); 
     expect(response.body.message).toBe("OK"); 
   
     // Compare the response's followers to the mocked followers array
-    expect(response.body.user).toEqual(mockedFollowers); // Expect followers to match
+    expect(response.body.user).toEqual(mockedFollowers); 
     expect(response.body.token).toBeDefined(); 
   });
   
@@ -592,5 +571,156 @@ describe("GET /users/get_follower_list", () => {
 });
 
 
+describe("POST /users/get_user_by_id", () => {
+  test("should return 500 if an invalid userId type is passed", async () => {
+    const response = await request(app)
+      .post("/users/get_user_by_id")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ friendsIds: [12345] }); // Invalid type for user ID
 
-})
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toContain("error retrieving users");
+  });
+
+  test("should return 201 and empty array when no matching users are found", async () => {
+    const response = await request(app)
+      .post("/users/get_user_by_id")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ friendsIds: [new mongoose.Types.ObjectId()] });
+
+    expect(response.body.message).toEqual("error retrieving users");
+  });
+});
+
+
+describe("POST /users/get_public_details_by_username", () => {
+  let token, user;
+
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    user = new User({
+      email: "user@test.com",
+      password: "password1!",
+      username: "user1",
+      profilePictureURL: "http://example.com/user1.jpg",
+      followingData: { followingList: [] },
+    });
+
+    await user.save();
+    token = generateToken(user._id);
+  });
+
+  // Test successful retrieval of public details
+  test("should return public user details when a valid username is provided", async () => {
+    const response = await request(app)
+      .post("/users/public_details_username")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ username: user.username });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.user_details[0].username).toBe(user.username);
+    expect(response.body.user_details[0].profilePictureURL).toBe(user.profilePictureURL);
+    if (response.body.user_details[0].followingData) {
+      expect(response.body.user_details[0].followingData.followingList).toEqual(user.followingData.followingList);
+    }
+    expect(response.body.token).toBeDefined();
+  });
+
+  // Test error handling: Simulate an error in the User.find query
+  test("should return a 500 error if there is an internal server error", async () => {
+    // Mock User.find to throw an error
+    jest.spyOn(User, 'find').mockImplementation(() => {
+      throw new Error("Database error");
+    });
+
+    const response = await request(app)
+      .post("/users/public_details_username")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ username: user.username });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toEqual("Server error");
+  });
+});
+
+
+jest.mock('../../src/models/user.js');
+
+describe('toggleFollowing', () => {
+  let req, res;
+
+  beforeEach(() => {
+    // Mocking req and res objects
+    req = {
+      user_id: 'mockUserId',
+      body: { target_id: 'mockTargetId' },
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    jest.clearAllMocks();
+  });
+
+  it('should follow the target user if not already followed', async () => {
+    // Mocking User.findById to return user and target user
+    User.findById.mockResolvedValueOnce({
+      _id: 'mockUserId',
+      followingData: { following: [] },
+      save: jest.fn(),
+    });
+
+    User.findById.mockResolvedValueOnce({
+      _id: 'mockTargetId',
+      followingData: { followers: [] },
+      save: jest.fn(),
+    });
+
+    await toggleFollowing(req, res);
+
+    expect(User.findById).toHaveBeenCalledTimes(2);
+
+    // Expect followers and following to be updated
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'mockTargetId followed',
+      token: expect.any(String),
+    });
+  });
+
+  it('should unfollow the target user if already followed', async () => {
+    User.findById.mockResolvedValueOnce({
+      _id: 'mockUserId',
+      followingData: { following: ['mockTargetId'] },
+      save: jest.fn(),
+    });
+
+    User.findById.mockResolvedValueOnce({
+      _id: 'mockTargetId',
+      followingData: { followers: ['mockUserId'] },
+      save: jest.fn(),
+    });
+
+    await toggleFollowing(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'mockTargetId unfollowed',
+      token: expect.any(String),
+    });
+  });
+
+
+  it('should handle errors during the process', async () => {
+    User.findById.mockRejectedValueOnce(new Error('Database error'));
+    await toggleFollowing(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+  });
+});
+
+});

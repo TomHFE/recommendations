@@ -12,11 +12,6 @@ describe("/tokens", () => {
       password: passwordencrypted,
       username: "someone-12345",
     });
-
-    // We need to use `await` so that the "beforeAll" setup function waits for
-    // the asynchronous user.save() to be done before exiting.
-    // Otherwise, the tests belowc ould run without the user actyakkt being
-    // saved, causing tests to fail inconsistently.
     await user.save();
   });
 
