@@ -2,11 +2,11 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-import FollowingList from "../../src/pages/Profile/followingList"; 
+import FollowingList from "../../src/pages/Profile/followingList";
 import { getUserFollowingList } from '../../src/services/getUserFollowing';
 import { getUserById } from '../../src/services/getUserById';
 import { toggleFollowingServ } from '../../src/services/toggleFollowingServ';
-import '@testing-library/jest-dom'; 
+import '@testing-library/jest-dom';
 
 vi.mock('../../src/services/getUserFollowing', () => ({
   getUserFollowingList: vi.fn(),
@@ -27,10 +27,10 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,  
+  };
 });
 
 describe("FollowingList Component", () => {
-
   beforeEach(() => {
     localStorage.clear();
     mockNavigate.mockReset();
