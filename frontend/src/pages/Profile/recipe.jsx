@@ -12,6 +12,7 @@ const RecipeProfile = (props) => {
   useEffect(() => {
     setSanitizedHtmlSummary(DOMPurify.sanitize(props.summary));
   }, []);
+  console.log('this the new props for recipe', props)
 
   // const navigateToRecipe = () => {
   //   navigate("/recipe_page", {
@@ -44,8 +45,8 @@ const RecipeProfile = (props) => {
               recipeId={props._id} button={props.favourites.length}
             />
             <CommentButton
-              comments={props.recipe?.comments || []} // Default to empty array if undefined
-              recipeId={props.recipe?._id}
+              comments={props.comments} // Default to empty array if undefined
+              recipeId={props._id}
             />
           </div>
         </div>
