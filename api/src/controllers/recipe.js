@@ -229,52 +229,139 @@ async function getUserFavourites(req, res) {
   }
 }
 
+
+
 async function toggleFavourites(req, res) {
   const user_id = req.user_id;
   const recipe_id = req.body.recipe_id;
-  //console.log("toggle_likes_user_id: ", user_id)
-  console.log('this is recipe id       ', recipe_id)
-  const resMessage = await addFavouriteToRecipe(user_id, recipe_id);
+
   try {
-    const user = await User.findById(user_id);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    const hasFavourited = user.favourites.includes(recipe_id);
-    if (hasFavourited) {
-      user.favourites = user.favourites.filter(
-        (favRecipeId) => favRecipeId.toString() !== recipe_id
-      );
-    } else {
-      user.favourites.push(recipe_id);
-    }
-    await user.save();
+    const { updatedRecipe, updatedUser } = await addFavourite(user_id, recipe_id);
+
     const newToken = generateToken(req.user_id);
-    res.status(201).json({ resMessage: resMessage, token: newToken });
+
+    res.status(201).json({ favourites: updatedRecipe.favourites, userFavourites: updatedUser.favourites, token: newToken });
   } catch (error) {
-  //  console.error("Cannot udate favourites:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
   }
 }
 
-async function addFavouriteToRecipe(user_id, recipe_id) {
-  const recipe = await Recipe.findById(recipe_id);
-  if (!recipe) return { error: "Recipe does not exist" };
-  if (!user_id) return { error: "No userId Provided" };
-  const userIdStr = user_id.toString();
-  const hasFavourited = recipe.favourites.includes(userIdStr);
+async function addFavourite(user_id, recipe_id) {
+  if (!user_id || !recipe_id) throw new Error("Invalid user or recipe ID");
+
+  const hasFavourited = await User.findOne({
+    _id: user_id,
+    favourites: { $in: [recipe_id] },
+  });
+
+  let updatedRecipe, updatedUser;
+
   if (hasFavourited) {
-    recipe.favourites = recipe.favourites.filter(
-      (favourite) => favourite.toString() !== userIdStr
-    );
-    await recipe.save();
-    return `${recipe_id} unfavourited`;
+    // Remove from favourites
+    await User.updateOne({ _id: user_id }, { $pull: { favourites: recipe_id } });
+    await Recipe.updateOne({ _id: recipe_id }, { $pull: { favourites: user_id } });
+
+    // Get updated objects
+    updatedRecipe = await Recipe.findById(recipe_id);
+    updatedUser = await User.findById(user_id);
   } else {
-    recipe.favourites.push(user_id);
-    await recipe.save();
-    return `${recipe_id} favourited`;
+    // Add to favourites
+    await User.updateOne({ _id: user_id }, { $push: { favourites: recipe_id } });
+    await Recipe.updateOne({ _id: recipe_id }, { $push: { favourites: user_id } });
+
+    // Get updated objects
+    updatedRecipe = await Recipe.findById(recipe_id);
+    updatedUser = await User.findById(user_id);
   }
+
+  return { updatedRecipe, updatedUser };
 }
+
+// async function toggleFavourites(req, res) {
+//   const user_id = req.user_id;
+//   const recipe_id = req.body.recipe_id;
+//   //console.log("toggle_likes_user_id: ", user_id)
+  
+//   try{
+//     await addFavourite(user_id, recipe_id);
+
+//     const recipe = await Recipe.findById({_id: recipe_id})
+//     const user = await User.findById({_id: user_id})
+
+//     const newToken = generateToken(req.user_id);
+//     console.log('recipes', recipe.favourites)
+//     console.log('user', user.favourites)
+
+//     res.status(201).json({ favourites: recipe.favourites, token: newToken });
+//   }
+//   catch (error) {
+//     res.status(500).json({ error: error.message});
+//   }
+// }
+  // try {
+  //   const user = await User.findById(user_id);
+  //   if (!user) {
+  //     return res.status(404).json({ error: "User not found" });
+  //   }
+  //   const hasFavourited = user.favourites.includes(recipe_id);
+  //   if (hasFavourited) {
+  //     user.favourites = user.favourites.filter(
+  //       (favRecipeId) => favRecipeId.toString() !== recipe_id
+  //     );
+  //   } else {
+  //     user.favourites.push(recipe_id);
+  //   }
+  //   await user.save();
+  //   res.status(201).json({ resMessage: resMessage, token: newToken });
+  // } catch (error) {
+  // //  console.error("Cannot udate favourites:", error);
+  //   res.status(500).json({ error: "Internal Server Error" });
+  // }
+// }
+
+// async function addFavourite(id1, id2) {
+//   if (!id1) return { error: "id1 does not exist" };
+//   if (!id2) return { error: "id2 does not exist" };
+//   const hasFavourited = await User.findOne({
+//     _id: id1,
+//     favourites: { $in: [id2] } 
+//   });
+//   // console.log(hasFavourited)
+  
+//   if (hasFavourited) {
+//     try{
+//       await User.updateOne(
+//         { _id: id1 }, 
+//         { $pull: { favourites: id2 } }
+//       );
+//       await Recipe.updateOne(
+//         { _id: id2 }, 
+//         { $pull: { favourites: id1 } }
+//       );
+//       // const favouritesList = await Model.findById({_id: id1})
+//       // return `${favouritesList.favourites} unfavourited`;
+//     }
+//     catch (error) {
+//       return error.message
+//     }
+//   } else {
+//     try{
+//       await User.updateOne(
+//         { _id: id1 }, 
+//         { $push: { favourites: id2 } }
+//       );
+//       await Recipe.updateOne(
+//         { _id: id2 }, 
+//         { $push: { favourites: id1 } }
+//       );
+//       // const favouritesList = await Model.findById({_id: id1})
+//       // return `${favouritesList.favourites} favourited`;
+//     }
+//     catch (error) {
+//       return error.message
+//     }
+//   }
+// }
 
 const RecipesController = {
   getRecipesWithUserDetails: getRecipesWithUserDetails,

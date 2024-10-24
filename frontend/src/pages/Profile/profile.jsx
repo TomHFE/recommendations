@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRecipesWithUserDetails } from "../../services/recipes/getRecipesWithUserDetails";
-import Recipe from "./recipe";
 import "./profile.css";
 import { getUserDetails } from "../../services/getUserDetails";
+import RecipeProfile from './recipe'
 
 export function Profile() {
   const [recipes, setRecipes] = useState([]);
   const [profile, setProfile] = useState(null);
+  const [clicked, setClicked] = useState(0)
   const navigate = useNavigate();
+
+
+// maybe fetch usersfavourites directly
+
+console.log(recipes)
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,7 +37,7 @@ export function Profile() {
     } else {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, clicked]);
 
   const handleFollowers = () => {
     navigate("/user_followers");
@@ -60,9 +66,9 @@ export function Profile() {
       </div>
 
       <h1>Favourites</h1>
-      <div>
+      <div onClick={() => {setClicked(clicked + 1)}}>
         {favouritedRecipes.map((recipe) => (
-          <Recipe key={recipe._id} {...recipe} />
+          <RecipeProfile key={recipe._id} {...recipe} />
         ))}
       </div>
     </div>

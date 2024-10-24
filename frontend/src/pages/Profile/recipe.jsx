@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { FavouriteButton } from "../../components/FavouriteButton";
 import { CommentButton } from "../../components/CommentButton";
 
-const Recipe = (props) => {
+const RecipeProfile = (props) => {
   const navigate = useNavigate();
   const [sanitizedHtmlSummary, setSanitizedHtmlSummary] = useState("");
 
+  console.log('this is props for recipe', props)
   useEffect(() => {
     setSanitizedHtmlSummary(DOMPurify.sanitize(props.summary));
   }, []);
@@ -17,7 +18,7 @@ const Recipe = (props) => {
   //     state: { recipe: props, summary: sanitizedHtmlSummary },
   //   });
   // };
-
+  
   return (
     <div className="whole-card">
       <article className="card">
@@ -40,8 +41,7 @@ const Recipe = (props) => {
           </button>
           <div className="buttons">
             <FavouriteButton
-              number={props.recipe?.favourites?.length || 0} // Default to 0 if undefined
-              recipeId={props.recipe?._id}
+              recipeId={props._id} button={props.favourites.length}
             />
             <CommentButton
               comments={props.recipe?.comments || []} // Default to empty array if undefined
@@ -54,4 +54,4 @@ const Recipe = (props) => {
   );
 };
 
-export default Recipe;
+export default RecipeProfile;

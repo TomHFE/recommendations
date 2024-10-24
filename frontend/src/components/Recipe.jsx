@@ -15,7 +15,9 @@ function Recipe(props) {
   }, []);
   //console.log("props: ", props)
   const navigate = useNavigate();
-  console.log(props.recipe);
+  const favourites = props.recipe.favourites.length
+  console.log(favourites)
+  console.log('this is props', props);
   return (
     <>
       <div className="whole-card">
@@ -46,8 +48,8 @@ function Recipe(props) {
             </button>
             <div className="buttons">
               <FavouriteButton
-                number={props.recipe.favourites.length}
                 recipeId={props.recipe._id}
+                button={favourites}
               />
               <CommentButton
                 comments={props.recipe.comments}
