@@ -46,7 +46,7 @@ const FetchedRecipes = () => {
   const location = useLocation();
   const { props, allergies } = location.state || {};
   const [recipe, setRecipe] = useState(null); 
-  const [favourite, setFavourite] = useState('favourited')
+  const [favourite, setFavourite] = useState('Click to mark as Favourite')
   const[sanitizedHtmlSummary, setSanitizedHtmlSummary] = useState('')
   const[sanitizedHtmlRecipe, setSanitizedHtmlRecipe] = useState('')
 
@@ -63,7 +63,7 @@ const FetchedRecipes = () => {
           createFavourite(data.token, data.recipe._id)
           console.log('this is data.recipe ',   data.recipe)
           localStorage.setItem("token", data.token);
-          setFavourite('favourited!!!!!')
+          setFavourite('Favourited!')
 
         })
         .catch((err) => {
@@ -121,7 +121,7 @@ const FetchedRecipes = () => {
 
           <div dangerouslySetInnerHTML={{ __html: sanitizedHtmlRecipe }}/>
 
-          <div className='favourited' onClick={handleFavourite}>{favourite}</div>
+          <div className='favourited' style={{ fontWeight: 'bold' }} onClick={handleFavourite}>{favourite}</div>
         </div >
       ) : (
         <div>Loading recipe...</div> 
