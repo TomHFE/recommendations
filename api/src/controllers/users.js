@@ -282,32 +282,37 @@ async function toggleFollowing(req, res) {
     }
 
     // Check if the user is already following the target
-    const hasFollowed = target.followingData.followers.includes(user_id);
-    if (hasFollowed) {
-      // Unfollow 
-      target.followingData.followers = target.followingData.followers.filter(
-        (followerId) => followerId.toString() !== user_id.toString()
-      );
-      await target.save();
+    const hasFollowed = await User.findOne({
+      _id: user_id,
+      'followingData.following': { $in: [target_id] },
+    });
+   // Remove from favourites
+   if (hasFollowed) {
+   await User.updateOne({ _id: user_id }, { $pull: { 'followingData.following': target_id } });
+   await User.updateOne({ _id: target_id }, { $pull: { 'followingData.followers': user_id } });
+    
+   const user = await User.findById({_id: user_id})
+  //  // Get updated objects
+  //  updatedRecipe = await Recipe.findById(recipe_id);
+  //  updatedUser = await User.findById(user_id);
+  const token = generateToken(user_id)
 
-      user.followingData.following = user.followingData.following.filter(
-        (followingId) => followingId.toString() !== target_id.toString()
-      );
-      await user.save();
+  res.status(200).json({ message: user.followingData, token: token });
 
-      const newToken = generateToken(req.user_id);
-      res.status(201).json({ message: `${target_id} unfollowed`, token: newToken });
-    } else {
-      // Follow 
-      target.followingData.followers.push(user_id);
-      await target.save();
+ } else {
+   // Add to favourites
+   await User.updateOne({ _id: user_id }, { $push: { 'followingData.following': target_id } });
+   await User.updateOne({ _id: target_id }, { $push: { 'followingData.followers': user_id } });
+  const token = generateToken(user_id)
+  //  // Get updated objects
+  //  updatedRecipe = await Recipe.findById(recipe_id);
+  //  updatedUser = await User.findById(user_id);
+  const user = await User.findById({_id: target_id})
 
-      user.followingData.following.push(target_id);
-      await user.save();
+  res.status(200).json({ message: user.followingData, token: token });
+ }
 
-      const newToken = generateToken(req.user_id);
-      res.status(201).json({ message: `${target_id} followed`, token: newToken });
-    }
+//  return { updatedRecipe, updatedUser };
   } catch (error) {
     console.error("Error in toggleFollowing:", error);
     res.status(500).json({ message: "Internal server error" });

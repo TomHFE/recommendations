@@ -16,7 +16,7 @@ export async function toggleFollowingServ(token, target_id) {
     requestOptions
   );
 
-  if (response.status !== 201) {
+  if (response.status !== 200) {
     throw new Error("Unable to toggle");
   }
 

@@ -45,6 +45,8 @@ const UserPage = () => {
 
             <h1>{userData.username}</h1>
             <img src={userData.profilePictureURL} alt="profile picture" />
+            <h3>{userData.followingData.followers.length} followers</h3>
+            <h3>{userData.followingData.following.length} following</h3>
             {favourites && favourites.length > 0 ? (
              favourites.map((fav) => {
                  if (fav !== null) {

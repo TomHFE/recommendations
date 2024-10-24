@@ -30,25 +30,43 @@
 // }
 // export default Searches
 import DOMPurify from 'dompurify'; // Import the DOMPurify library
-
-
-
-
+import { toggleFollowingServ } from '../services/toggleFollowingServ';
 import { useLocation } from "react-router-dom"
 import { useNavigate } from 'react-router-dom';
 
 const Searches = () => {
   const location = useLocation();
   const { recipes = [], user = [] } = location.state || {};
-const navigate = useNavigate()
+  const navigate = useNavigate();
+  
   const handleRecipe = (recipe, summary) => {
     navigate('/recipe_page' , {state: {recipe: recipe, summary: summary}})
   }
   const handleUser = (user) => {
     navigate('/user_page' , {state: {user: user}})
   }
-console.log(user)
-console.log(recipes)
+  const handleFollowing = async (id) => {
+      console.log('this is id', id)
+      const token = localStorage.getItem('token')
+      console.log('this is token', token)
+      const loggedIn = token !== null
+      console.log(loggedIn)
+      if (loggedIn) {
+        try {
+          await toggleFollowingServ(token, id).then((data) => {
+            console.log(data)
+            
+            return localStorage.setItem('token', data.token)
+          })
+        }
+        catch (error) {
+          console.log(error.message)
+          navigate('/login')
+        }
+      }
+  }
+  console.log(user)
+  console.log(recipes)
 
 return (
     <div>
@@ -74,13 +92,13 @@ return (
         <h2>Users</h2>
         {user.length > 0 ? (
           user.map((use) => (
-            <div key={use.id} onClick={() => handleUser(use)}>
-                <h1 >{use.username}</h1>
-                <img src={use.profilePictureURL} alt='profile picture'/>
-                <h3>{use.followingData.followers.length} followers</h3>
-                <h3>{use.followingData.following.length} following</h3>
-            </div>
-            
+            <div key={use._id}>
+              <div  onClick={() => handleUser(use)}>
+                  <h1 >{use.username}</h1>
+                  <img src={use.profilePictureURL} alt='profile picture'/>
+              </div>
+                  <button onClick={() => {{handleFollowing(use._id)}}}>Follow</button>
+              </div>
           ))
         ) : (
           <div>No users found</div>
