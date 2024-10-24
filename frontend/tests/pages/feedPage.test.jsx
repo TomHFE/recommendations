@@ -13,17 +13,15 @@ vi.mock("../../src/services/recipes/getFilteredRecipes", () => {
 
 vi.mock("react-router-dom", () => {
   const navigateMock = vi.fn();
-  const useNavigateMock = () => navigateMock; // Create a mock function for useNavigate
+  const useNavigateMock = () => navigateMock; 
   return { useNavigate: useNavigateMock };
 });
 
 
-// Mocking the getRecipesWithUserDetails service
 vi.mock("../../src/services/recipes/getRecipesWithUserDetails", () => ({
   getRecipesWithUserDetails: vi.fn(),
 }));
 
-// Mocking the SearchFilter component (if you want to mock it)
 vi.mock("../../components/searchFilter", () => ({
   SearchFilter: ({ onSearch }) => (
     <button onClick={() => onSearch([{ _id: "1", title: "Test Recipe 1", summary: "Test summary 1" }])}>
@@ -32,7 +30,6 @@ vi.mock("../../components/searchFilter", () => ({
   ),
 }));
 
-// Mocking React Router's useNavigate function
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
