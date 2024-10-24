@@ -3,6 +3,7 @@ import commentsIcon from "../pictures/speech-bubble.png";
 import Commentsalert from "./commentsalert.jsx";
 
 export const CommentButton = (props) => {
+  console.log('this is the props for comments', props)
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [comments, setComments] = useState(props.comments)
   const handleCommentsClick = () => {
