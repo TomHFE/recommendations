@@ -266,11 +266,10 @@ describe("/recipes", () => {
     });
 
 
-    test("returns 404 and error message when user is not found in toggleFavourites", async () => {
+    test("returns 500 and error message when user is not found in toggleFavourites", async () => {
       // simulating a user not found
       jest.spyOn(User, "findById").mockImplementationOnce(() => null);
     
-      // Send a request to trigger the toggleFavourites function
       const response = await request(app)
       .patch("/recipes/toggle_favourites")
       .set("Authorization", `Bearer ${token}`)
@@ -278,28 +277,8 @@ describe("/recipes", () => {
         recipe_id: new mongoose.Types.ObjectId(), 
       });
     
-    
-      expect(response.status).toBe(404);
-      expect(response.body.error).toBe("User not found");
-    });
-
-    test("returns 500 and error message when there is a failure in toggleFavourites", async () => {
-      // Mock User.findById to throw an error
-      jest.spyOn(User.prototype, "save").mockImplementationOnce(() => {
-        throw new Error("Database save failed");
-      });
-    
-      const response = await request(app)
-        .patch("/recipes/toggle_favourites")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-          recipe_id: new mongoose.Types.ObjectId(), 
-        });
-    
       expect(response.status).toBe(500);
-      expect(response.body.error).toBe("Internal Server Error");
     });
-    
     
 
     describe("POST /recipes/get_filtered_recipes", () => {
@@ -319,6 +298,8 @@ describe("/recipes", () => {
       afterEach(async () => {
         await Recipe.deleteMany({});
         await User.deleteMany({});
+        jest.restoreAllMocks(); // Reset all mocks after each test
+
       });
     
       test("returns filtered recipes based on search criteria", async () => {

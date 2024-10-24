@@ -6,20 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { signup } from "../../src/services/authentication";
 import { SignupPage } from "../../src/pages/Signup/SignupPage";
 
-// Mocking React Router's useNavigate function
 vi.mock("react-router-dom", () => {
   const navigateMock = vi.fn();
-  const useNavigateMock = () => navigateMock; // Create a mock function for useNavigate
+  const useNavigateMock = () => navigateMock; 
   return { useNavigate: useNavigateMock };
 });
 
-// Mocking the signup service
 vi.mock("../../src/services/authentication", () => {
   const signupMock = vi.fn();
   return { signup: signupMock };
 });
 
-// Reusable function for filling out signup form
 async function completeSignupForm() {
   const user = userEvent.setup();
 

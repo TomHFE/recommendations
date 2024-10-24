@@ -2,13 +2,12 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-import FollowingList from "../../src/pages/Profile/followingList"; // Ensure proper import
+import FollowingList from "../../src/pages/Profile/followingList";
 import { getUserFollowingList } from '../../src/services/getUserFollowing';
 import { getUserById } from '../../src/services/getUserById';
 import { toggleFollowingServ } from '../../src/services/toggleFollowingServ';
-import '@testing-library/jest-dom';  // Ensure jest-dom is imported for matchers like toBeInTheDocument
+import '@testing-library/jest-dom';
 
-// Mock the services
 vi.mock('../../src/services/getUserFollowing', () => ({
   getUserFollowingList: vi.fn(),
 }));
@@ -23,22 +22,19 @@ vi.mock('../../src/services/toggleFollowingServ', () => ({
 
 const mockNavigate = vi.fn();
 
-// Mock useNavigate from react-router-dom
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
-    useNavigate: () => mockNavigate,  // Directly return mockNavigate
+    useNavigate: () => mockNavigate,  
   };
 });
 
 describe("FollowingList Component", () => {
-
   beforeEach(() => {
     localStorage.clear();
     mockNavigate.mockReset();
 
-    // Mock window.location.reload
     Object.defineProperty(window, 'location', {
       value: {
         reload: vi.fn(), // Mock reload function
@@ -54,7 +50,6 @@ describe("FollowingList Component", () => {
       </MemoryRouter>
     );
 
-    // Wait for the navigation to be called
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith("/login");
     });
@@ -77,7 +72,6 @@ describe("FollowingList Component", () => {
       </MemoryRouter>
     );
 
-    // Wait for the user's following list to be displayed
     await waitFor(() => {
       expect(screen.getByText("JohnDoe")).toBeInTheDocument();
       expect(screen.getByText("JaneDoe")).toBeInTheDocument();
@@ -128,7 +122,6 @@ describe("FollowingList Component", () => {
       expect(toggleFollowingServ).toHaveBeenCalledWith("newToken", "follow1");
     });
 
-    // Ensure the reload function is called
     expect(window.location.reload).toHaveBeenCalled();
   });
 });

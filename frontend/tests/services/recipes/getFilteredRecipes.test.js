@@ -20,7 +20,6 @@ describe("filtered recipes service", () => {
 
       await getFilteredRecipes("testToken");
 
-      // This is an array of the arguments that were last passed to fetch
       const fetchArguments = fetch.mock.lastCall;
       const url = fetchArguments[0];
       const options = fetchArguments[1];
