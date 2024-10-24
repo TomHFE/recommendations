@@ -1,4 +1,3 @@
-
 // docs: https://vitejs.dev/guide/env-and-mode.html
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -10,7 +9,10 @@ export async function getUserDetails(token) {
     },
   };
 
-  const response = await fetch(`${BACKEND_URL}/users/get_user_details`, requestOptions);
+  const response = await fetch(
+    `${BACKEND_URL}/users/get_user_details`,
+    requestOptions
+  );
 
   if (response.status !== 201) {
     throw new Error("Unable to fetch posts");
@@ -19,4 +21,3 @@ export async function getUserDetails(token) {
   const data = await response.json();
   return data;
 }
-  
