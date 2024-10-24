@@ -235,6 +235,7 @@ async function toggleFavourites(req, res) {
   const user_id = req.user_id;
   const recipe_id = req.body.recipe_id;
 
+
   try {
     const { updatedRecipe, updatedUser } = await addFavourite(user_id, recipe_id);
 

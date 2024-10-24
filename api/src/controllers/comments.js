@@ -22,8 +22,7 @@ async function createComment(req, res) {
   res.status(201).json({ comment, token: newToken });
 }
 const CommentsController = {
-  // getAllPosts: getAllPosts,
-  // getCommentsWithUserDetails: getCommentsWithUserDetails,
+  getCommentsWithUserDetails: getCommentsWithUserDetails,
   createComment: createComment,
 };
 module.exports = CommentsController;

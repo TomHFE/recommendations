@@ -13,14 +13,14 @@ describe("Recipe", () => {
       comments: [],
     };
 
-    // Wrap the component with MemoryRouter
     render(
+      //simulateS route changes and passes location state easily
+
       <MemoryRouter>
         <Recipe recipe={testRecipe} />
       </MemoryRouter>
     );
 
-    // Check if the title is displayed as an <h3> heading
     const title = screen.getByRole("heading", { level: 3 });
     expect(title.textContent).toContain("test title");
   });
